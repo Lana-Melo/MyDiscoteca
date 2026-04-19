@@ -8,7 +8,7 @@ import { PetApiResponse, PetInfo, PetsApiResponse } from './pet';
 })
 
 export class PetService {
-  url = 'http://localhost:3001/api/pets';
+  url = '/api/pets';
 
   // Injecta o HttpClient no HousingService
   http = inject(HttpClient);
