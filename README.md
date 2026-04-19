@@ -11,13 +11,18 @@ This project has been dockerized to run the MEAN stack (MongoDB, Express, Angula
 
 1. Clone or navigate to the project directory.
 
-2. Build and start the services:
+2. Build and start the services in attached mode:
    ```bash
    docker-compose up --build
    ```
 
-3. The application will be available at:
-   - Frontend: http://localhost
+3. Build and start the services in detached mode:
+   ```bash
+   docker-compose up -d --build
+   ```
+
+4. The application will be available at:
+   - Frontend Home Page: http://localhost/pets
    - Backend API: http://localhost:3001
    - MongoDB: localhost:27017
 
