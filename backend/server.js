@@ -17,6 +17,9 @@ const express = require('express');
 // Para interagir com a base de dados MongoDB.
 const mongoose = require('mongoose');
 
+// Regista os modelos da aplicacao no Mongoose durante o arranque.
+require('./models');
+
 // Para mostrar metadados de pedidos efetuados à API na consola.
 const morgan = require('morgan');
 
