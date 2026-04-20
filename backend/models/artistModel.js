@@ -46,7 +46,13 @@ const artistSchema = new mongoose.Schema({
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'Artist',
     default: []
-  }
+  },
+
+  // Álbuns deste artista (relacionamento 1-para-muitos).
+  albums: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Album'
+  }]
 },
 
 // Adiciona campos createdAt e updatedAt ao esquema.

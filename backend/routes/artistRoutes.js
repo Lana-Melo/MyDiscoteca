@@ -20,6 +20,10 @@ router.post('/', artistController.create);
 // Rota para obter a lista de todos os artistas.
 router.get('/', artistController.getAll);
 
+// Rota para pesquisar artistas por nome (autocomplete).
+// Deve vir ANTES da rota /:id para não ser confundida com um ID.
+router.get('/search', artistController.searchByName);
+
 // Rota para obter um artista pelo seu id.
 router.get('/:id', artistController.getById);
 
