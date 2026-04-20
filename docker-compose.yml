@@ -1,0 +1,35 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: petstore-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: petstorebd
+
+  backend:
+    build: ./backend
+    container_name: petstore-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      DB_URI: mongodb://mongo:27017/petstorebd
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./frontend/PetStore
+    container_name: petstore-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:

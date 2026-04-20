@@ -4,7 +4,10 @@
 
 // Para carregar valores de variáveis definidas no ficheiro .env.
 const { loadEnvFile } = require('node:process');
-loadEnvFile();
+const fs = require('fs');
+if (fs.existsSync('.env')) {
+  loadEnvFile();
+}
 
 // -----
 
