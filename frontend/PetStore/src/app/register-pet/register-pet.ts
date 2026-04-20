@@ -10,8 +10,10 @@
     imports: [ReactiveFormsModule, PorscheDesignSystemModule],
     template: `
         <div class="grid-template">
-          <section class="col-wide listing-apply">
-            <h2 class="section-heading">Register New Pet</h2>
+          <section class="col-wide grid grid-cols-subgrid listing-apply">
+            <div class="col-span-one-half">
+              <h2 class="section-heading">Register New Pet</h2>
+            </div>
             <form [formGroup]="registerPetForm" (submit)="registerPet()" class="col-wide grid grid-cols-subgrid gap-y-fluid-md">
               <div class="col-span-one-half p-fluid-sm">
                 <!-- Commenting to test the porshe component
@@ -45,7 +47,9 @@
                 <label for="category">Category</label>
                 <input id="category" type="text" formControlName="category"/> 
               </div>
-              <button type="submit" class="primary">Register Pet</button>
+              <div class="col-span-one-half p-fluid-sm">
+                <button type="submit" class="primary">Register Pet</button>
+              </div>
             </form>
           </section>
         </div>
