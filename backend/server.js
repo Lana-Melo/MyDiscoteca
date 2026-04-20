@@ -81,6 +81,12 @@ const petRoutes = require('./routes/petRoutes');
 // As rotas sobre pets têm todas o prefixo /api/pets.
 app.use('/api/pets', petRoutes);
 
+// Importar as rotas que a API expõe sobre artistas
+const artistRoutes = require('./routes/artistRoutes');
+
+// As rotas sobre artistas têm todas o prefixo /api/artists.
+app.use('/api/artists', artistRoutes);
+
 // -----
 
 // Faz a ligação à base de dados MongoDB.
