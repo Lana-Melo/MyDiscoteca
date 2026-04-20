@@ -14,6 +14,10 @@ body {
   --shadow-color: #E8E8E8;
 }
 
+/* TODO(user-sprint-1): quando a navegacao principal deixar de ser "pet store",
+   este e o sitio certo para redefinir as variaveis base, estados de formulario,
+   mensagens de erro/sucesso e estilos reutilizaveis para login/perfil/dashboard. */
+
 button.primary {
   padding: 10px;
   border: solid 1px var(--primary-color);

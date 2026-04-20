@@ -1,5 +1,8 @@
 import { Observable } from "rxjs";
 
+// TODO(user-sprint-1): este ficheiro ainda descreve apenas o dominio antigo.
+// Quando comecarem a migracao, vale a pena substitui-lo por tipos dedicados:
+// User, RegisterUserPayload, LoginPayload, Artist, ArtistSearchResponse, etc.
 export interface Category {
   _id?: string;
   name: string;

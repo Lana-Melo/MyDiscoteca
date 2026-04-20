@@ -46,7 +46,11 @@ const artistSchema = new mongoose.Schema({
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'Artist',
     default: []
-  }
+  },
+
+  // TODO(user-sprint-1): o utilizador pode guardar um artista favorito, por isso
+  // este modelo ja serve como alvo dessa referencia. Quando criarem o userModel,
+  // a ligacao mais natural e algo como favoriteArtist: { type: ObjectId, ref: 'Artist' }.
 },
 
 // Adiciona campos createdAt e updatedAt ao esquema.

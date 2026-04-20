@@ -9,5 +9,8 @@
 import {ApplicationConfig} from '@angular/core';
 
 export const appConfig: ApplicationConfig = {
+  // TODO(user-sprint-1): este ficheiro ainda nao esta a ser usado de forma
+  // relevante. Se quiserem concentrar configuracao global do Angular, auth
+  // interceptor e HttpClient, este e um bom sitio para o fazer.
   providers: [],
 };

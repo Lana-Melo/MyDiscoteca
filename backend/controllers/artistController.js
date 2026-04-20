@@ -92,6 +92,10 @@ exports.create = async (req, res) => {
 // Obter a lista de todos os artistas.
 exports.getAll = async (req, res) => {
     try {
+        // TODO(user-sprint-1): a User Story 5 pede pesquisa parcial por nome.
+        // O sitio mais natural para evoluir isto e aqui (ou numa funcao search
+        // dedicada), lendo algo como req.query.name para filtrar artistas.
+
         // Usa o model Artist para interagir com a DB
         // e selecionar todos os artistas registados.
         // Popula os membros dos grupos para mostrar detalhes completos.
@@ -116,6 +120,12 @@ exports.getAll = async (req, res) => {
 exports.getById = async (req, res) => {
     try {
         const id = req.params.id;
+        // TODO(user-sprint-1): a pagina do artista e tambem o sitio onde o
+        // frontend vai precisar de saber se este artista e o favorito do
+        // utilizador autenticado, para mostrar "adicionar/remover favorito".
+        // Isso pode ser resolvido noutro endpoint de user, mas esta pagina vai
+        // continuar a ser a base para essa vista.
+
         // Popula os membros dos grupos para mostrar detalhes completos.
         const artist = await Artist.findById(id).populate('members', 'isni name yearStarted type');
 

@@ -87,6 +87,11 @@ const artistRoutes = require('./routes/artistRoutes');
 // As rotas sobre artistas têm todas o prefixo /api/artists.
 app.use('/api/artists', artistRoutes);
 
+// TODO(user-sprint-1): adicionar aqui as rotas de autenticacao e de utilizador
+// (por exemplo /api/auth e /api/users). Este e o ponto central onde a API deixa
+// de estar organizada so por "pets/artists" e passa a expor login, registo,
+// perfil e futuras operacoes autenticadas.
+
 // -----
 
 // Faz a ligação à base de dados MongoDB.
@@ -106,4 +111,3 @@ app.use('/api/artists', artistRoutes);
 })();
 
 // -----
-

@@ -9,6 +9,9 @@ import { RouterOutlet,  RouterLink} from '@angular/router';
   selector: 'app-home',
   imports: [PetCard, RouterLink],
   template: `
+    <!-- TODO(user-sprint-1): esta pagina pode ser reaproveitada de duas formas:
+    1) dashboard provisoria apos login; ou
+    2) pesquisa de artistas, trocando a lista de pets pela de artistas. -->
     <section>
       <form>
         <input type="text" placeholder="Filter by Pet Name" #filter />
@@ -27,6 +30,9 @@ import { RouterOutlet,  RouterLink} from '@angular/router';
 
 export class Home implements OnInit {
 
+  // TODO(user-sprint-1): estes estados ainda pertencem ao pet store. Se esta
+  // pagina virar pesquisa de artistas, o refactor principal acontece aqui:
+  // artistsList, artistsFilteredList e injecao de ArtistService.
   petsList: PetInfo[] = [];
   petsFilteredList: PetInfo[] = [];
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
