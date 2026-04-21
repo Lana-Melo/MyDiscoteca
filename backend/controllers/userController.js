@@ -127,7 +127,9 @@ exports.create = async (req, res) => {
     });
 
     await newUser.save();
-    await newUser.populate('favoriteArtist', 'isni name yearStarted type');
+    // essa linha devolve uma resposta mais completa do artista favorito
+    // com ela comentada devolve somente o ID
+    //await newUser.populate('favoriteArtist', 'isni name yearStarted type');
 
     res.status(201).json({
       success: true,
