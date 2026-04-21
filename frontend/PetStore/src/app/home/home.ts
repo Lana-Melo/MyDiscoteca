@@ -3,11 +3,13 @@ import { PetService } from '../pet.service';
 import { PetInfo } from '../pet';
 import { PetCard } from '../pet-card/pet-card';
 import { OnInit } from '@angular/core';
+import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { RouterOutlet,  RouterLink} from '@angular/router';
+import { UserDetails } from '../user-details/user-details';  
 
 @Component({
   selector: 'app-home',
-  imports: [PetCard, RouterLink],
+  imports: [PetCard, RouterLink, PorscheDesignSystemModule],
   template: `
     <!-- TODO(user-sprint-1): esta pagina pode ser reaproveitada de duas formas:
     1) dashboard provisoria apos login; ou
@@ -16,7 +18,10 @@ import { RouterOutlet,  RouterLink} from '@angular/router';
       <form>
         <input type="text" placeholder="Filter by Pet Name" #filter />
         <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
-        <a [routerLink]="['/pets/new']" class="primary">Registar novo pet</a>      
+        <a [routerLink]="['/pets/new']" class="primary">Registar novo pet</a>     
+        <a [routerLink]="['/user/details']">
+          <p-icon name="user"></p-icon>
+        </a>
       </form>
     </section>
     <section class="results">

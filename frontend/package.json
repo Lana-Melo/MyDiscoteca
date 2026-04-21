@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@porsche-design-system/components-angular": "^3.34.0",
+    "@porsche-design-system/components-js": "^3.34.0"
+  }
+}

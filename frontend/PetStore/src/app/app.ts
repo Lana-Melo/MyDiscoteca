@@ -1,9 +1,10 @@
 import {Component} from '@angular/core';
 import {RouterLink, RouterOutlet} from '@angular/router';
+import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet, RouterLink, PorscheDesignSystemModule],
   template: `
     <main>
       <!-- TODO(user-sprint-1): este cabecalho ainda aponta para a home do pet
