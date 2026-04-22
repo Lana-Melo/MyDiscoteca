@@ -2,7 +2,8 @@ import {Routes} from '@angular/router';
 import {Home} from './home/home';
 import { PetDetails } from './pet-details/pet-details';
 import { RegisterPet } from './register-pet/register-pet';
-import { UserDetails } from './user-details/user-details';
+import { UserProfile } from './user/pages/user-profile/user-profile';
+import { EditUserProfile } from './user/pages/edit-user-profile/edit-user-profile';
 
 const routeConfig: Routes = [
   {
@@ -21,9 +22,14 @@ const routeConfig: Routes = [
     title: 'Register new pet',
   },
   {
-    path: 'user/details',
-    component: UserDetails,
-    title: 'User Details',
-  }
+    path: 'user/profile',
+    component: UserProfile,
+    title: 'User Profile',
+  },
+  {
+    path: 'user/profile/edit',
+    component: EditUserProfile,
+    title: 'Edit User Profile',
+  },
 ];
 export default routeConfig;

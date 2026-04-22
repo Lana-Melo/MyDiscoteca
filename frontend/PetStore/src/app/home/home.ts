@@ -5,7 +5,7 @@ import { PetCard } from '../pet-card/pet-card';
 import { OnInit } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { RouterOutlet,  RouterLink} from '@angular/router';
-import { UserDetails } from '../user-details/user-details';  
+import { UserProfile } from '../user/pages/user-profile/user-profile';  
 
 @Component({
   selector: 'app-home',
@@ -16,7 +16,7 @@ import { UserDetails } from '../user-details/user-details';
         <input type="text" placeholder="Filter by Pet Name" #filter />
         <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
         <a [routerLink]="['/pets/new']" class="primary">Registar novo pet</a>     
-        <a [routerLink]="['/user/details']">
+        <a [routerLink]="['/user/profile']">
           <p-icon name="user"></p-icon>
         </a>
       </form>

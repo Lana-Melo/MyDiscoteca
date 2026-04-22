@@ -1,23 +1,24 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 
 @Component({
-  selector: 'user-details',
-  imports: [PorscheDesignSystemModule],
+  selector: 'user-profile',
+  imports: [PorscheDesignSystemModule, RouterLink],
   template: `
     <div class="grid-template">
       <div class="col-wide">
-        <p-heading>Hello, {{username}}</p-heading>  
+        <p-heading>Profile</p-heading>  
       </div>
       <div class="col-wide grid grid-cols-subgrid">
         <div class="col-span-one-half">
           <p-input-text label="Name" [value]="username" [disabled]="true"></p-input-text>
         </div>
         <div class="col-span-one-half">
-          <p-input-text label="Email" [value]="email" [disabled]="true"></p-input-text>
+          <p-input-date label="Birth Date" [value]="birthDate" [disabled]="true"></p-input-date>
         </div>
         <div class="col-span-one-half">
-          <p-input-date label="Birth Date" [value]="birthDate" [disabled]="true"></p-input-date>
+          <p-input-text label="Email" [value]="email" [disabled]="true"></p-input-text>
         </div>
         <div class="col-span-one-half">
           <p-input-text label="Favorite Artist" [value]="favArtist" [disabled]="true"></p-input-text>
@@ -26,16 +27,16 @@ import { PorscheDesignSystemModule } from '@porsche-design-system/components-ang
           </p-button-pure>
         </div>
         <div class="col-span-one-half">
-          <p-button>
-            Edit profile
-          </p-button>
+          <a [routerLink]="['/user/profile/edit']">
+            <p-button>Edit profile</p-button>
+          </a>
         </div>
       </div>
     </div>
   `,
   styles: ``,
 })
-export class UserDetails {
+export class UserProfile {
   username = "Jhonny Boy"
   email = "jhonny@bigtech.com"
   birthDate = "26/02/2000"
