@@ -8,7 +8,7 @@ import { RouterLink } from '@angular/router';
   template: `
     <div class="grid-template">
       <div class="col-wide">
-        <p-button-pure icon="arrow-left" [routerLink]="['/user/details']">Back to profile</p-button-pure>
+        <p-button-pure icon="arrow-left" [routerLink]="['/user/profile']">Back to profile</p-button-pure>
       </div>
       <div class="col-wide">
         <p-heading>{{favArtist}}</p-heading>

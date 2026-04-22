@@ -5,11 +5,10 @@ import { PetCard } from '../pet-card/pet-card';
 import { OnInit } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { RouterOutlet,  RouterLink} from '@angular/router';
-import { UserProfile } from '../user/pages/user-profile/user-profile';  
 
 @Component({
   selector: 'app-home',
-  imports: [PetCard, RouterLink, PorscheDesignSystemModule, UserProfile],
+  imports: [PetCard, RouterLink, PorscheDesignSystemModule],
   template: `
     <div class="grid-template">
       <div class="col-wide grid grid-cols-subgrid">
