@@ -37,3 +37,12 @@ export interface RegisterUserPayload {
   birthDate: string;
   favoriteArtist?: string | null;
 }
+
+export interface UpdateUserPayload {
+  username?: string;
+  email?: string;
+  birthDate?: string;
+  favoriteArtist?: string | null;
+  currentPassword: string;
+  newPassword?: string;
+}

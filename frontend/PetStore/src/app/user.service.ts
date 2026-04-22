@@ -33,4 +33,14 @@ export class UserService {
     return this.http.post<UserApiResponse>(this.url, user, this.httpOptions)
       .pipe(map((response) => response.user));
   }
+
+  updateUser(id: string, user: any): Observable<UserInfo> {
+    return this.http.put<UserApiResponse>(`${this.url}/${id}`, user, this.httpOptions)
+      .pipe(map((response) => response.user));
+  }
+
+  deleteUser(id: string): Observable<UserInfo> {
+    return this.http.delete<UserApiResponse>(`${this.url}/${id}`, this.httpOptions)
+      .pipe(map((response) => response.user));
+  }
 }

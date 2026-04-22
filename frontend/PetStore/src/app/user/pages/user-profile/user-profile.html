@@ -2,6 +2,7 @@
     <div class="col-wide">
         <p-heading>Profile</p-heading>  
     </div>
+    <!--
     <div class="col-wide grid grid-cols-subgrid">
         <div class="col-span-one-half">
             <p-input-text label="Name" [value]="username" [disabled]="true"></p-input-text>
@@ -29,4 +30,43 @@
         </div>
 
     </div>
+    -->
+    @if (isLoading) {
+        <div class="col-wide">
+          <p-text>Loading user profile...</p-text>
+        </div>
+      } @else if (errorMessage) {
+        <div class="col-wide">
+          <p-text color="notification-error">{{ errorMessage }}</p-text>
+        </div>
+      } @else if (user) {
+        <div class="col-wide grid grid-cols-subgrid">
+        <div class="col-span-one-half">
+          <p-input-text label="Username" [value]="user.username" [disabled]="true"></p-input-text>
+        </div>
+        <div class="col-span-one-half">
+          <p-input-text label="Email" [value]="user.email" [disabled]="true"></p-input-text>
+        </div>
+        <div class="col-span-one-half">
+          <p-input-date label="Birth Date" [value]="birthDateValue" [disabled]="true"></p-input-date>
+        </div>
+        <div class="col-span-one-half">
+          <p-input-text label="Favorite Artist" [value]="favoriteArtistName" [disabled]="true"></p-input-text>
+          @if (favoriteArtistId) {
+            <a [routerLink]="['/artists/details', favoriteArtistId]">
+              <p-button-pure>
+                Go to artist profile
+              </p-button-pure>
+            </a>
+          }
+        </div>
+        <div class="col-span-one-half">
+          <a [routerLink]="['/user/profile', user.id, 'edit']">
+            <p-button>
+              Edit profile
+            </p-button>
+          </a>
+        </div>
+      </div>
+    }
 </div>

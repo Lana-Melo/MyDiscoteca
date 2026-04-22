@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
+import { UserService } from '../../../user.service';
+import { UserInfo } from '../../../user';
 
 @Component({
   selector: 'user-profile',
@@ -8,9 +10,94 @@ import { PorscheDesignSystemModule } from '@porsche-design-system/components-ang
   templateUrl: './user-profile.html',
   styles: ``,
 })
-export class UserProfile {
-  username = "Jhonny Boy"
-  email = "jhonny@bigtech.com"
-  birthDate = "26/02/2000"
-  favArtist = "Barões da Pisadinha"
+export class UserProfile implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly userService = inject(UserService);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
+  user: UserInfo | undefined;
+  isLoading = true;
+  errorMessage = '';
+
+  ngOnInit(): void {
+    const userId = this.route.snapshot.params['id'];
+
+    if (userId) {
+      this.loadUserById(userId);
+      return;
+    }
+
+    this.loadFirstUserForDevelopment();
+  }
+
+  get birthDateValue(): string {
+    if (!this.user?.birthDate) {
+      return '';
+    }
+
+    return this.user.birthDate.slice(0, 10);
+  }
+
+  get favoriteArtistName(): string {
+    const favoriteArtist = this.user?.favoriteArtist;
+
+    if (!favoriteArtist) {
+      return 'No favorite artist selected';
+    }
+
+    if (typeof favoriteArtist === 'string') {
+      return favoriteArtist;
+    }
+
+    return favoriteArtist.name;
+  }
+
+  get favoriteArtistId(): string | null {
+    const favoriteArtist = this.user?.favoriteArtist;
+
+    if (!favoriteArtist) {
+      return null;
+    }
+
+    if (typeof favoriteArtist === 'string') {
+      return favoriteArtist;
+    }
+
+    return favoriteArtist.id || favoriteArtist._id || null;
+  }
+
+  private loadUserById(userId: string): void {
+    this.userService.getUserById(userId).subscribe({
+      next: (user) => {
+        this.user = user;
+        this.isLoading = false;
+        this.changeDetectorRef.markForCheck();
+      },
+      error: () => {
+        this.errorMessage = 'Could not load user profile.';
+        this.isLoading = false;
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+  }
+
+  private loadFirstUserForDevelopment(): void {
+    this.userService.getAllUsers().subscribe({
+      next: (users) => {
+        this.user = users[0];
+        this.isLoading = false;
+
+        if (!this.user) {
+          this.errorMessage = 'No users found yet. Create a user first.';
+        }
+
+        this.changeDetectorRef.markForCheck();
+      },
+      error: () => {
+        this.errorMessage = 'Could not load user profile.';
+        this.isLoading = false;
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+  }
 }

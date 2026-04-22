@@ -38,7 +38,7 @@ const routeConfig: Routes = [
     title: 'User Profile',
   },
   {
-    path: 'user/profile/edit',
+    path: 'user/profile/:id/edit',
     component: EditUserProfile,
     title: 'Edit User Profile',
   },
