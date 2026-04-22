@@ -4,6 +4,7 @@ import { PetDetails } from './pet-details/pet-details';
 import { RegisterPet } from './register-pet/register-pet';
 import { UserProfile } from './user/pages/user-profile/user-profile';
 import { EditUserProfile } from './user/pages/edit-user-profile/edit-user-profile';
+import { ArtistDetails } from './artist-details/artist-details';
 
 const routeConfig: Routes = [
   {
@@ -31,5 +32,10 @@ const routeConfig: Routes = [
     component: EditUserProfile,
     title: 'Edit User Profile',
   },
+  {
+    path: 'artist/details',
+    component: ArtistDetails,
+    title: 'Artist Details',
+  }
 ];
 export default routeConfig;
