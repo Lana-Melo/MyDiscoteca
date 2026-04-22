@@ -9,33 +9,7 @@ import { RouterOutlet,  RouterLink} from '@angular/router';
 @Component({
   selector: 'app-home',
   imports: [PetCard, RouterLink, PorscheDesignSystemModule],
-  template: `
-    <div class="grid-template">
-      <div class="col-wide grid grid-cols-subgrid">
-        <div class="col-span-two-thirds">
-          <p-input-text
-            placeholder="Filter by Pet Name"
-            label="Pet Name"
-            [value]="filterText"
-            (input)="onFilterInput($event)">
-          </p-input-text>
-        </div>
-        <div class="col-span-one-third" style="display: flex; align-items: flex-end; gap: 8px;">
-          <p-button (click)="filterResults(filterText)">Search</p-button>
-          <p-button variant="secondary" [routerLink]="['/pets/new']">Registar novo pet</p-button>
-          <p-button-pure icon="user" [routerLink]="['/user/profile']"></p-button-pure>
-        </div>
-      </div>
-
-      <div class="col-wide grid grid-cols-subgrid">
-        @for (petInfo of petsFilteredList; track $index) {
-          <div class="col-span-one-quarter">
-            <app-pet-card [petInfo]="petInfo" />
-          </div>
-        }
-      </div>
-    </div>
-  `,
+  templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
 

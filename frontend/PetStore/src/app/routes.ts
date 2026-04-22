@@ -8,7 +8,7 @@ import { ArtistDetails } from './artist-details/artist-details';
 
 const routeConfig: Routes = [
   {
-    path: 'pets',
+    path: 'dashboard',
     component: Home,
     title: 'Home page',
   },

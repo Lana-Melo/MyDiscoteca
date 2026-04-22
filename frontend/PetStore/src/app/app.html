@@ -1,0 +1,64 @@
+<header class="grid-template gap-y-0">
+
+  <!-- TOP BAR -->
+  <div class="col-full flex justify-center py-static-xs px-static-md bg-surface dark">
+    <p class="prose-text-xs">
+        <!-- se quisermos aquela barra preta do template, colocar um texto aqui-->
+    </p>
+  </div>
+
+  <!-- MAIN HEADER -->
+  <div class="col-wide grid grid-cols-[1fr_auto_1fr] items-center min-h-[80px]">
+
+    <!-- LEFT -->
+    <!-- o código abaixo é para caso queiramos usar o menu hamburguer no futuro-->
+    <div class="flex gap-static-md items-center">
+        <p-button-pure
+        icon="menu-lines"
+        type="button"
+        (click)="openNav()">
+        Menu
+      </p-button-pure>
+    </div>
+
+    <!-- CENTER -->
+    <div class="flex justify-center">
+      <div class="flex justify-center items-center">
+        <a routerLink="/dashboard" class="text-lg font-semibold tracking-wide">
+            MyDiscoteca 🎶
+        </a>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="flex justify-end gap-static-md">
+
+
+    <!--
+      <p-button-pure icon="search"></p-button-pure>
+    <p-link-pure icon="heart" href="#">
+        Favorit Artist
+      </p-link-pure>
+    -->
+      <p-button-pure [routerLink]="['/user/profile']" icon="user"></p-button-pure>
+
+    </div>
+
+  </div>
+
+  <div class="col-full flex justify-center border-t-thin border-contrast-low">
+  </div>
+  <!-- NAVIGATION BAR -->
+    <div class="col-full flex justify-center border-t-thin border-contrast-low py-static-sm flex justify-center min-h-[48px]">
+        @if (isNavOpen) {
+        <p-tabs-bar>
+        <p-button-pure icon="search" (click)="goToArtists()">Explore artists</p-button-pure>
+        </p-tabs-bar>
+        }
+    </div>
+
+</header>
+
+<main>
+  <router-outlet></router-outlet>
+</main>

@@ -1,12 +1,5 @@
-:host {
-  --content-padding: 10px;
-}
+@import "tailwindcss";
+@import "@porsche-design-system/components-js/tailwindcss";
 header {
-  display: block;
-  height: 60px;
-  padding: var(--content-padding);
-  box-shadow: 0px 5px 25px var(--shadow-color);
-}
-.content {
-  padding: var(--content-padding);
+  width: 100%;
 }

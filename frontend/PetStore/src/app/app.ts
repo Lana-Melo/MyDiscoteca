@@ -1,24 +1,25 @@
-import {Component} from '@angular/core';
-import {RouterLink, RouterOutlet} from '@angular/router';
+import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [RouterOutlet, RouterLink, PorscheDesignSystemModule],
-  template: `
-    <main>
-      <a [routerLink]="['/pets']">
-        <header class="brand-name">
-          <h1>Pet Store</h1>
-        </header>
-      </a>
-      <section class="content">
-        <router-outlet />
-      </section>
-    </main>
-  `,
+  templateUrl: './app.html',
   styleUrls: ['./app.css'],
 })
 export class App {
-  title = 'homes';
+  isNavOpen = false;
+
+  openNav() {
+    this.isNavOpen = !this.isNavOpen;
+    console.log("vou abrir o menu");  
+  }
+
+  goToArtists() {
+    this.router.navigate(['/artists']);
+  }
+
+  constructor(private router: Router) {}
 }
