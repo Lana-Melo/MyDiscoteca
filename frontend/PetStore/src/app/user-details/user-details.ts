@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'user-details',
-  imports: [PorscheDesignSystemModule],
+  imports: [PorscheDesignSystemModule, RouterLink],
   template: `
     <div class="grid-template">
       <div class="col-wide">
@@ -21,7 +22,7 @@ import { PorscheDesignSystemModule } from '@porsche-design-system/components-ang
         </div>
         <div class="col-span-one-half">
           <p-input-text label="Favorite Artist" [value]="favArtist" [disabled]="true"></p-input-text>
-          <p-button-pure>
+          <p-button-pure [routerLink]="['/artist/details']">
             Go to artist profile
           </p-button-pure>
         </div>

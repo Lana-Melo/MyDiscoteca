@@ -3,6 +3,7 @@ import {Home} from './home/home';
 import { PetDetails } from './pet-details/pet-details';
 import { RegisterPet } from './register-pet/register-pet';
 import { UserDetails } from './user-details/user-details';
+import { ArtistDetails } from './artist-details/artist-details';
 
 const routeConfig: Routes = [
   {
@@ -24,6 +25,11 @@ const routeConfig: Routes = [
     path: 'user/details',
     component: UserDetails,
     title: 'User Details',
+  },
+  {
+    path: 'artist/details',
+    component: ArtistDetails,
+    title: 'Artist Details',
   }
 ];
 export default routeConfig;
