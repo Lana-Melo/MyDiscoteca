@@ -1,0 +1,27 @@
+<div class="grid-template"> 
+    <div class="col-wide grid grid-cols-subgrid">
+        <div class="col-span-one-half">
+            <p-input-search 
+                label="Search artists" 
+                placeholder="Ex.: Beatles" 
+                name="Some name" 
+                [compact]="true"
+                [clear]="true" 
+                [indicator]="true"
+                (input)="filter($event)">
+            </p-input-search>
+        </div>
+    </div>
+    <div class="col-full flex justify-center border-contrast-low">
+    </div>
+    <div class="col-wide grid grid-cols-subgrid gap-y-4">
+        @for (artist of artistFilteredList; track $index) {
+        <div class="col-span-one-half">
+            <app-artist-card
+                [artistName] = 'artist.artistName'
+                [artistSince] = 'artist.artistSince'>
+            </app-artist-card>
+        </div>
+        }
+    </div>
+</div>

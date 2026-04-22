@@ -2,7 +2,10 @@ import {Routes} from '@angular/router';
 import {Home} from './home/home';
 import { PetDetails } from './pet-details/pet-details';
 import { RegisterPet } from './register-pet/register-pet';
-import { UserDetails } from './user-details/user-details';
+import { UserProfile } from './user/pages/user-profile/user-profile';
+import { EditUserProfile } from './user/pages/edit-user-profile/edit-user-profile';
+import { ArtistDetails } from './artist-details/artist-details';
+import { ArtistSearch } from './artist/artist-search/artist-search';
 
 const routeConfig: Routes = [
   // TODO(user-sprint-1): este array ainda representa a navegacao do pet store.
@@ -10,9 +13,14 @@ const routeConfig: Routes = [
   // projeto: registo, login, dashboard, perfil, editar perfil, pesquisa de
   // artistas e pagina de artista.
   {
-    path: 'pets',
+    path: 'dashboard',
     component: Home,
     title: 'Home page',
+  },
+  {
+    path: 'artists',
+    component: ArtistSearch,
+    title: 'Artists'
   },
   {
     path: 'pets/details/:id',
@@ -25,9 +33,19 @@ const routeConfig: Routes = [
     title: 'Register new pet',
   },
   {
-    path: 'user/details',
-    component: UserDetails,
-    title: 'User Details',
+    path: 'user/profile',
+    component: UserProfile,
+    title: 'User Profile',
+  },
+  {
+    path: 'user/profile/edit',
+    component: EditUserProfile,
+    title: 'Edit User Profile',
+  },
+  {
+    path: 'artist/details',
+    component: ArtistDetails,
+    title: 'Artist Details',
   }
 ];
 export default routeConfig;

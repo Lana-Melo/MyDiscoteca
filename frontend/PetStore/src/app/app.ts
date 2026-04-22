@@ -1,30 +1,25 @@
-import {Component} from '@angular/core';
-import {RouterLink, RouterOutlet} from '@angular/router';
+import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [RouterOutlet, RouterLink, PorscheDesignSystemModule],
-  template: `
-    <main>
-      <!-- TODO(user-sprint-1): este cabecalho ainda aponta para a home do pet
-      store. Quando fizerem login/dashboard, aqui deve nascer a shell principal
-      da app, com links para dashboard, perfil e pesquisa de artistas. -->
-      <a [routerLink]="['/pets']">
-        <header class="brand-name">
-          <h1>Pet Store</h1>
-        </header>
-      </a>
-      <section class="content">
-        <router-outlet />
-      </section>
-    </main>
-  `,
+  templateUrl: './app.html',
   styleUrls: ['./app.css'],
 })
 export class App {
-  // TODO(user-sprint-1): a app raiz ainda nao conhece estado de autenticacao.
-  // Mais tarde, este componente pode passar a decidir que links mostrar quando
-  // houver sessao iniciada.
-  title = 'homes';
+  isNavOpen = false;
+
+  openNav() {
+    this.isNavOpen = !this.isNavOpen;
+    console.log("vou abrir o menu");  
+  }
+
+  goToArtists() {
+    this.router.navigate(['/artists']);
+  }
+
+  constructor(private router: Router) {}
 }

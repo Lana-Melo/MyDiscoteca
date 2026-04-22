@@ -1,0 +1,50 @@
+
+<div class="grid-template">
+
+    <div class="col-wide">
+        <p-heading>Edit Profile</p-heading>  
+    </div>
+
+    <div class="col-wide grid grid-cols-subgrid">
+
+        <div class="col-span-one-half">
+            <p-input-text label="Name" [value]="username"></p-input-text>
+        </div>
+
+        <div class="col-span-one-half">
+            <p-input-date label="Birth Date" [value]="birthDate"></p-input-date>
+        </div>
+
+        <div class="col-span-one-half">
+            <p-input-email label="Email" [value]="email"></p-input-email>
+        </div>
+
+        <div class="col-span-one-half">
+            <p-input-password label="Password" name="password" [toggle]="true"></p-input-password>
+        </div>
+    </div>
+
+    <div class="col-wide">
+        <p-button type="button" [aria]="{'aria-haspopup': 'dialog'}" (click)="openConfirmModal()">
+            Save changes
+        </p-button>
+        <!-- 
+        Modal de confirmação de password
+
+        [open] → recebe do componente pai (abre/fecha modal)
+        (close) → evento emitido pelo filho para fechar
+        (confirm) → evento emitido quando o user confirma (guardar)
+        -->
+        <app-password-confirm-modal
+            [open]="modalOpen" 
+            (close)="closeModal()"
+            (confirm)="saveConfirmed()">
+        </app-password-confirm-modal>
+    </div>
+
+    <div class="col-wide">
+        <a [routerLink]="['/user/profile']">
+            <p-button variant="ghost">Cancel</p-button>
+        </a>
+    </div>
+</div>
