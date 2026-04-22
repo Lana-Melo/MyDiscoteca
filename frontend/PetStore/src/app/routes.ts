@@ -5,12 +5,18 @@ import { RegisterPet } from './register-pet/register-pet';
 import { UserProfile } from './user/pages/user-profile/user-profile';
 import { EditUserProfile } from './user/pages/edit-user-profile/edit-user-profile';
 import { ArtistDetails } from './artist-details/artist-details';
+import { ArtistSearch } from './artist/artist-search/artist-search';
 
 const routeConfig: Routes = [
   {
     path: 'dashboard',
     component: Home,
     title: 'Home page',
+  },
+  {
+    path: 'artists',
+    component: ArtistSearch,
+    title: 'Artists'
   },
   {
     path: 'pets/details/:id',
