@@ -28,6 +28,11 @@ const routeConfig: Routes = [
     path: 'user/details',
     component: UserDetails,
     title: 'User Details',
+  },
+  {
+    path: 'user/details/:id',
+    component: UserDetails,
+    title: 'User Details',
   }
 ];
 export default routeConfig;

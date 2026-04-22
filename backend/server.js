@@ -90,10 +90,11 @@ const artistRoutes = require('./routes/artistRoutes');
 // As rotas sobre artistas têm todas o prefixo /api/artists.
 app.use('/api/artists', artistRoutes);
 
-// TODO(user-sprint-1): adicionar aqui as rotas de autenticacao e de utilizador
-// (por exemplo /api/auth e /api/users). Este e o ponto central onde a API deixa
-// de estar organizada so por "pets/artists" e passa a expor login, registo,
-// perfil e futuras operacoes autenticadas.
+// Importar as rotas que a API expõe sobre utilizadores
+const userRoutes = require('./routes/userRoutes');
+
+// As rotas sobre utilizadores têm todas o prefixo /api/users.
+app.use('/api/users', userRoutes);
 
 // -----
 
