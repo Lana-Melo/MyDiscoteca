@@ -33,7 +33,7 @@ const routeConfig: Routes = [
     title: 'Register new pet',
   },
   {
-    path: 'user/profile',
+    path: 'user/profile/:id',
     component: UserProfile,
     title: 'User Profile',
   },
@@ -46,6 +46,6 @@ const routeConfig: Routes = [
     path: 'artist/details',
     component: ArtistDetails,
     title: 'Artist Details',
-  }
+  },
 ];
 export default routeConfig;
