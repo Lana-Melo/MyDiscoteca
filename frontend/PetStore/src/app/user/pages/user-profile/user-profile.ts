@@ -5,35 +5,7 @@ import { PorscheDesignSystemModule } from '@porsche-design-system/components-ang
 @Component({
   selector: 'user-profile',
   imports: [PorscheDesignSystemModule, RouterLink],
-  template: `
-    <div class="grid-template">
-      <div class="col-wide">
-        <p-heading>Profile</p-heading>  
-      </div>
-      <div class="col-wide grid grid-cols-subgrid">
-        <div class="col-span-one-half">
-          <p-input-text label="Name" [value]="username" [disabled]="true"></p-input-text>
-        </div>
-        <div class="col-span-one-half">
-          <p-input-date label="Birth Date" [value]="birthDate" [disabled]="true"></p-input-date>
-        </div>
-        <div class="col-span-one-half">
-          <p-input-text label="Email" [value]="email" [disabled]="true"></p-input-text>
-        </div>
-        <div class="col-span-one-half">
-          <p-input-text label="Favorite Artist" [value]="favArtist" [disabled]="true"></p-input-text>
-          <p-button-pure>
-            Go to artist profile
-          </p-button-pure>
-        </div>
-        <div class="col-span-one-half">
-          <a [routerLink]="['/user/profile/edit']">
-            <p-button>Edit profile</p-button>
-          </a>
-        </div>
-      </div>
-    </div>
-  `,
+  templateUrl: './user-profile.html',
   styles: ``,
 })
 export class UserProfile {

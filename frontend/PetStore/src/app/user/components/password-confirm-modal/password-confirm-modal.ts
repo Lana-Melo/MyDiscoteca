@@ -11,8 +11,8 @@ import { PorscheDesignSystemModule } from '@porsche-design-system/components-ang
               Password requested
           </p-heading>
           
-          <p-text>Please enter your password to proceed.</p-text>
-          <p-input-password label="Password" name="password" [toggle]="true"></p-input-password>
+          <p-text>Please enter your current password to proceed.</p-text>
+          <p-input-password label="Current Password" name="password" [toggle]="true"></p-input-password>
 
           <p-button-group slot="footer">
               <p-button type="button" (click)="confirm.emit()">Save</p-button>
