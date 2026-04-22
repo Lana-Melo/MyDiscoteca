@@ -1,55 +1,62 @@
-import {ChangeDetectorRef, Component, inject} from '@angular/core';
-import { PetService } from '../pet.service';  
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { PetService } from '../pet.service';
 import { PetInfo } from '../pet';
 import { PetCard } from '../pet-card/pet-card';
 import { OnInit } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
-import { RouterOutlet,  RouterLink} from '@angular/router';
-import { UserDetails } from '../user-details/user-details';  
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   imports: [PetCard, RouterLink, PorscheDesignSystemModule],
   template: `
-    <section>
-      <form>
-        <input type="text" placeholder="Filter by Pet Name" #filter />
-        <button class="primary" type="button" (click)="filterResults(filter.value)">Search</button>
-        <a [routerLink]="['/pets/new']" class="primary">Registar novo pet</a>     
-        <a [routerLink]="['/user/details']">
-          <p-icon name="user"></p-icon>
-        </a>
-      </form>
-    </section>
-    <section class="results">
-      @for (petInfo of petsFilteredList; track $index) {
-        <app-pet-card [petInfo]="petInfo" />
-      }
-    </section>
+    <div class="grid-template">
+      <div class="col-wide grid grid-cols-subgrid">
+        <div class="col-span-two-thirds">
+          <p-input-text
+            placeholder="Filter by Pet Name"
+            label="Pet Name"
+            [value]="filterText"
+            (input)="onFilterInput($event)">
+          </p-input-text>
+        </div>
+        <div class="col-span-one-third" style="display: flex; align-items: flex-end; gap: 8px;">
+          <p-button (click)="filterResults(filterText)">Search</p-button>
+          <p-button variant="secondary" [routerLink]="['/pets/new']">Registar novo pet</p-button>
+          <p-button-pure icon="user" [routerLink]="['/user/details']"></p-button-pure>
+        </div>
+      </div>
+
+      <div class="col-wide grid grid-cols-subgrid">
+        @for (petInfo of petsFilteredList; track $index) {
+          <div class="col-span-one-quarter">
+            <app-pet-card [petInfo]="petInfo" />
+          </div>
+        }
+      </div>
+    </div>
   `,
   styleUrls: ['./home.css'],
 })
 
 export class Home implements OnInit {
-
   petsList: PetInfo[] = [];
   petsFilteredList: PetInfo[] = [];
+  filterText = '';
+
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   petService: PetService = inject(PetService);
 
   ngOnInit(): void {
-    this.petService
-    .getAllPets()
-    .subscribe((pets: PetInfo[]) => {
-
+    this.petService.getAllPets().subscribe((pets: PetInfo[]) => {
       this.petsList = pets;
       this.petsFilteredList = this.petsList;
-      
-      // serve para informar o Angular que ele precisa 
-      // verificar se houve mudanças na view, já que a atualização da lista de pets acontece de 
-      // forma assíncrona (após a resposta do servidor)
-      this.changeDetectorRef.markForCheck(); 
+      this.changeDetectorRef.markForCheck();
     });
+  }
+
+  onFilterInput(event: Event) {
+    this.filterText = (event.target as HTMLInputElement).value;
   }
 
   filterResults(text: string) {
