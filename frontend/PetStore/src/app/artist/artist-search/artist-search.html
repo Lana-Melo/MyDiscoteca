@@ -18,8 +18,9 @@
         @for (artist of artistFilteredList; track $index) {
         <div class="col-span-one-half">
             <app-artist-card
-                [artistName] = 'artist.artistName'
-                [artistSince] = 'artist.artistSince'>
+                [artistName]="artist.artistName"
+                [artistSince]="artist.artistSince"
+                [artistId]="artist.artistId">
             </app-artist-card>
         </div>
         }

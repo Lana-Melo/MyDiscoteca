@@ -43,7 +43,7 @@ const routeConfig: Routes = [
     title: 'Edit User Profile',
   },
   {
-    path: 'artist/details',
+    path: 'artist/details/:id',
     component: ArtistDetails,
     title: 'Artist Details',
   },

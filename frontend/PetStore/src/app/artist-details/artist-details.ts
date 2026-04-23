@@ -8,7 +8,9 @@ import { RouterLink } from '@angular/router';
   template: `
     <div class="grid-template">
       <div class="col-wide">
-        <p-button-pure icon="arrow-left" [routerLink]="['/user/profile']">Back to profile</p-button-pure>
+        <p-button-pure icon="arrow-left" [routerLink]="['/artists']">
+          Back to artists
+        </p-button-pure>
       </div>
       <div class="col-wide">
         <p-heading>{{favArtist}}</p-heading>
@@ -36,9 +38,9 @@ import { RouterLink } from '@angular/router';
 export class ArtistDetails {
   isFavorite = true;
 
-  favArtist = 'Barões da Pisadinha';
+  favArtist = 'Zilma';
   artistIsni = '0000 0004 9562 8417';
-  artistActiveSince = '2018';
+  artistActiveSince = '2010';
   artistType = 'Group';
 
   toggleFavorite() {

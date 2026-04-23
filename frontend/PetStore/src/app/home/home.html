@@ -1,6 +1,6 @@
 <div class="grid-template">
   <div class="col-narrow">
-    <p-button-tile label="Go to artist profile" description="Zimbra">
+    <p-button-tile label="Go to artist profile" description="Zimbra" [routerLink]="['/artist/details', '1']">
       <p-tag slot="header" theme="dark" color="background-frosted" [compact]="true">
         Your favorit artist
       </p-tag>
@@ -10,10 +10,7 @@
       </p-text>
     </p-button-tile>
   </div>
-</div>
-
-
-
+  
 <!-- old home, don't delete yet because we're using as template
 <div class="grid-template">
       <div class="col-wide grid grid-cols-subgrid">

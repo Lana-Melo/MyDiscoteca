@@ -1,4 +1,4 @@
-<p-button-tile label="Go to artist profile" [description]="artistName() ?? ''">
+<p-button-tile label="Go to artist profile" [description]="artistName() ?? ''" [routerLink]="['/artist/details', artistId()]">
     <img [src]="artistImg()" alt="Some description" />
     <p-text slot="footer" theme="dark">
         {{artistSince()}}
