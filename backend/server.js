@@ -87,6 +87,12 @@ const artistRoutes = require('./routes/artistRoutes');
 // As rotas sobre artistas têm todas o prefixo /api/artists.
 app.use('/api/artists', artistRoutes);
 
+// Importar as rotas que a API expõe sobre álbuns
+const albumRoutes = require('./routes/albumRoutes');
+
+// As rotas sobre álbuns têm todas o prefixo /api/albums.
+app.use('/api/albums', albumRoutes);
+
 // -----
 
 // Faz a ligação à base de dados MongoDB.
