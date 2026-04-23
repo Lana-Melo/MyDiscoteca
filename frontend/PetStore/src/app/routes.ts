@@ -9,6 +9,11 @@ import { ArtistSearch } from './artist/artist-search/artist-search';
 
 const routeConfig: Routes = [
   {
+    path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full'
+  },
+  {
     path: 'dashboard',
     component: Home,
     title: 'Home page',
@@ -39,7 +44,7 @@ const routeConfig: Routes = [
     title: 'Edit User Profile',
   },
   {
-    path: 'artist/details',
+    path: 'artist/details/:id',
     component: ArtistDetails,
     title: 'Artist Details',
   }

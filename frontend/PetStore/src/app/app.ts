@@ -21,5 +21,9 @@ export class App {
     this.router.navigate(['/artists']);
   }
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    this.router.events.subscribe(event => {
+      console.log('[RouterEvent]', event);
+    });
+  }
 }
