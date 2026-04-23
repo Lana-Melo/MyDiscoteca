@@ -90,6 +90,12 @@ const artistRoutes = require('./routes/artistRoutes');
 // As rotas sobre artistas têm todas o prefixo /api/artists.
 app.use('/api/artists', artistRoutes);
 
+// Importar as rotas que a API expõe sobre autenticacao
+const authRoutes = require('./routes/authRoutes');
+
+// As rotas sobre autenticacao têm todas o prefixo /api/auth.
+app.use('/api/auth', authRoutes);
+
 // Importar as rotas que a API expõe sobre utilizadores
 const userRoutes = require('./routes/userRoutes');
 

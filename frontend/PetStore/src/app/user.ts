@@ -18,14 +18,20 @@ export interface UserInfo {
   updatedAt?: string;
 }
 
-export interface UsersApiResponse {
+export interface UserApiResponse {
   message: string;
-  users: UserInfo[];
+  user: UserInfo;
   success: boolean;
 }
 
-export interface UserApiResponse {
+export interface LoginPayload {
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
   message: string;
+  token: string;
   user: UserInfo;
   success: boolean;
 }
@@ -44,5 +50,5 @@ export interface UpdateUserPayload {
   birthDate?: string;
   favoriteArtist?: string | null;
   currentPassword: string;
-  newPassword?: string;
+  password?: string;
 }

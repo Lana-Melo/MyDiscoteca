@@ -1,4 +1,4 @@
-import { Component, input, output, ViewChild, ElementRef } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 
 @Component({
@@ -12,7 +12,13 @@ import { PorscheDesignSystemModule } from '@porsche-design-system/components-ang
           </p-heading>
           
           <p-text>Please enter your current password to proceed.</p-text>
-          <p-input-password #passwordInput label="Current Password" name="password" [toggle]="true"></p-input-password>
+          <p-input-password
+            label="Current Password"
+            name="password"
+            [toggle]="true"
+            [value]="currentPassword"
+            (input)="onPasswordInput($event)">
+          </p-input-password>
 
           <p-button-group slot="footer">
               <p-button type="button" (click)="onConfirm()">Save</p-button>
@@ -27,11 +33,14 @@ export class PasswordConfirmModal { // componente filho
   open = input<boolean>(false); // Propriedade do componente filho pode receber valores do componente pai
   confirm = output<string>();  // Componente filho lança evento com a password
   close = output<void>(); // Componente filho lança eventos que notificam o pai de mudanças nos dados
+  currentPassword = '';
 
-  @ViewChild('passwordInput') passwordInput!: ElementRef<any>;
+  onPasswordInput(event: Event) {
+    this.currentPassword = (event.target as HTMLInputElement).value ?? '';
+  }
 
   onConfirm() {
-    const password = this.passwordInput?.nativeElement?.value || '';
-    this.confirm.emit(password);
+    this.confirm.emit(this.currentPassword);
+    this.currentPassword = '';
   }
 }

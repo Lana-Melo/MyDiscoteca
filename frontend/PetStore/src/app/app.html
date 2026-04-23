@@ -40,7 +40,12 @@
         Favorit Artist
       </p-link-pure>
     -->
-      <p-button-pure [routerLink]="['/user/profile']" icon="user"></p-button-pure>
+      @if (isLoggedIn) {
+        <p-button-pure [routerLink]="['/user/profile']" icon="user"></p-button-pure>
+        <p-button-pure icon="close" (click)="logout()">Logout</p-button-pure>
+      } @else {
+        <p-button-pure [routerLink]="['/login']" icon="user">Login</p-button-pure>
+      }
 
     </div>
 

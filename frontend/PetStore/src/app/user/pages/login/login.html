@@ -1,0 +1,32 @@
+<div class="grid-template">
+  <div class="col-wide">
+    <p-heading>Login</p-heading>
+  </div>
+
+  @if (errorMessage) {
+    <div class="col-wide">
+      <p-text color="notification-error">{{ errorMessage }}</p-text>
+    </div>
+  }
+
+  <div class="col-wide grid grid-cols-subgrid">
+    <div class="col-span-one-half">
+      <p-input-text label="Username" [(ngModel)]="username" name="username"></p-input-text>
+    </div>
+
+    <div class="col-span-one-half">
+      <p-input-password
+        label="Password"
+        name="password"
+        [(ngModel)]="password"
+        [toggle]="true">
+      </p-input-password>
+    </div>
+  </div>
+
+  <div class="col-wide">
+    <p-button type="button" [disabled]="isLoading" (click)="login()">
+      Iniciar sessao
+    </p-button>
+  </div>
+</div>

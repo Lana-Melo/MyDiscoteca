@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
-import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PasswordConfirmModal } from '../../components/password-confirm-modal/password-confirm-modal';
 import { UserService } from '../../../user.service';
 import { UserInfo } from '../../../user';
@@ -18,34 +18,25 @@ export class EditUserProfile implements OnInit {
   email = '';
   birthDate = '';
   favArtist = '';
-  userId: string = '';
   newPassword = '';
   isLoading = false;
   errorMessage = '';
   successMessage = '';
   
   router = inject(Router);
-  activatedRoute = inject(ActivatedRoute);
   userService = inject(UserService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   modalOpen = false;
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe(params => {
-      this.userId = params['id'];
-      if (this.userId) {
-        this.loadUserData();
-      } else {
-        this.errorMessage = 'User ID not provided';
-      }
-    });
+    this.loadUserData();
   }
 
   loadUserData() {
     this.isLoading = true;
     this.errorMessage = '';
-    this.userService.getUserById(this.userId).subscribe({
+    this.userService.getMe().subscribe({
       next: (user: UserInfo) => {
         this.username = user.username;
         this.email = user.email;
@@ -58,8 +49,8 @@ export class EditUserProfile implements OnInit {
         this.isLoading = false;
         this.changeDetectorRef.markForCheck();
       },
-      error: (err) => {
-        this.errorMessage = 'Failed to load user data';
+      error: () => {
+        this.errorMessage = 'Failed to load current user data';
         this.isLoading = false;
         this.changeDetectorRef.markForCheck();
       }
@@ -80,6 +71,12 @@ export class EditUserProfile implements OnInit {
   }
 
   saveConfirmed(currentPassword: string) {
+    if (!currentPassword?.trim()) {
+      this.errorMessage = 'A password atual e obrigatoria para guardar alteracoes.';
+      this.modalOpen = false;
+      return;
+    }
+
     this.modalOpen = false;
     this.isLoading = true;
     this.errorMessage = '';
@@ -89,19 +86,19 @@ export class EditUserProfile implements OnInit {
       username: this.username,
       email: this.email,
       birthDate: this.birthDate,
-      currentPassword: currentPassword
+      currentPassword: currentPassword.trim()
     };
 
     if (this.newPassword) {
-      updatePayload.newPassword = this.newPassword;
+      updatePayload.password = this.newPassword;
     }
 
-    this.userService.updateUser(this.userId, updatePayload).subscribe({
-      next: (response) => {
+    this.userService.updateMe(updatePayload).subscribe({
+      next: () => {
         this.successMessage = 'Profile updated successfully!';
         this.isLoading = false;
         setTimeout(() => {
-          this.router.navigate(['/user/profile', this.userId]);
+          this.router.navigate(['/user/profile']);
         }, 1500);
       },
       error: (err) => {

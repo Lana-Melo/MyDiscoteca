@@ -53,7 +53,7 @@
         <div class="col-span-one-half">
           <p-input-text label="Favorite Artist" [value]="favoriteArtistName" [disabled]="true"></p-input-text>
           @if (favoriteArtistId) {
-            <a [routerLink]="['/artists/details', favoriteArtistId]">
+            <a [routerLink]="['/artist/details', favoriteArtistId]">
               <p-button-pure>
                 Go to artist profile
               </p-button-pure>
@@ -61,7 +61,7 @@
           }
         </div>
         <div class="col-span-one-half">
-          <a [routerLink]="['/user/profile', user.id, 'edit']">
+          <a [routerLink]="['/user/profile/edit']">
             <p-button>
               Edit profile
             </p-button>
