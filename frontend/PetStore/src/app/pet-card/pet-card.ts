@@ -9,7 +9,7 @@ import { PetInfo } from '../pet';
     <section class="listing">
       <h2 class="listing-heading">{{ petInfo().name }}</h2>
       <p class="listing-location">Category: {{ petInfo().category?.name }} - Status: {{ petInfo().status }}</p>
-      <a [routerLink]="['details', petInfo()._id]">Learn More</a>
+      <a [routerLink]="['/pets/details', petInfo()._id]">Learn More</a>
     </section>
   `,
 

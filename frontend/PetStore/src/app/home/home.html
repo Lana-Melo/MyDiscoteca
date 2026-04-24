@@ -1,41 +1,24 @@
 <div class="grid-template">
-  <div class="col-narrow">
-    <p-button-tile label="Go to artist profile" description="Zimbra" [routerLink]="['/artist/details', '1']">
-      <p-tag slot="header" theme="dark" color="background-frosted" [compact]="true">
-        Your favorit artist
-      </p-tag>
-      <img src="assets/Zimbra.jpg" alt="Some image description" />
-      <p-text slot="footer" theme="dark">
-        Since 2010
-      </p-text>
-    </p-button-tile>
-  </div>
-  
-<!-- old home, don't delete yet because we're using as template
-<div class="grid-template">
-      <div class="col-wide grid grid-cols-subgrid">
-        <div class="col-span-two-thirds">
-          <p-input-text
-            placeholder="Filter by Pet Name"
-            label="Pet Name"
-            [value]="filterText"
-            (input)="onFilterInput($event)">
-          </p-input-text>
-        </div>
-        <div class="col-span-one-third" style="display: flex; align-items: flex-end; gap: 8px;">
-          <p-button (click)="filterResults(filterText)">Search</p-button>
-          <p-button variant="secondary" [routerLink]="['/pets/new']">Registar novo pet</p-button>
-          <p-button-pure icon="user" [routerLink]="['/user/profile']"></p-button-pure>
-        </div>
-      </div>
-
-      <div class="col-wide grid grid-cols-subgrid">
-        @for (petInfo of petsFilteredList; track $index) {
-          <div class="col-span-one-quarter">
-            <app-pet-card [petInfo]="petInfo" />
-          </div>
-        }
-      </div>
+  @if (isLoading) {
+    <div class="col-wide">
+      <p-text>Loading dashboard...</p-text>
     </div>
-
--->
+  } @else if (errorMessage) {
+    <div class="col-wide">
+      <p-text color="notification-error">{{ errorMessage }}</p-text>
+    </div>
+  } @else if (favoriteArtistId && favoriteArtistName) {
+    <div class="col-narrow">
+      <app-artist-card
+        [artistId]="favoriteArtistId"
+        [artistName]="favoriteArtistName"
+        [artistSince]="favoriteArtist?.yearStarted"
+        [artistImg]="favoriteArtist.imageUrl ?? '/api/media/placeholders/artist.svg'">
+      </app-artist-card>
+    </div>
+  } @else {
+    <div class="col-wide">
+      <p-text>No favorite artist.</p-text>
+    </div>
+  }
+</div>

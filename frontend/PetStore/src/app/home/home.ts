@@ -1,45 +1,81 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
-import { PetService } from '../pet.service';
-import { PetInfo } from '../pet';
-import { PetCard } from '../pet-card/pet-card';
-import { OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
-import { RouterOutlet,  RouterLink} from '@angular/router';
+import { ArtistCard } from '../artist/artist-card/artist-card';
+import { FavoriteArtist, UserInfo } from '../user';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-home',
-  imports: [PetCard, RouterLink, PorscheDesignSystemModule],
+  imports: [PorscheDesignSystemModule, ArtistCard],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
-
 export class Home implements OnInit {
-  petsList: PetInfo[] = [];
-  petsFilteredList: PetInfo[] = [];
-  filterText = '';
-
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
-  petService: PetService = inject(PetService);
+  private readonly userService = inject(UserService);
+
+  user: UserInfo | undefined;
+  isLoading = true;
+  errorMessage = '';
 
   ngOnInit(): void {
-    this.petService.getAllPets().subscribe((pets: PetInfo[]) => {
-      this.petsList = pets;
-      this.petsFilteredList = this.petsList;
-      this.changeDetectorRef.markForCheck();
+    this.userService.getMe().subscribe({
+      next: (user) => {
+        this.user = user;
+        this.isLoading = false;
+        this.changeDetectorRef.markForCheck();
+      },
+      error: () => {
+        this.errorMessage = 'Could not load dashboard.';
+        this.isLoading = false;
+        this.changeDetectorRef.markForCheck();
+      }
     });
   }
 
-  onFilterInput(event: Event) {
-    this.filterText = (event.target as HTMLInputElement).value;
+  get favoriteArtist(): FavoriteArtist | null {
+    const favoriteArtist = this.user?.favoriteArtist;
+
+    if (!favoriteArtist || typeof favoriteArtist === 'string') {
+      return null;
+    }
+
+    return favoriteArtist;
   }
 
-  filterResults(text: string) {
-    if (!text) {
-      this.petsFilteredList = this.petsList;
-      return;
+  get favoriteArtistId(): string | null {
+    const favoriteArtist = this.user?.favoriteArtist;
+
+    if (!favoriteArtist) {
+      return null;
     }
-    this.petsFilteredList = this.petsList.filter((pet) =>
-      pet.name.toLowerCase().includes(text.toLowerCase()),
-    );
+
+    if (typeof favoriteArtist === 'string') {
+      return favoriteArtist;
+    }
+
+    return favoriteArtist.id || favoriteArtist._id || null;
+  }
+
+  get favoriteArtistName(): string {
+    const favoriteArtist = this.user?.favoriteArtist;
+
+    if (!favoriteArtist) {
+      return '';
+    }
+
+    if (typeof favoriteArtist === 'string') {
+      return favoriteArtist;
+    }
+
+    return favoriteArtist.name;
+  }
+
+  get favoriteArtistYearStarted(): string {
+    return this.favoriteArtist?.yearStarted?.toString() || '';
+  }
+
+  get favoriteArtistImage(): string {
+    return this.favoriteArtist?.imageUrl || '/api/media/placeholders/artist.svg';
   }
 }

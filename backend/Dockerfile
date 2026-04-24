@@ -16,5 +16,5 @@ COPY . .
 # Expose port
 EXPOSE 3001
 
-# Start the server
-CMD ["node", "server.js"]
+# Seed the database and start the server
+CMD ["sh", "docker-entrypoint.sh"]

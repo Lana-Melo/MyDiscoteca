@@ -31,6 +31,7 @@ export class App {
   }
 
   logout() {
+    this.isNavOpen = false;
     this.userService.logout();
     this.router.navigate(['/login']);
   }

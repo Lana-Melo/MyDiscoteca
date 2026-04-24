@@ -11,14 +11,15 @@
   <div class="col-wide grid grid-cols-[1fr_auto_1fr] items-center min-h-[80px]">
 
     <!-- LEFT -->
-    <!-- o código abaixo é para caso queiramos usar o menu hamburguer no futuro-->
     <div class="flex gap-static-md items-center">
+      @if (isLoggedIn) {
         <p-button-pure
-        icon="menu-lines"
-        type="button"
-        (click)="openNav()">
-        Menu
-      </p-button-pure>
+          icon="menu-lines"
+          type="button"
+          [aria]="{'aria-label': 'Menu'}"
+          (click)="openNav()">
+        </p-button-pure>
+      }
     </div>
 
     <!-- CENTER -->
@@ -42,9 +43,6 @@
     -->
       @if (isLoggedIn) {
         <p-button-pure [routerLink]="['/user/profile']" icon="user"></p-button-pure>
-        <p-button-pure icon="close" (click)="logout()">Logout</p-button-pure>
-      } @else {
-        <p-button-pure [routerLink]="['/login']" icon="user">Login</p-button-pure>
       }
 
     </div>
@@ -54,16 +52,21 @@
   <div class="col-full flex justify-center border-t-thin border-contrast-low">
   </div>
   <!-- NAVIGATION BAR -->
+  @if (isLoggedIn) {
     <div class="col-full flex justify-center border-t-thin border-contrast-low py-static-sm flex justify-center min-h-[48px]">
         @if (isNavOpen) {
         <p-tabs-bar>
-        <p-button-pure type="button" icon="search" (click)="goToArtists()">Explore artists</p-button-pure>
+          <p-button-pure type="button" icon="search" (click)="goToArtists()">Explore artists</p-button-pure>
+          <p-button-pure type="button" icon="close" (click)="logout()">Logout</p-button-pure>
         </p-tabs-bar>
         }
     </div>
+  }
 
 </header>
 
 <main>
   <router-outlet></router-outlet>
 </main>
+
+<footer></footer>

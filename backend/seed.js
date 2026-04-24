@@ -115,10 +115,11 @@ const seedDatabase = async () => {
 
     } catch (error) {
         console.error("Erro ao povoar a base de dados:", error);
+        process.exitCode = 1;
     } finally {
         await mongoose.disconnect();
         console.log("Desconectado do MongoDB.");
-        process.exit(0);
+        process.exit(process.exitCode || 0);
     }
 };
 

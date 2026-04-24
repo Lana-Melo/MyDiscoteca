@@ -3,6 +3,8 @@ import { PorscheDesignSystemModule } from '@porsche-design-system/components-ang
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ArtistService } from '../artist.service';
 import { ArtistInfo } from '../artist';
+import { UserService } from '../user.service';
+import { UserInfo } from '../user';
 
 @Component({
   selector: 'artist-details',
@@ -31,11 +33,21 @@ import { ArtistInfo } from '../artist';
           <p-input-text label="Type" [value]="artist.type" [disabled]="true"></p-input-text>
         </div>
         <div class="col-span-one-half">
-          <p-button-pure [active]="isFavorite" (click)="toggleFavorite()">
+          <p-button-pure [active]="isFavorite" [disabled]="isSavingFavorite" (click)="toggleFavorite()">
             {{ isFavorite ? 'Remove from favorites' : 'Add as favorite' }}
           </p-button-pure>
         </div>
       </div>
+      @if (favoriteMessage) {
+      <div class="col-wide">
+        <p-text color="notification-success">{{ favoriteMessage }}</p-text>
+      </div>
+      }
+      @if (favoriteError) {
+      <div class="col-wide">
+        <p-text color="notification-error">{{ favoriteError }}</p-text>
+      </div>
+      }
       @if (artist.members && artist.members.length > 0) {
       <div class="col-wide">
         <p-heading size="medium">Members</p-heading>
@@ -94,19 +106,80 @@ export class ArtistDetails implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   route: ActivatedRoute = inject(ActivatedRoute);
   artistService: ArtistService = inject(ArtistService);
+  userService: UserService = inject(UserService);
 
   artist: ArtistInfo | undefined;
+  user: UserInfo | undefined;
   isFavorite = false;
+  isSavingFavorite = false;
+  favoriteMessage = '';
+  favoriteError = '';
 
   ngOnInit(): void {
     const artistId = this.route.snapshot.params['id'];
     this.artistService.getArtistById(artistId).subscribe((artist) => {
       this.artist = artist;
+      this.updateFavoriteState();
       this.changeDetectorRef.markForCheck();
+    });
+
+    this.userService.getMe().subscribe({
+      next: (user) => {
+        this.user = user;
+        this.updateFavoriteState();
+        this.changeDetectorRef.markForCheck();
+      },
+      error: () => {
+        this.favoriteError = 'Nao foi possivel carregar o utilizador atual.';
+        this.changeDetectorRef.markForCheck();
+      }
     });
   }
 
   toggleFavorite() {
-    this.isFavorite = !this.isFavorite;
+    const artistId = this.artist?.id || this.artist?._id;
+
+    if (!artistId || this.isSavingFavorite) {
+      return;
+    }
+
+    const favoriteArtist = this.isFavorite ? null : artistId;
+    this.isSavingFavorite = true;
+    this.favoriteMessage = '';
+    this.favoriteError = '';
+
+    this.userService.updateMe({ favoriteArtist }).subscribe({
+      next: (user) => {
+        this.user = user;
+        this.isSavingFavorite = false;
+        this.updateFavoriteState();
+        this.favoriteMessage = this.isFavorite
+          ? 'Artista favorito atualizado.'
+          : 'Artista removido dos favoritos.';
+        this.changeDetectorRef.markForCheck();
+      },
+      error: (err) => {
+        this.isSavingFavorite = false;
+        this.favoriteError = err.error?.message || 'Nao foi possivel atualizar o artista favorito.';
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+  }
+
+  private updateFavoriteState() {
+    const artistId = this.artist?.id || this.artist?._id;
+    const favoriteArtist = this.user?.favoriteArtist;
+
+    if (!artistId || !favoriteArtist) {
+      this.isFavorite = false;
+      return;
+    }
+
+    if (typeof favoriteArtist === 'string') {
+      this.isFavorite = favoriteArtist === artistId;
+      return;
+    }
+
+    this.isFavorite = favoriteArtist.id === artistId || favoriteArtist._id === artistId;
   }
 }

@@ -3,6 +3,7 @@ export interface FavoriteArtist {
   id?: string;
   isni: string;
   name: string;
+  imageUrl?: string;
   yearStarted: number;
   type: 'solo' | 'group';
 }
@@ -49,6 +50,6 @@ export interface UpdateUserPayload {
   email?: string;
   birthDate?: string;
   favoriteArtist?: string | null;
-  currentPassword: string;
+  currentPassword?: string;
   password?: string;
 }
