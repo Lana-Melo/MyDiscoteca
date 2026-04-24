@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
+import { UserService } from './user.service';
 
 @Component({
   selector: 'app-root',
@@ -12,22 +13,25 @@ import { PorscheDesignSystemModule } from '@porsche-design-system/components-ang
 export class App {
   isNavOpen = false;
 
+  constructor(
+    private router: Router,
+    private userService: UserService
+  ) {}
+
   openNav() {
     this.isNavOpen = !this.isNavOpen;
-    console.log("vou abrir o menu");  
   }
 
   goToArtists() {
     this.router.navigate(['/artists']);
   }
 
-  goToRegister() {
-    this.router.navigate(['/register']);
+  get isLoggedIn() {
+    return this.userService.isLoggedIn();
   }
 
-  constructor(private router: Router) {
-    this.router.events.subscribe(event => {
-      console.log('[RouterEvent]', event);
-    });
+  logout() {
+    this.userService.logout();
+    this.router.navigate(['/login']);
   }
 }

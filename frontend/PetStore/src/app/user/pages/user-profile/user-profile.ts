@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { UserService } from '../../../user.service';
 import { UserInfo } from '../../../user';
@@ -11,7 +11,6 @@ import { UserInfo } from '../../../user';
   styles: ``,
 })
 export class UserProfile implements OnInit {
-  private readonly route = inject(ActivatedRoute);
   private readonly userService = inject(UserService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
@@ -20,14 +19,7 @@ export class UserProfile implements OnInit {
   errorMessage = '';
 
   ngOnInit(): void {
-    const userId = this.route.snapshot.params['id'];
-
-    if (userId) {
-      this.loadUserById(userId);
-      return;
-    }
-
-    this.loadFirstUserForDevelopment();
+    this.loadCurrentUserProfile();
   }
 
   get birthDateValue(): string {
@@ -66,35 +58,15 @@ export class UserProfile implements OnInit {
     return favoriteArtist.id || favoriteArtist._id || null;
   }
 
-  private loadUserById(userId: string): void {
-    this.userService.getUserById(userId).subscribe({
+  private loadCurrentUserProfile(): void {
+    this.userService.getMe().subscribe({
       next: (user) => {
         this.user = user;
         this.isLoading = false;
         this.changeDetectorRef.markForCheck();
       },
       error: () => {
-        this.errorMessage = 'Could not load user profile.';
-        this.isLoading = false;
-        this.changeDetectorRef.markForCheck();
-      }
-    });
-  }
-
-  private loadFirstUserForDevelopment(): void {
-    this.userService.getAllUsers().subscribe({
-      next: (users) => {
-        this.user = users[0];
-        this.isLoading = false;
-
-        if (!this.user) {
-          this.errorMessage = 'No users found yet. Create a user first.';
-        }
-
-        this.changeDetectorRef.markForCheck();
-      },
-      error: () => {
-        this.errorMessage = 'Could not load user profile.';
+        this.errorMessage = 'Could not load current user profile. Set currentUserId in localStorage until login is implemented.';
         this.isLoading = false;
         this.changeDetectorRef.markForCheck();
       }

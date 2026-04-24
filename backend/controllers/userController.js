@@ -9,10 +9,16 @@ const Artist = require('../models/artistModel');
 // Para cifrar dados, em particular senhas de utilizadores.
 const bcrypt = require('bcrypt');
 
+// Para validar JSON Web Tokens.
+const jwt = require('jsonwebtoken');
+
 // -----
 
 // Valor de salt rounds para uso no bcrypt.
 const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 10;
+
+// Chave usada na validacao de JSON Web Tokens.
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 
 // -----
 
@@ -71,6 +77,23 @@ async function validateFavoriteArtist(favoriteArtist) {
   return artist || false;
 }
 
+// Resolve o utilizador autenticado.
+// Quando houver bearer token valido, usa-se o id do token.
+// Enquanto o login ainda nao estiver totalmente ligado no frontend, o header
+// x-user-id continua disponivel como fallback temporario de desenvolvimento.
+function resolveAuthenticatedUserId(req) {
+  if (req.token) {
+    try {
+      const payload = jwt.verify(req.token, JWT_SECRET);
+      return payload.sub;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  return req.get('x-user-id') || null;
+}
+
 // -----
 
 // Registo de um novo utilizador.
@@ -127,9 +150,6 @@ exports.create = async (req, res) => {
     });
 
     await newUser.save();
-    // essa linha devolve uma resposta mais completa do artista favorito
-    // com ela comentada devolve somente o ID
-    //await newUser.populate('favoriteArtist', 'isni name yearStarted type');
 
     res.status(201).json({
       success: true,
@@ -145,30 +165,17 @@ exports.create = async (req, res) => {
   }
 };
 
-// Obter a lista de todos os utilizadores.
-exports.getAll = async (req, res) => {
+// Obter o perfil do utilizador autenticado.
+exports.getMe = async (req, res) => {
   try {
-    const users = await User.find()
-      .populate('favoriteArtist', 'isni name yearStarted type');
+    const userId = resolveAuthenticatedUserId(req);
 
-    res.status(200).json({
-      success: true,
-      message: 'Lista de todos os utilizadores resgatada com sucesso.',
-      users: users.map(buildUserResponse)
-    });
-  } catch (error) {
-    return handleUserError(
-      error,
-      res,
-      'Erro do servidor durante a busca pelos utilizadores.'
-    );
-  }
-};
-
-// Obter um utilizador pelo seu id.
-exports.getById = async (req, res) => {
-  try {
-    const userId = req.params.id;
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Nao foi possivel identificar o utilizador autenticado.'
+      });
+    }
 
     const user = await User.findById(userId)
       .populate('favoriteArtist', 'isni name yearStarted type');
@@ -182,31 +189,39 @@ exports.getById = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Utilizador encontrado com sucesso.',
+      message: 'Perfil do utilizador obtido com sucesso.',
       user: buildUserResponse(user)
     });
   } catch (error) {
     return handleUserError(
       error,
       res,
-      'Erro do servidor durante a busca pelo utilizador.'
+      'Erro do servidor durante a busca pelo perfil do utilizador.'
     );
   }
 };
 
-// Atualizar um utilizador pelo seu id.
-exports.update = async (req, res) => {
+// Atualizar o perfil do utilizador autenticado.
+exports.updateMe = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = resolveAuthenticatedUserId(req);
     const {
       username,
       email,
       password,
+      newPassword,
       birthDate,
       currentPassword,
       favoriteArtist,
       albumLists
     } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Nao foi possivel identificar o utilizador autenticado.'
+      });
+    }
 
     const user = await User.findById(userId);
 
@@ -217,10 +232,12 @@ exports.update = async (req, res) => {
       });
     }
 
+    const passwordToUpdate = newPassword !== undefined ? newPassword : password;
+
     const isProfileSensitiveUpdate =
       username !== undefined ||
       email !== undefined ||
-      password !== undefined ||
+      passwordToUpdate !== undefined ||
       birthDate !== undefined;
 
     if (isProfileSensitiveUpdate) {
@@ -284,8 +301,8 @@ exports.update = async (req, res) => {
       user.birthDate = birthDate;
     }
 
-    if (password !== undefined) {
-      user.passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+    if (passwordToUpdate !== undefined) {
+      user.passwordHash = await bcrypt.hash(passwordToUpdate, SALT_ROUNDS);
     }
 
     if (favoriteArtist !== undefined) {
@@ -310,42 +327,14 @@ exports.update = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Utilizador atualizado com sucesso.',
+      message: 'Perfil do utilizador atualizado com sucesso.',
       user: buildUserResponse(user)
     });
   } catch (error) {
     return handleUserError(
       error,
       res,
-      'Erro do servidor durante a atualizacao de um utilizador.'
-    );
-  }
-};
-
-// Deletar um utilizador pelo seu id.
-exports.delete = async (req, res) => {
-  try {
-    const userId = req.params.id;
-
-    const deletedUserDocument = await User.findByIdAndDelete(userId);
-
-    if (!deletedUserDocument) {
-      return res.status(404).json({
-        success: false,
-        message: 'Utilizador a remover nao existe.'
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: 'Utilizador removido com sucesso.',
-      deleted: buildUserResponse(deletedUserDocument)
-    });
-  } catch (error) {
-    return handleUserError(
-      error,
-      res,
-      'Erro do servidor durante a remocao de um utilizador.'
+      'Erro do servidor durante a atualizacao do perfil do utilizador.'
     );
   }
 };
