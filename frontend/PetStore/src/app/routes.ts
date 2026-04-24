@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
 import { Home } from './home/home';
 import { PetDetails } from './pet-details/pet-details';
-import { RegisterPet } from './register-pet/register-pet';
 import { UserProfile } from './user/pages/user-profile/user-profile';
 import { EditUserProfile } from './user/pages/edit-user-profile/edit-user-profile';
 import { Login } from './user/pages/login/login';
 import { ArtistDetails } from './artist-details/artist-details';
 import { ArtistSearch } from './artist/artist-search/artist-search';
+import { RegisterUser } from './register-user/register-user';
 
 const routeConfig: Routes = [
   {
@@ -26,7 +26,7 @@ const routeConfig: Routes = [
   },
   {
     path: 'register',
-    component: RegisterPet,
+    component: RegisterUser,
     title: 'Create Account',
   },
   {
@@ -38,11 +38,6 @@ const routeConfig: Routes = [
     path: 'pets/details/:id',
     component: PetDetails,
     title: 'Pet details',
-  },
-  {
-    path: 'pets/new',
-    component: RegisterPet,
-    title: 'Register new pet',
   },
   {
     path: 'user/profile',

@@ -1,13 +1,13 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { UserService } from '../../../user.service';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule, PorscheDesignSystemModule],
+  imports: [CommonModule, FormsModule, PorscheDesignSystemModule, RouterLink],
   templateUrl: './login.html',
   styles: ``,
 })
