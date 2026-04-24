@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ArtistInfo } from '../../models/artist';
+import { ArtistAlbum, ArtistInfo } from '../../models/artist';
 import { UserService } from '../../services/user.service';
 import { UserInfo } from '../../models/user';
 import { ArtistService } from '../../services/artist.service';
@@ -20,7 +20,12 @@ import { ArtistService } from '../../services/artist.service';
         <p-heading>{{artist.name}}</p-heading>
       </div>
       <div class="col-wide">
-        <img class="artist-image" [src]="artist.imageUrl ?? '/api/media/placeholders/artist.svg'" [alt]="artist.name" />
+        <img
+          class="artist-image"
+          [src]="artist.imageUrl ?? '/api/media/placeholders/artist.svg'"
+          [alt]="artist.name"
+          (error)="handleImageError($event, 'artist')"
+        />
       </div>
       <div class="col-wide grid grid-cols-subgrid">
         <div class="col-span-one-half">
@@ -65,14 +70,24 @@ import { ArtistService } from '../../services/artist.service';
         <p-heading size="medium">Albums</p-heading>
       </div>
       <div class="col-wide grid grid-cols-subgrid">
-        @for (album of artist.albums; track album._id) {
+        @for (album of visibleAlbums; track album._id) {
         <div class="col-span-one-half">
           <div class="album-card">
-            <img class="album-image" [src]="album.imageUrl ?? '/api/media/placeholders/album.svg'" [alt]="album.title" />
+            <img
+              class="album-image"
+              [src]="album.imageUrl ?? '/api/media/placeholders/album.svg'"
+              [alt]="album.title"
+              (error)="handleImageError($event, 'album')"
+            />
             <p-input-text [label]="album.releaseYear.toString()" [value]="album.title" [disabled]="true"></p-input-text>
           </div>
         </div>
         }
+      </div>
+      <div class="col-wide albums-actions">
+        <a [routerLink]="['/artist/details', artist.id ?? artist._id, 'albums']">
+          <p-button-pure icon="arrow-head-right">See all albums</p-button-pure>
+        </a>
       </div>
       }
       }
@@ -100,6 +115,10 @@ import { ArtistService } from '../../services/artist.service';
       border-radius: 0.75rem;
       display: block;
     }
+
+    .albums-actions {
+      margin-top: 1rem;
+    }
   `,
 })
 export class ArtistDetails implements OnInit {
@@ -114,6 +133,13 @@ export class ArtistDetails implements OnInit {
   isSavingFavorite = false;
   favoriteMessage = '';
   favoriteError = '';
+
+  get visibleAlbums(): ArtistAlbum[] {
+    return (this.artist?.albums ?? [])
+      .slice()
+      .sort((a, b) => a.releaseYear - b.releaseYear)
+      .slice(0, 5);
+  }
 
   ngOnInit(): void {
     const artistId = this.route.snapshot.params['id'];
@@ -130,7 +156,7 @@ export class ArtistDetails implements OnInit {
         this.changeDetectorRef.markForCheck();
       },
       error: () => {
-        this.favoriteError = 'Nao foi possivel carregar o utilizador atual.';
+        this.favoriteError = 'Could not load the current user.';
         this.changeDetectorRef.markForCheck();
       }
     });
@@ -154,13 +180,13 @@ export class ArtistDetails implements OnInit {
         this.isSavingFavorite = false;
         this.updateFavoriteState();
         this.favoriteMessage = this.isFavorite
-          ? 'Artista favorito atualizado.'
-          : 'Artista removido dos favoritos.';
+          ? 'Favorite artist updated.'
+          : 'Artist removed from favorites.';
         this.changeDetectorRef.markForCheck();
       },
       error: (err) => {
         this.isSavingFavorite = false;
-        this.favoriteError = err.error?.message || 'Nao foi possivel atualizar o artista favorito.';
+        this.favoriteError = err.error?.message || 'Could not update favorite artist.';
         this.changeDetectorRef.markForCheck();
       }
     });
@@ -181,5 +207,17 @@ export class ArtistDetails implements OnInit {
     }
 
     this.isFavorite = favoriteArtist.id === artistId || favoriteArtist._id === artistId;
+  }
+
+  handleImageError(event: Event, type: 'artist' | 'album'): void {
+    const img = event.target as HTMLImageElement | null;
+
+    if (!img) {
+      return;
+    }
+
+    img.src = type === 'artist'
+      ? '/api/media/placeholders/artist.svg'
+      : '/api/media/placeholders/album.svg';
   }
 }

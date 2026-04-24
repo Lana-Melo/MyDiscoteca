@@ -39,7 +39,7 @@ export class Login {
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Falha no login.';
+        this.errorMessage = err.error?.message || 'Login failed.';
         this.isLoading = false;
         this.changeDetectorRef.markForCheck();
       }

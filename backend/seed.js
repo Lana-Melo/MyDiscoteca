@@ -85,10 +85,38 @@ const extraArtists = [
                 type: "LP"
             },
             {
+                mbdi: "seed-eminem-encore",
+                title: "Encore",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/b/b4/Encore_%28Eminem_album%29_coverart.jpg",
+                releaseYear: 2004,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-eminem-relapse",
+                title: "Relapse",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/6/60/Eminem_-_Relapse.jpg",
+                releaseYear: 2009,
+                type: "LP"
+            },
+            {
                 mbdi: "seed-eminem-recovery",
                 title: "Recovery",
                 imageUrl: "https://upload.wikimedia.org/wikipedia/en/6/60/Recovery_Album_Cover.jpg",
                 releaseYear: 2010,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-eminem-the-marshall-mathers-lp-2",
+                title: "The Marshall Mathers LP 2",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/3/3e/The_Marshall_Mathers_LP_2.png",
+                releaseYear: 2013,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-eminem-kamikaze",
+                title: "Kamikaze",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/0/0d/Eminem_Kamikaze.jpg",
+                releaseYear: 2018,
                 type: "LP"
             },
             {

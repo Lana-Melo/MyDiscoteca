@@ -15,7 +15,7 @@ export class RegisterUser {
   username = '';
   email = '';
   password = '';
-  birthDate = '';
+  birthDate: string | Date | null = '';
   favoriteArtist = '';
   showError = signal(false);
   errorMessage = signal('');
@@ -25,24 +25,51 @@ export class RegisterUser {
   userService = inject(UserService);
 
   registerUser() {
-    if (!this.username || !this.email || !this.password || !this.birthDate) {
-      this.errorMessage.set('Please fill in all required fields.');
+    const username = this.username.trim();
+    const email = this.email.trim();
+    const password = this.password;
+    const birthDate = this.normalizeBirthDate(this.birthDate);
+
+    if (!username || !email || !password || !birthDate) {
+      this.errorMessage.set('Username, email, password and birth date are required.');
       this.showError.set(true);
       this.cd.markForCheck();
       return;
     }
 
+    this.showError.set(false);
+    this.errorMessage.set('');
+
     const payload: RegisterUserPayload = {
-      username: this.username,
-      email: this.email,
-      password: this.password,
-      birthDate: this.birthDate,
+      username,
+      email,
+      password,
+      birthDate,
       favoriteArtist: this.favoriteArtist || null,
     };
 
-    this.userService.registerUser(payload).subscribe(() => {
-      alert('User registered successfully!');
-      this.router.navigate(['/login']);
+    this.userService.registerUser(payload).subscribe({
+      next: () => {
+        alert('User registered successfully!');
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        this.errorMessage.set(err.error?.message || 'Unable to register user.');
+        this.showError.set(true);
+        this.cd.markForCheck();
+      }
     });
+  }
+
+  private normalizeBirthDate(value: string | Date | null): string {
+    if (!value) {
+      return '';
+    }
+
+    if (typeof value === 'string') {
+      return value.trim();
+    }
+
+    return value.toISOString().slice(0, 10);
   }
 }

@@ -43,7 +43,7 @@ function handleUserError(error, res, defaultMessage) {
 
     return res.status(409).json({
       success: false,
-      message: `O campo '${duplicatedField}' ja esta a ser usado por outro utilizador.`
+      message: `The '${duplicatedField}' field is already being used by another user.`
     });
   }
 
@@ -54,7 +54,7 @@ function handleUserError(error, res, defaultMessage) {
 
     return res.status(400).json({
       success: false,
-      message: 'Os dados do utilizador nao cumprem os requisitos.',
+      message: 'User data does not meet the requirements.',
       errors: validationMessages
     });
   }
@@ -112,7 +112,7 @@ exports.create = async (req, res) => {
     if (!username || !email || !password || !birthDate) {
       return res.status(400).json({
         success: false,
-        message: 'Username, email, password e birthDate sao obrigatorios.'
+        message: 'Username, email, password, and birthDate are required.'
       });
     }
 
@@ -123,9 +123,14 @@ exports.create = async (req, res) => {
     });
 
     if (existingUser) {
+      const duplicatedField =
+        existingUser.email === normalizedEmail ? 'email' : 'username';
+
       return res.status(409).json({
         success: false,
-        message: 'Ja existe um utilizador com esse username ou email.'
+        message: duplicatedField === 'email'
+          ? 'This email is already being used by another user.'
+          : 'This username is already being used by another user.'
       });
     }
 
@@ -134,7 +139,7 @@ exports.create = async (req, res) => {
     if (favoriteArtistDocument === false) {
       return res.status(404).json({
         success: false,
-        message: 'O artista favorito indicado nao existe.'
+        message: 'The selected favorite artist does not exist.'
       });
     }
 
@@ -160,7 +165,7 @@ exports.create = async (req, res) => {
     return handleUserError(
       error,
       res,
-      'Erro do servidor durante o registo de um utilizador.'
+      'Server error while registering the user.'
     );
   }
 };
@@ -173,7 +178,7 @@ exports.getMe = async (req, res) => {
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: 'Nao foi possivel identificar o utilizador autenticado.'
+        message: 'Could not identify the authenticated user.'
       });
     }
 
@@ -183,7 +188,7 @@ exports.getMe = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Utilizador nao encontrado.'
+        message: 'User not found.'
       });
     }
 
@@ -196,7 +201,7 @@ exports.getMe = async (req, res) => {
     return handleUserError(
       error,
       res,
-      'Erro do servidor durante a busca pelo perfil do utilizador.'
+      'Server error while fetching the user profile.'
     );
   }
 };
@@ -219,7 +224,7 @@ exports.updateMe = async (req, res) => {
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: 'Nao foi possivel identificar o utilizador autenticado.'
+        message: 'Could not identify the authenticated user.'
       });
     }
 
@@ -228,7 +233,7 @@ exports.updateMe = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Utilizador a atualizar nao existe.'
+        message: 'User to update does not exist.'
       });
     }
 
@@ -244,7 +249,7 @@ exports.updateMe = async (req, res) => {
       if (!currentPassword) {
         return res.status(400).json({
           success: false,
-          message: 'A password atual e obrigatoria para alterar username, email, password ou birthDate.'
+          message: 'Current password is required to change username, email, password, or birthDate.'
         });
       }
 
@@ -256,7 +261,7 @@ exports.updateMe = async (req, res) => {
       if (!isCurrentPasswordValid) {
         return res.status(401).json({
           success: false,
-          message: 'A password atual esta incorreta.'
+          message: 'Current password is incorrect.'
         });
       }
     }
@@ -268,11 +273,11 @@ exports.updateMe = async (req, res) => {
       });
 
       if (usernameInUse) {
-        return res.status(409).json({
-          success: false,
-          message: 'Ja existe outro utilizador com esse username.'
-        });
-      }
+          return res.status(409).json({
+            success: false,
+            message: 'Another user is already using that username.'
+          });
+        }
 
       user.username = username;
     }
@@ -289,7 +294,7 @@ exports.updateMe = async (req, res) => {
         if (emailInUse) {
           return res.status(409).json({
             success: false,
-            message: 'Ja existe outro utilizador com esse email.'
+            message: 'Another user is already using that email.'
           });
         }
       }
@@ -311,7 +316,7 @@ exports.updateMe = async (req, res) => {
       if (favoriteArtistDocument === false) {
         return res.status(404).json({
           success: false,
-          message: 'O artista favorito indicado nao existe.'
+          message: 'The selected favorite artist does not exist.'
         });
       }
 
@@ -334,7 +339,7 @@ exports.updateMe = async (req, res) => {
     return handleUserError(
       error,
       res,
-      'Erro do servidor durante a atualizacao do perfil do utilizador.'
+      'Server error while updating the user profile.'
     );
   }
 };

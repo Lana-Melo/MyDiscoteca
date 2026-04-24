@@ -3,6 +3,7 @@ import { Home } from './home/home';
 import { UserProfile } from './user/pages/user-profile/user-profile';
 import { EditUserProfile } from './user/pages/edit-user-profile/edit-user-profile';
 import { Login } from './user/pages/login/login';
+import { ArtistAlbums } from './artist/artist-albums/artist-albums';
 import { ArtistDetails } from './artist/artist-details/artist-details';
 import { ArtistSearch } from './artist/artist-search/artist-search';
 import { authGuard } from './auth.guard';
@@ -52,6 +53,12 @@ const routeConfig: Routes = [
     path: 'artist/details/:id',
     component: ArtistDetails,
     title: 'Artist Details',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'artist/details/:id/albums',
+    component: ArtistAlbums,
+    title: 'Artist Albums',
     canActivate: [authGuard],
   },
   {

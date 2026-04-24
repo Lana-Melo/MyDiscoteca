@@ -1,6 +1,6 @@
 # PetStore Docker Project
 
-This project has been dockerized to run the MEAN stack (MongoDB, Express, Angular, Node.js) using Docker containers.
+This project runs a MEAN-style stack (MongoDB, Express, Angular, Node.js) using Docker containers.
 
 ## Prerequisites
 
@@ -22,7 +22,8 @@ This project has been dockerized to run the MEAN stack (MongoDB, Express, Angula
    ```
 
 4. The application will be available at:
-   - Frontend Home Page: http://localhost/pets
+   - Frontend: http://localhost
+   - Login page: http://localhost/login
    - Backend API: http://localhost:3001
    - MongoDB: localhost:27017
 
@@ -31,6 +32,14 @@ This project has been dockerized to run the MEAN stack (MongoDB, Express, Angula
 - **mongo**: MongoDB database
 - **backend**: Node.js/Express API server
 - **frontend**: Angular application served by Nginx
+
+## Current App Features
+
+- User registration and login
+- User profile and profile editing
+- Artist search and artist details pages
+- Artist albums page with albums ordered by release year
+- Seeded artists and albums for testing
 
 ## Development
 
@@ -77,7 +86,7 @@ MongoDB Compass is a GUI tool for MongoDB that allows you to visually explore yo
 
 3. **Explore Your Data**:
    - Once connected, you'll see the `petstorebd` database
-   - Expand the database to see collections (e.g., `pets`)
+   - Expand the database to see collections such as `artists`, `albums`, and `users`
    - Click on a collection to view documents
    - You can also use the query bar to filter and search data
 
@@ -96,10 +105,11 @@ use petstorebd
 show collections
 
 # Query data
-db.pets.find()
+db.artists.find()
 ```
 
 ## Notes
 
 - The frontend proxies API calls to the backend through Nginx.
 - MongoDB data is persisted in a Docker volume named `mongo_data`.
+- The backend exposes routes under `/api/artists`, `/api/albums`, `/api/users`, and `/api/auth`.

@@ -82,7 +82,7 @@ export class EditUserProfile implements OnInit {
 
   saveConfirmed(currentPassword: string) {
     if (!currentPassword?.trim()) {
-      this.showWarning(['A password atual e obrigatoria para guardar alteracoes.']);
+      this.showWarning(['Current password is required to save changes.']);
       this.modalOpen = false;
       return;
     }
@@ -125,21 +125,21 @@ export class EditUserProfile implements OnInit {
     const email = this.email.trim();
 
     if (!username) {
-      messages.push('O username e obrigatorio.');
+      messages.push('Username is required.');
     } else if (!/^[A-Za-z0-9]+$/.test(username)) {
-      messages.push('O username so pode ter letras e numeros.');
+      messages.push('Username can only contain letters and numbers.');
     }
 
     if (!email) {
-      messages.push('O email e obrigatorio.');
+      messages.push('Email is required.');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      messages.push('O email tem de estar num formato valido.');
+      messages.push('Email must be in a valid format.');
     }
 
     if (!this.birthDate) {
-      messages.push('A data de nascimento e obrigatoria.');
+      messages.push('Birth date is required.');
     } else if (!this.isAtLeast13YearsOld(this.birthDate)) {
-      messages.push('O utilizador tem de ter pelo menos 13 anos.');
+      messages.push('User must be at least 13 years old.');
     }
 
     return messages;

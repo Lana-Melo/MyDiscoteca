@@ -14,4 +14,14 @@ export class ArtistCard {
   artistName = input<string>();
   artistSince = input<number>();
   artistImg = input('/api/media/placeholders/artist.svg');
+
+  handleImageError(event: Event): void {
+    const img = event.target as HTMLImageElement | null;
+
+    if (!img) {
+      return;
+    }
+
+    img.src = '/api/media/placeholders/artist.svg';
+  }
 }

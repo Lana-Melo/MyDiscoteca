@@ -55,7 +55,7 @@ exports.login = async (req, res) => {
     if (!username || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Username e password sao obrigatorios.'
+        message: 'Username and password are required.'
       });
     }
 
@@ -91,7 +91,7 @@ exports.login = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: 'Erro do servidor durante a autenticacao.'
+      message: 'Server error during authentication.'
     });
   }
 };
