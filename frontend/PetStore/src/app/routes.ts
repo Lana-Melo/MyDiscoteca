@@ -1,5 +1,5 @@
-import {Routes} from '@angular/router';
-import {Home} from './home/home';
+import { Routes } from '@angular/router';
+import { Home } from './home/home';
 import { PetDetails } from './pet-details/pet-details';
 import { RegisterPet } from './register-pet/register-pet';
 import { UserProfile } from './user/pages/user-profile/user-profile';
@@ -16,6 +16,11 @@ const routeConfig: Routes = [
     path: 'dashboard',
     component: Home,
     title: 'Home page',
+  },
+  {
+    path: 'register',
+    component: RegisterPet,
+    title: 'Create Account',
   },
   {
     path: 'artists',
@@ -48,4 +53,5 @@ const routeConfig: Routes = [
     title: 'Artist Details',
   },
 ];
+
 export default routeConfig;
