@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <rect width="600" height="600" fill="#f4efe6"/>
+  <rect width="600" height="210" y="390" fill="#213547"/>
+  <circle cx="300" cy="210" r="110" fill="#d08c60"/>
+  <path d="M168 414c32-76 82-118 132-118s100 42 132 118" fill="#d97706"/>
+  <text x="300" y="555" font-size="46" text-anchor="middle" fill="#fff" font-family="Arial">John Doe</text>
+</svg>

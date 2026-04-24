@@ -20,9 +20,9 @@ router.post('/', artistController.create);
 // Rota para obter a lista de todos os artistas.
 router.get('/', artistController.getAll);
 
-// TODO(user-sprint-1): se quiserem separar "listar todos" de "pesquisar por
-// nome", podem manter GET / com query string (?name=...) ou criar uma rota
-// explicita como GET /search. Este ficheiro e o sitio certo para essa decisao.
+// Rota para pesquisar artistas por nome (autocomplete).
+// Deve vir ANTES da rota /:id para não ser confundida com um ID.
+router.get('/search', artistController.searchByName);
 
 // Rota para obter um artista pelo seu id.
 router.get('/:id', artistController.getById);

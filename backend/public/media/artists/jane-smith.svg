@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <rect width="600" height="600" fill="#fff1e6"/>
+  <rect width="600" height="220" y="380" fill="#6d6875"/>
+  <circle cx="300" cy="220" r="108" fill="#c98b6b"/>
+  <path d="M176 388c28-70 74-120 124-120s96 50 124 120" fill="#b5838d"/>
+  <text x="300" y="548" font-size="44" text-anchor="middle" fill="#fff" font-family="Arial">Jane Smith</text>
+</svg>

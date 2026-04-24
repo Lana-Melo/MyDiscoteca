@@ -15,12 +15,13 @@
     <div class="col-full flex justify-center border-contrast-low">
     </div>
     <div class="col-wide grid grid-cols-subgrid gap-y-4">
-        @for (artist of artistFilteredList; track $index) {
+        @for (artist of artistFilteredList; track artist._id) {
         <div class="col-span-one-half">
             <app-artist-card
-                [artistName]="artist.artistName"
-                [artistSince]="artist.artistSince"
-                [artistId]="artist.artistId">
+                [artistId]="artist._id ?? artist.id ?? ''"
+                [artistName]="artist.name"
+                [artistImg]="artist.imageUrl ?? '/api/media/placeholders/artist.svg'"
+                [artistSince]="artist.yearStarted">
             </app-artist-card>
         </div>
         }

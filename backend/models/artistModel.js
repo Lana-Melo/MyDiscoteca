@@ -24,6 +24,12 @@ const artistSchema = new mongoose.Schema({
     trim: true
   },
 
+  imageUrl: {
+    type: String,
+    trim: true,
+    default: '/api/media/placeholders/artist.svg'
+  },
+
   // Ano em que o artista iniciou atividade.
   yearStarted: {
     type: Number,
@@ -48,9 +54,11 @@ const artistSchema = new mongoose.Schema({
     default: []
   },
 
-  // TODO(user-sprint-1): o utilizador pode guardar um artista favorito, por isso
-  // este modelo ja serve como alvo dessa referencia. Quando criarem o userModel,
-  // a ligacao mais natural e algo como favoriteArtist: { type: ObjectId, ref: 'Artist' }.
+  // Álbuns deste artista (relacionamento 1-para-muitos).
+  albums: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Album'
+  }]
 },
 
 // Adiciona campos createdAt e updatedAt ao esquema.

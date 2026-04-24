@@ -10,14 +10,11 @@ import { ArtistSearch } from './artist/artist-search/artist-search';
 
 const routeConfig: Routes = [
   {
-    path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
-  },
-  {
     path: 'login',
     component: Login,
     title: 'Login',
+    redirectTo: 'dashboard',
+    pathMatch: 'full'
   },
   {
     path: 'dashboard',

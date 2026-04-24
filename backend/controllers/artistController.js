@@ -18,7 +18,7 @@ const Artist = require('../models/artistModel');
 exports.create = async (req, res) => {
     try {
         // Dados do novo artista vêm no corpo do pedido.
-        const { isni, name, yearStarted, type, members } = req.body;
+        const { isni, name, yearStarted, type, members, imageUrl } = req.body;
 
         // Validação: se type é 'group', members é obrigatório e não pode estar vazio.
         if (type === 'group') {
@@ -53,6 +53,7 @@ exports.create = async (req, res) => {
         const newArtist = new Artist({
             isni: isni,
             name: name,
+            imageUrl: imageUrl,
             yearStarted: yearStarted,
             type: type || 'solo',
             members: members || []
@@ -61,7 +62,7 @@ exports.create = async (req, res) => {
         // Se não for possível gravar os dados do artista,
         // o processamento passa para o bloco catch da função.
         await newArtist.save();
-        await newArtist.populate('members', 'isni name yearStarted type');
+        await newArtist.populate('members', 'isni name yearStarted type imageUrl');
 
         // 200 = Successful operation.
         res.status(200).json({
@@ -71,9 +72,11 @@ exports.create = async (req, res) => {
                 id: newArtist.id,
                 isni: newArtist.isni,
                 name: newArtist.name,
+                imageUrl: newArtist.imageUrl,
                 yearStarted: newArtist.yearStarted,
                 type: newArtist.type,
-                members: newArtist.members
+                members: newArtist.members,
+                albums: newArtist.albums
             }
         });
 
@@ -98,8 +101,10 @@ exports.getAll = async (req, res) => {
 
         // Usa o model Artist para interagir com a DB
         // e selecionar todos os artistas registados.
-        // Popula os membros dos grupos para mostrar detalhes completos.
-        const artists = await Artist.find().populate('members', 'isni name yearStarted type');
+        // Popula os membros dos grupos e os álbuns para mostrar detalhes completos.
+        const artists = await Artist.find()
+            .populate('members', 'isni name yearStarted type imageUrl')
+            .populate('albums', 'mbdi title releaseYear type imageUrl');
 
         // 200 = OK.
         res.status(200).json({
@@ -116,18 +121,48 @@ exports.getAll = async (req, res) => {
     }
 }
 
+// Pesquisar artistas pelo nome (para funcionalidade de autocomplete)
+exports.searchByName = async (req, res) => {
+    try {
+        const query = req.query.q;
+        
+        if (!query) {
+            return res.status(400).json({
+                success: false,
+                message: 'É necessário fornecer um termo de pesquisa usando o parâmetro de query "q".'
+            });
+        }
+
+        // Procura artistas cujo nome contenha o termo de pesquisa (case-insensitive)
+        // Usamos limit(10) para devolver apenas as melhores 10 sugestões
+        const artists = await Artist.find({ 
+            name: { $regex: query, $options: 'i' } 
+        })
+        .limit(10)
+        .populate('members', 'isni name yearStarted type imageUrl')
+        .populate('albums', 'mbdi title releaseYear type imageUrl');
+
+        res.status(200).json({
+            success: true,
+            message: 'Pesquisa concluída com sucesso.',
+            artists: artists
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Erro do servidor durante a pesquisa de artistas.'
+        });
+    }
+}
+
 // Obter um artista pelo seu id.
 exports.getById = async (req, res) => {
     try {
         const id = req.params.id;
-        // TODO(user-sprint-1): a pagina do artista e tambem o sitio onde o
-        // frontend vai precisar de saber se este artista e o favorito do
-        // utilizador autenticado, para mostrar "adicionar/remover favorito".
-        // Isso pode ser resolvido noutro endpoint de user, mas esta pagina vai
-        // continuar a ser a base para essa vista.
-
-        // Popula os membros dos grupos para mostrar detalhes completos.
-        const artist = await Artist.findById(id).populate('members', 'isni name yearStarted type');
+        // Popula os membros dos grupos e os álbuns para mostrar detalhes completos.
+        const artist = await Artist.findById(id)
+            .populate('members', 'isni name yearStarted type imageUrl')
+            .populate('albums', 'mbdi title releaseYear type imageUrl');
 
         if (!artist) {
             // 404 = Not Found.
@@ -145,9 +180,11 @@ exports.getById = async (req, res) => {
                 id: artist.id,
                 isni: artist.isni,
                 name: artist.name,
+                imageUrl: artist.imageUrl,
                 yearStarted: artist.yearStarted,
                 type: artist.type,
-                members: artist.members
+                members: artist.members,
+                albums: artist.albums
             }
         });
 
