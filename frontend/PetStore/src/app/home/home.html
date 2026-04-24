@@ -13,7 +13,7 @@
         [artistId]="favoriteArtistId"
         [artistName]="favoriteArtistName"
         [artistSince]="favoriteArtist?.yearStarted"
-        [artistImg]="favoriteArtist.imageUrl ?? '/api/media/placeholders/artist.svg'">
+        [artistImg]="favoriteArtist?.imageUrl ?? '/api/media/placeholders/artist.svg'">
       </app-artist-card>
     </div>
   } @else {

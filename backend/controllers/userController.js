@@ -178,7 +178,7 @@ exports.getMe = async (req, res) => {
     }
 
     const user = await User.findById(userId)
-      .populate('favoriteArtist', 'isni name yearStarted type');
+      .populate('favoriteArtist', 'isni name imageUrl yearStarted type');
 
     if (!user) {
       return res.status(404).json({
@@ -323,7 +323,7 @@ exports.updateMe = async (req, res) => {
     }
 
     await user.save();
-    await user.populate('favoriteArtist', 'isni name yearStarted type');
+    await user.populate('favoriteArtist', 'isni name imageUrl yearStarted type');
 
     res.status(200).json({
       success: true,

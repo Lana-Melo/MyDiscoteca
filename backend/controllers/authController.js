@@ -60,7 +60,7 @@ exports.login = async (req, res) => {
     }
 
     const user = await User.findOne({ username })
-      .populate('favoriteArtist', 'isni name yearStarted type');
+      .populate('favoriteArtist', 'isni name imageUrl yearStarted type');
 
     if (!user) {
       return res.status(401).json({
