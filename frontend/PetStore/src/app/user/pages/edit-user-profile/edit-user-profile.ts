@@ -3,7 +3,7 @@ import { PorscheDesignSystemModule } from '@porsche-design-system/components-ang
 import { Router, RouterLink } from '@angular/router';
 import { PasswordConfirmModal } from '../../components/password-confirm-modal/password-confirm-modal';
 import { UserService } from '../../../user.service';
-import { UserInfo } from '../../../user';
+import { UpdateUserPayload, UserInfo } from '../../../user';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -22,6 +22,8 @@ export class EditUserProfile implements OnInit {
   isLoading = false;
   errorMessage = '';
   successMessage = '';
+  warningOpen = false;
+  warningMessages: string[] = [];
   
   router = inject(Router);
   userService = inject(UserService);
@@ -58,10 +60,14 @@ export class EditUserProfile implements OnInit {
   }
 
   openConfirmModal() {
-    if (!this.username || !this.email || !this.birthDate) {
-      this.errorMessage = 'Please fill in all required fields';
+    const validationMessages = this.validateProfileFields();
+
+    if (validationMessages.length > 0) {
+      this.showWarning(validationMessages);
       return;
     }
+
+    this.errorMessage = '';
     this.modalOpen = true;
   }
 
@@ -70,9 +76,13 @@ export class EditUserProfile implements OnInit {
     this.errorMessage = '';
   }
 
+  closeWarning() {
+    this.warningOpen = false;
+  }
+
   saveConfirmed(currentPassword: string) {
     if (!currentPassword?.trim()) {
-      this.errorMessage = 'A password atual e obrigatoria para guardar alteracoes.';
+      this.showWarning(['A password atual e obrigatoria para guardar alteracoes.']);
       this.modalOpen = false;
       return;
     }
@@ -82,15 +92,15 @@ export class EditUserProfile implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
-    const updatePayload: any = {
-      username: this.username,
-      email: this.email,
+    const updatePayload: UpdateUserPayload = {
+      username: this.username.trim(),
+      email: this.email.trim(),
       birthDate: this.birthDate,
       currentPassword: currentPassword.trim()
     };
 
-    if (this.newPassword) {
-      updatePayload.password = this.newPassword;
+    if (this.newPassword.trim()) {
+      updatePayload.password = this.newPassword.trim();
     }
 
     this.userService.updateMe(updatePayload).subscribe({
@@ -102,10 +112,67 @@ export class EditUserProfile implements OnInit {
         }, 1500);
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Failed to update profile';
+        this.showWarning(this.extractWarningMessages(err));
         this.isLoading = false;
         this.changeDetectorRef.markForCheck();
       }
     });
+  }
+
+  private validateProfileFields(): string[] {
+    const messages: string[] = [];
+    const username = this.username.trim();
+    const email = this.email.trim();
+
+    if (!username) {
+      messages.push('O username e obrigatorio.');
+    } else if (!/^[A-Za-z0-9]+$/.test(username)) {
+      messages.push('O username so pode ter letras e numeros.');
+    }
+
+    if (!email) {
+      messages.push('O email e obrigatorio.');
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      messages.push('O email tem de estar num formato valido.');
+    }
+
+    if (!this.birthDate) {
+      messages.push('A data de nascimento e obrigatoria.');
+    } else if (!this.isAtLeast13YearsOld(this.birthDate)) {
+      messages.push('O utilizador tem de ter pelo menos 13 anos.');
+    }
+
+    return messages;
+  }
+
+  private isAtLeast13YearsOld(birthDateValue: string): boolean {
+    const birthDate = new Date(birthDateValue);
+
+    if (Number.isNaN(birthDate.getTime())) {
+      return false;
+    }
+
+    const today = new Date();
+    const minimumBirthDate = new Date(
+      today.getFullYear() - 13,
+      today.getMonth(),
+      today.getDate()
+    );
+
+    return birthDate <= minimumBirthDate;
+  }
+
+  private extractWarningMessages(err: any): string[] {
+    if (Array.isArray(err.error?.errors) && err.error.errors.length > 0) {
+      return err.error.errors;
+    }
+
+    return [err.error?.message || 'Failed to update profile'];
+  }
+
+  private showWarning(messages: string[]) {
+    this.warningMessages = messages;
+    this.warningOpen = true;
+    this.errorMessage = '';
   }
 }
