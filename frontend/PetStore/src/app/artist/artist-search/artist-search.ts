@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { ArtistCard } from '../artist-card/artist-card';
-import { ArtistService } from '../../artist.service';
-import { ArtistInfo } from '../../artist';
+import { ArtistInfo } from '../../models/artist';
+import { ArtistService } from '../../services/artist.service';
 
 @Component({
   selector: 'app-artist-search',

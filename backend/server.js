@@ -81,12 +81,6 @@ app.get('/home', (req, res) => {
 
 // -----
 
-// Importar as rotas que a API expõe sobre pets
-const petRoutes = require('./routes/petRoutes');
-
-// As rotas sobre pets têm todas o prefixo /api/pets.
-app.use('/api/pets', petRoutes);
-
 // Importar as rotas que a API expõe sobre artistas
 const artistRoutes = require('./routes/artistRoutes');
 

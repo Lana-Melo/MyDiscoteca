@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { Router, RouterLink } from '@angular/router';
-import { UserService } from '../user.service';
-import { RegisterUserPayload } from '../user';
+import { RegisterUserPayload } from '../../../models/user';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-register-user',

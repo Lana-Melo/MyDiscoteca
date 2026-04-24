@@ -1,13 +1,12 @@
 import { Routes } from '@angular/router';
 import { Home } from './home/home';
-import { PetDetails } from './pet-details/pet-details';
 import { UserProfile } from './user/pages/user-profile/user-profile';
 import { EditUserProfile } from './user/pages/edit-user-profile/edit-user-profile';
 import { Login } from './user/pages/login/login';
-import { ArtistDetails } from './artist-details/artist-details';
+import { ArtistDetails } from './artist/artist-details/artist-details';
 import { ArtistSearch } from './artist/artist-search/artist-search';
-import { RegisterUser } from './register-user/register-user';
 import { authGuard } from './auth.guard';
+import { RegisterUser } from './user/pages/register-user/register-user';
 
 const routeConfig: Routes = [
   {
@@ -35,12 +34,6 @@ const routeConfig: Routes = [
     path: 'artists',
     component: ArtistSearch,
     title: 'Artists',
-    canActivate: [authGuard],
-  },
-  {
-    path: 'pets/details/:id',
-    component: PetDetails,
-    title: 'Pet details',
     canActivate: [authGuard],
   },
   {

@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { ArtistCard } from '../artist/artist-card/artist-card';
-import { FavoriteArtist, UserInfo } from '../user';
-import { UserService } from '../user.service';
+import { FavoriteArtist, UserInfo } from '../models/user';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-home',

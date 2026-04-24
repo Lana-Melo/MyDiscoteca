@@ -8,7 +8,7 @@ import {
   UpdateUserPayload,
   UserApiResponse,
   UserInfo
-} from './user';
+} from '../models/user';
 
 @Injectable({
   providedIn: 'root',

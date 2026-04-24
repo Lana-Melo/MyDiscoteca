@@ -7,7 +7,6 @@
 // prontos para serem usados pelos controllers e pelas referencias entre schemas.
 
 require('./artistModel');
-require('./petModel');
 require('./userModel');
 
 // -----

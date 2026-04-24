@@ -2,8 +2,8 @@ import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { Router, RouterLink } from '@angular/router';
 import { PasswordConfirmModal } from '../../components/password-confirm-modal/password-confirm-modal';
-import { UserService } from '../../../user.service';
-import { UpdateUserPayload, UserInfo } from '../../../user';
+import { UserService } from '../../../services/user.service';
+import { UpdateUserPayload, UserInfo } from '../../../models/user';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 

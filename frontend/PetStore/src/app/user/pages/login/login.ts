@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
-import { UserService } from '../../../user.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-login',

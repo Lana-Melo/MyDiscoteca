@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
-import { UserService } from '../../../user.service';
-import { UserInfo } from '../../../user';
+import { UserService } from '../../../services/user.service';
+import { UserInfo } from '../../../models/user';
 
 @Component({
   selector: 'user-profile',

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ArtistApiResponse, ArtistInfo, ArtistsApiResponse } from './artist';
+import { ArtistInfo, ArtistsApiResponse, ArtistApiResponse } from '../models/artist';
 
 @Injectable({
   providedIn: 'root',

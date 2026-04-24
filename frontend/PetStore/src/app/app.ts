@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
-import { UserService } from './user.service';
+import { UserService } from './services/user.service';
 
 @Component({
   selector: 'app-root',
