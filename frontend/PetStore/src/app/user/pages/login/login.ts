@@ -10,7 +10,7 @@ import { UserService } from '../../../services/user.service';
   imports: [CommonModule, FormsModule, PorscheDesignSystemModule, RouterLink],
   templateUrl: './login.html',
   styles: ``,
-})
+  })
 export class Login {
   username = '';
   password = '';
@@ -23,7 +23,7 @@ export class Login {
 
   login() {
     if (!this.username || !this.password) {
-      this.errorMessage = 'Username e password sao obrigatorios.';
+      this.errorMessage = 'Invalid username or password';
       return;
     }
 

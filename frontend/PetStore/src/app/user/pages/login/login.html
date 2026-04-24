@@ -1,35 +1,36 @@
 <div class="grid-template">
-  <div class="col-wide">
-    <p-heading>Login</p-heading>
+  <div class="col-narrow  text-center">
+    <p-heading align="center" size="large">Login</p-heading>
   </div>
 
   @if (errorMessage) {
-    <div class="col-wide">
-      <p-text color="notification-error">{{ errorMessage }}</p-text>
+    <div class="col-narrow">
+      <p-inline-notification headingTag="h2" state="error" heading="Login failed" [description]="errorMessage" [dismissButton]="false"></p-inline-notification>
     </div>
   }
 
-  <div class="col-wide grid grid-cols-subgrid">
-    <div class="col-span-one-half">
+  <div class="col-narrow">
       <p-input-text label="Username" [(ngModel)]="username" name="username"></p-input-text>
-    </div>
-
-    <div class="col-span-one-half">
-      <p-input-password
-        label="Password"
-        name="password"
-        [(ngModel)]="password"
-        [toggle]="true">
-      </p-input-password>
-    </div>
+  </div>
+  <div class="col-narrow">
+    <p-input-password
+      label="Password"
+      name="password"
+      [(ngModel)]="password"
+      [toggle]="true">
+    </p-input-password>
   </div>
 
-  <div class="col-wide">
+
+
+  <div class="col-narrow flex justify-center gap-4">
     <p-button type="button" [disabled]="isLoading" (click)="login()">
-      Iniciar sessao
+      Login
     </p-button>
-    <p-button type="button" variant="secondary" [routerLink]="['/register']">
-      Registar
-    </p-button>
+  </div>
+  <div class="col-narrow flex justify-center gap-4">
+    <p-button-pure name="Create Account" value="Create Account" [underline]="true" icon="user" [routerLink]="['/register']">
+      Create account
+    </p-button-pure>
   </div>
 </div>

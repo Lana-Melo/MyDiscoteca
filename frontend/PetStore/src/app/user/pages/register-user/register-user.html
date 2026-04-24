@@ -1,0 +1,74 @@
+<div class="grid-template">
+      <div class="col-wide">
+        <p-button-pure icon="arrow-left" [routerLink]="['/login']">
+          Back to login
+        </p-button-pure>
+      </div>
+
+      <div class="col-wide">
+        <p-heading align="center" size="large">Register New User</p-heading>
+      </div>
+
+    @if(showError()){
+        <div class="col-narrow">
+            <p-inline-notification
+                headingTag="h2"
+                state="error"
+                heading="Registration failed"
+                [description]="errorMessage()"
+                [dismissButton]="false">
+            </p-inline-notification>
+        </div>
+    }
+    <div class="col-narrow">
+        <p-input-text
+        [required]="true"
+        [compact]="true"
+        label="Username"
+        [(ngModel)]="username"
+        name="username">
+        </p-input-text>
+    </div>
+    <div class="col-narrow">
+        <p-input-email
+        [required]="true"
+        [compact]="true"
+        label="Email"
+        [(ngModel)]="email"
+        name="email">
+        </p-input-email>
+    </div>
+    <div class="col-narrow">
+        <p-input-password
+        [required]="true"
+        [compact]="true"
+        label="Password"
+        name="password"
+        [(ngModel)]="password"
+        [toggle]="true">
+        </p-input-password>
+    </div>
+    <div class="col-narrow">
+        <p-input-date
+        [required]="true"
+        [compact]="true"
+        label="Birth Date"
+        [(ngModel)]="birthDate"
+        name="birthDate">
+        </p-input-date>
+    </div>
+        <!-- comentando pq nao faz sentido ele escolher isto aqui
+        <div class="col-span-one-half">
+          <p-input-text
+            label="Favorite Artist (optional)"
+            [(ngModel)]="favoriteArtist"
+            name="favoriteArtist">
+          </p-input-text>
+        </div>
+        -->
+      <div class="col-narrow flex justify-center gap-4">
+        <p-button type="button" (click)="registerUser()">
+          Register User
+        </p-button>
+      </div>
+    </div>  
