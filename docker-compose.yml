@@ -1,30 +1,30 @@
 services:
   mongo:
     image: mongo:7
-    container_name: petstore-mongo
+    container_name: mydiscoteca-mongo
     restart: unless-stopped
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
     environment:
-      MONGO_INITDB_DATABASE: petstorebd
+      MONGO_INITDB_DATABASE: mydiscotecadb
 
   backend:
     build: ./backend
-    container_name: petstore-backend
+    container_name: mydiscoteca-backend
     restart: unless-stopped
     ports:
       - "3001:3001"
     environment:
       PORT: 3001
-      DB_URI: mongodb://mongo:27017/petstorebd
+      DB_URI: mongodb://mongo:27017/mydiscotecadb
     depends_on:
       - mongo
 
   frontend:
-    build: ./frontend/PetStore
-    container_name: petstore-frontend
+    build: ./frontend/MyDiscoteca
+    container_name: mydiscoteca-frontend
     restart: unless-stopped
     ports:
       - "80:80"

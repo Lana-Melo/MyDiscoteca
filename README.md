@@ -1,4 +1,4 @@
-# PetStore Docker Project
+# MyDiscoteca Docker Project
 
 This project runs a MEAN-style stack (MongoDB, Express, Angular, Node.js) using Docker containers.
 
@@ -62,7 +62,7 @@ docker-compose logs -f [service_name]
 
 The backend uses the following environment variables (set in docker-compose.yml):
 - PORT: 3001
-- DB_URI: mongodb://mongo:27017/petstorebd
+- DB_URI: mongodb://mongo:27017/mydiscotecadb
 
 ## Database Management
 
@@ -80,12 +80,12 @@ MongoDB Compass is a GUI tool for MongoDB that allows you to visually explore yo
    - Enter the following connection details:
      - **Host**: `localhost`
      - **Port**: `27017`
-     - **Database**: `petstorebd` (optional - you can select it after connecting)
+     - **Database**: `mydiscotecadb` (optional - you can select it after connecting)
    - Leave authentication fields empty (no authentication configured)
    - Click **"Connect"**
 
 3. **Explore Your Data**:
-   - Once connected, you'll see the `petstorebd` database
+   - Once connected, you'll see the `mydiscotecadb` database
    - Expand the database to see collections such as `artists`, `albums`, and `users`
    - Click on a collection to view documents
    - You can also use the query bar to filter and search data
@@ -96,10 +96,10 @@ If you prefer the command line, you can also connect using mongo shell:
 
 ```bash
 # Connect to MongoDB container
-docker exec -it petstore-mongo mongosh
+docker exec -it mydiscoteca-mongo mongosh
 
 # Switch to the database
-use petstorebd
+use mydiscotecadb
 
 # View collections
 show collections

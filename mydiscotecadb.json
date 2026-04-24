@@ -1,7 +1,7 @@
 {
   "collections": {
-    "petstorebd.albums": {
-      "ns": "petstorebd.albums",
+    "mydiscotecadb.albums": {
+      "ns": "mydiscotecadb.albums",
       "jsonSchema": {
         "bsonType": "object",
         "required": [
@@ -50,8 +50,8 @@
         }
       }
     },
-    "petstorebd.artists": {
-      "ns": "petstorebd.artists",
+    "mydiscotecadb.artists": {
+      "ns": "mydiscotecadb.artists",
       "jsonSchema": {
         "bsonType": "object",
         "required": [
@@ -110,8 +110,8 @@
         }
       }
     },
-    "petstorebd.users": {
-      "ns": "petstorebd.users",
+    "mydiscotecadb.users": {
+      "ns": "mydiscotecadb.users",
       "jsonSchema": {
         "bsonType": "object",
         "required": [
@@ -146,10 +146,7 @@
             "bsonType": "string"
           },
           "favoriteArtist": {
-            "bsonType": [
-              "null",
-              "objectId"
-            ]
+            "bsonType": "objectId"
           },
           "passwordHash": {
             "bsonType": "string"
@@ -166,17 +163,17 @@
   },
   "relationships": [
     {
-      "id": "539649e8-d0cb-4b90-98a1-e50bc6be7184",
+      "id": "ac79ee63-9d58-4f00-be3c-43b0c9a2a0f1",
       "relationship": [
         {
-          "ns": "petstorebd.artists",
+          "ns": "mydiscotecadb.artists",
           "fields": [
             "albums"
           ],
           "cardinality": 1
         },
         {
-          "ns": "petstorebd.albums",
+          "ns": "mydiscotecadb.albums",
           "fields": [
             "_id"
           ],
@@ -186,17 +183,17 @@
       "isInferred": true
     },
     {
-      "id": "619985b8-818d-40a5-b61c-efe335f4f8ec",
+      "id": "819bd698-1f44-4897-addf-07ebbd9afb61",
       "relationship": [
         {
-          "ns": "petstorebd.albums",
+          "ns": "mydiscotecadb.albums",
           "fields": [
             "artist"
           ],
           "cardinality": 1
         },
         {
-          "ns": "petstorebd.artists",
+          "ns": "mydiscotecadb.artists",
           "fields": [
             "_id"
           ],
@@ -206,17 +203,17 @@
       "isInferred": true
     },
     {
-      "id": "b92148db-9630-4d3a-a68c-68d5c899c61c",
+      "id": "4e3a499a-d778-4f02-b07d-419e29f68cc9",
       "relationship": [
         {
-          "ns": "petstorebd.users",
+          "ns": "mydiscotecadb.users",
           "fields": [
             "favoriteArtist"
           ],
           "cardinality": 1
         },
         {
-          "ns": "petstorebd.artists",
+          "ns": "mydiscotecadb.artists",
           "fields": [
             "_id"
           ],
