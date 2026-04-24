@@ -1,0 +1,229 @@
+{
+  "collections": {
+    "petstorebd.albums": {
+      "ns": "petstorebd.albums",
+      "jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "_id",
+          "__v",
+          "artist",
+          "createdAt",
+          "imageUrl",
+          "mbdi",
+          "releaseYear",
+          "title",
+          "type",
+          "updatedAt"
+        ],
+        "properties": {
+          "_id": {
+            "bsonType": "objectId"
+          },
+          "__v": {
+            "bsonType": "int"
+          },
+          "artist": {
+            "bsonType": "objectId"
+          },
+          "createdAt": {
+            "bsonType": "date"
+          },
+          "imageUrl": {
+            "bsonType": "string"
+          },
+          "mbdi": {
+            "bsonType": "string"
+          },
+          "releaseYear": {
+            "bsonType": "int"
+          },
+          "title": {
+            "bsonType": "string"
+          },
+          "type": {
+            "bsonType": "string"
+          },
+          "updatedAt": {
+            "bsonType": "date"
+          }
+        }
+      }
+    },
+    "petstorebd.artists": {
+      "ns": "petstorebd.artists",
+      "jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "_id",
+          "__v",
+          "albums",
+          "createdAt",
+          "imageUrl",
+          "isni",
+          "members",
+          "name",
+          "type",
+          "updatedAt",
+          "yearStarted"
+        ],
+        "properties": {
+          "_id": {
+            "bsonType": "objectId"
+          },
+          "__v": {
+            "bsonType": "int"
+          },
+          "albums": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "objectId"
+            }
+          },
+          "createdAt": {
+            "bsonType": "date"
+          },
+          "imageUrl": {
+            "bsonType": "string"
+          },
+          "isni": {
+            "bsonType": "string"
+          },
+          "members": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "objectId"
+            }
+          },
+          "name": {
+            "bsonType": "string"
+          },
+          "type": {
+            "bsonType": "string"
+          },
+          "updatedAt": {
+            "bsonType": "date"
+          },
+          "yearStarted": {
+            "bsonType": "int"
+          }
+        }
+      }
+    },
+    "petstorebd.users": {
+      "ns": "petstorebd.users",
+      "jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "_id",
+          "__v",
+          "albumLists",
+          "birthDate",
+          "createdAt",
+          "email",
+          "favoriteArtist",
+          "passwordHash",
+          "updatedAt",
+          "username"
+        ],
+        "properties": {
+          "_id": {
+            "bsonType": "objectId"
+          },
+          "__v": {
+            "bsonType": "int"
+          },
+          "albumLists": {
+            "bsonType": "array"
+          },
+          "birthDate": {
+            "bsonType": "date"
+          },
+          "createdAt": {
+            "bsonType": "date"
+          },
+          "email": {
+            "bsonType": "string"
+          },
+          "favoriteArtist": {
+            "bsonType": [
+              "null",
+              "objectId"
+            ]
+          },
+          "passwordHash": {
+            "bsonType": "string"
+          },
+          "updatedAt": {
+            "bsonType": "date"
+          },
+          "username": {
+            "bsonType": "string"
+          }
+        }
+      }
+    }
+  },
+  "relationships": [
+    {
+      "id": "539649e8-d0cb-4b90-98a1-e50bc6be7184",
+      "relationship": [
+        {
+          "ns": "petstorebd.artists",
+          "fields": [
+            "albums"
+          ],
+          "cardinality": 1
+        },
+        {
+          "ns": "petstorebd.albums",
+          "fields": [
+            "_id"
+          ],
+          "cardinality": 1
+        }
+      ],
+      "isInferred": true
+    },
+    {
+      "id": "619985b8-818d-40a5-b61c-efe335f4f8ec",
+      "relationship": [
+        {
+          "ns": "petstorebd.albums",
+          "fields": [
+            "artist"
+          ],
+          "cardinality": 1
+        },
+        {
+          "ns": "petstorebd.artists",
+          "fields": [
+            "_id"
+          ],
+          "cardinality": 1
+        }
+      ],
+      "isInferred": true
+    },
+    {
+      "id": "b92148db-9630-4d3a-a68c-68d5c899c61c",
+      "relationship": [
+        {
+          "ns": "petstorebd.users",
+          "fields": [
+            "favoriteArtist"
+          ],
+          "cardinality": 1
+        },
+        {
+          "ns": "petstorebd.artists",
+          "fields": [
+            "_id"
+          ],
+          "cardinality": 1
+        }
+      ],
+      "isInferred": true
+    }
+  ]
+}
