@@ -36,6 +36,391 @@ async function upsertAlbum(mbdi, albumData) {
     );
 }
 
+async function seedAlbumsForArtist(artist, albums) {
+    const savedAlbums = [];
+
+    for (const album of albums) {
+        const savedAlbum = await upsertAlbum(album.mbdi, {
+            ...album,
+            artist: artist._id
+        });
+
+        savedAlbums.push(savedAlbum);
+    }
+
+    artist.albums = savedAlbums.map((album) => album._id);
+    await artist.save();
+    return savedAlbums;
+}
+
+const extraArtists = [
+    {
+        artist: {
+            isni: "seed-eminem",
+            name: "Eminem",
+            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Eminem_2021_Color_Corrected.jpg",
+            yearStarted: 1988,
+            type: "solo"
+        },
+        albums: [
+            {
+                mbdi: "seed-eminem-the-slim-shady-lp",
+                title: "The Slim Shady LP",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/3/35/Eminem_-_The_Slim_Shady_LP_CD_cover.jpg",
+                releaseYear: 1999,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-eminem-the-marshall-mathers-lp",
+                title: "The Marshall Mathers LP",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/a/ae/The_Marshall_Mathers_LP.jpg",
+                releaseYear: 2000,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-eminem-the-eminem-show",
+                title: "The Eminem Show",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/3/35/The_Eminem_Show.jpg",
+                releaseYear: 2002,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-eminem-recovery",
+                title: "Recovery",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/6/60/Recovery_Album_Cover.jpg",
+                releaseYear: 2010,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-eminem-music-to-be-murdered-by",
+                title: "Music to Be Murdered By",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/8/80/Eminem_-_Music_to_Be_Murdered_By.png",
+                releaseYear: 2020,
+                type: "LP"
+            }
+        ]
+    },
+    {
+        artist: {
+            isni: "seed-luiz-gonzaga",
+            name: "Luiz Gonzaga",
+            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Luiz_Gonzaga_(1957).jpg",
+            yearStarted: 1941,
+            type: "solo"
+        },
+        albums: [
+            {
+                mbdi: "seed-luiz-gonzaga-luiz-gonzaga-canta-seus-sucessos",
+                title: "Luiz Gonzaga Canta Seus Sucessos",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 1958,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-luiz-gonzaga-o-rei-do-baiao",
+                title: "O Rei do Baiao",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 1961,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-luiz-gonzaga-a-triste-partida",
+                title: "A Triste Partida",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 1964,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-luiz-gonzaga-sanfona-do-povo",
+                title: "Sanfona do Povo",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 1964,
+                type: "LP"
+            }
+        ]
+    },
+    {
+        artist: {
+            isni: "seed-quim-barreiros",
+            name: "Quim Barreiros",
+            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Quim_Barreiros_no_Pereiro_-_2008.jpg",
+            yearStarted: 1971,
+            type: "solo"
+        },
+        albums: [
+            {
+                mbdi: "seed-quim-barreiros-bacalhau-a-portuguesa",
+                title: "Bacalhau a Portuguesa",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 1986,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-quim-barreiros-mestre-de-culinaria",
+                title: "Mestre de Culinaria",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 1991,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-quim-barreiros-a-garagem-da-vizinha",
+                title: "A Garagem da Vizinha",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 2000,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-quim-barreiros-o-melhor-de-quim-barreiros",
+                title: "O Melhor de Quim Barreiros",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 2002,
+                type: "LP"
+            }
+        ]
+    },
+    {
+        artist: {
+            isni: "seed-belchior",
+            name: "Belchior",
+            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Belchior.jpg",
+            yearStarted: 1971,
+            type: "solo"
+        },
+        albums: [
+            {
+                mbdi: "seed-belchior-mote-e-glosa",
+                title: "Mote e Glosa",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/1/12/Mote_e_Glosa.jpg",
+                releaseYear: 1974,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-belchior-alucinacao",
+                title: "Alucinacao",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/3/38/Alucina%C3%A7%C3%A3o.jpg",
+                releaseYear: 1976,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-belchior-coracao-selvagem",
+                title: "Coracao Selvagem",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/5/5a/Cora%C3%A7%C3%A3o_Selvagem.jpg",
+                releaseYear: 1977,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-belchior-todos-os-sentidos",
+                title: "Todos os Sentidos",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 1978,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-belchior-era-uma-vez-um-homem",
+                title: "Era uma Vez um Homem e o seu Tempo",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 1979,
+                type: "LP"
+            }
+        ]
+    },
+    {
+        artist: {
+            isni: "seed-caetano-veloso",
+            name: "Caetano Veloso",
+            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Caetano_Veloso_(cropped).jpg",
+            yearStarted: 1965,
+            type: "solo"
+        },
+        albums: [
+            {
+                mbdi: "seed-caetano-veloso-caetano-veloso-1968",
+                title: "Caetano Veloso",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/4/40/Caetano_Veloso_%281968%29.jpg",
+                releaseYear: 1968,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-caetano-veloso-transa",
+                title: "Transa",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/e/e5/Transa.jpg",
+                releaseYear: 1972,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-caetano-veloso-bicho",
+                title: "Bicho",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/0/02/Bicho_caetano_veloso.jpg",
+                releaseYear: 1977,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-caetano-veloso-livro",
+                title: "Livro",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/f/f7/Livro_Caetano_Veloso.jpg",
+                releaseYear: 1997,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-caetano-veloso-abracaco",
+                title: "Abracaco",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/9/9d/Abra%C3%A7a%C3%A7o.jpg",
+                releaseYear: 2012,
+                type: "LP"
+            }
+        ]
+    },
+    {
+        artist: {
+            isni: "seed-ice-spice",
+            name: "Ice Spice",
+            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Ice_Spice,_2024_2.jpg",
+            yearStarted: 2021,
+            type: "solo"
+        },
+        albums: [
+            {
+                mbdi: "seed-ice-spice-like",
+                title: "Like..?",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/3/3e/Ice_Spice_-_Like..%3F.png",
+                releaseYear: 2023,
+                type: "EP"
+            },
+            {
+                mbdi: "seed-ice-spice-y2k",
+                title: "Y2K!",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/96/Ice_Spice_-_Y2K%21.png",
+                releaseYear: 2024,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-ice-spice-y2k-im-just-a-girl",
+                title: "Y2K!: I'm Just A Girl",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/96/Ice_Spice_-_Y2K%21.png",
+                releaseYear: 2024,
+                type: "LP"
+            }
+        ]
+    },
+    {
+        artist: {
+            isni: "seed-skillet",
+            name: "Skillet",
+            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Skillet_-_853537431.jpg",
+            yearStarted: 1996,
+            type: "group"
+        },
+        albums: [
+            {
+                mbdi: "seed-skillet-collide",
+                title: "Collide",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/1/1b/Skillet_-_Collide.jpg",
+                releaseYear: 2003,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-skillet-comatose",
+                title: "Comatose",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/0/07/Skilletcomatose.jpg",
+                releaseYear: 2006,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-skillet-awake",
+                title: "Awake",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/c/cd/Skilletawake.jpg",
+                releaseYear: 2009,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-skillet-rise",
+                title: "Rise",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/d/dd/Skillet_Rise.jpg",
+                releaseYear: 2013,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-skillet-unleashed",
+                title: "Unleashed",
+                imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/99/Skillet_Unleashed.jpg",
+                releaseYear: 2016,
+                type: "LP"
+            }
+        ]
+    },
+    {
+        artist: {
+            isni: "seed-bloodlines",
+            name: "Bloodlines",
+            imageUrl: "/api/media/placeholders/artist.svg",
+            yearStarted: 2018,
+            type: "group"
+        },
+        albums: [
+            {
+                mbdi: "seed-bloodlines-hevel",
+                title: "Hevel",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 2021,
+                type: "EP"
+            },
+            {
+                mbdi: "seed-bloodlines-holiness-cries",
+                title: "Holiness Cries",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 2023,
+                type: "EP"
+            },
+            {
+                mbdi: "seed-bloodlines-wake-the-dead",
+                title: "Wake the Dead",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 2024,
+                type: "EP"
+            }
+        ]
+    },
+    {
+        artist: {
+            isni: "seed-baroes-da-pisadinha",
+            name: "Baroes da Pisadinha",
+            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Show_%22Os_Bar%C3%B5es_da_Pisadinha%22_na_ExpoLondrina_2022.jpg",
+            yearStarted: 2015,
+            type: "group"
+        },
+        albums: [
+            {
+                mbdi: "seed-baroes-da-pisadinha-ao-vivo-em-sao-paulo",
+                title: "Ao Vivo em Sao Paulo",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 2019,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-baroes-da-pisadinha-paredao-dos-baroes",
+                title: "Paredao dos Baroes",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 2020,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-baroes-da-pisadinha-conquistas",
+                title: "Conquistas",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 2021,
+                type: "LP"
+            },
+            {
+                mbdi: "seed-baroes-da-pisadinha-da-roca-para-o-mundo",
+                title: "Da Roca para o Mundo",
+                imageUrl: "/api/media/placeholders/album.svg",
+                releaseYear: 2022,
+                type: "LP"
+            }
+        ]
+    }
+];
+
 const seedDatabase = async () => {
     try {
         await mongoose.connect(DB_URI);
@@ -118,6 +503,11 @@ const seedDatabase = async () => {
         groupArtist.members = [artist1._id, artist2._id];
         groupArtist.albums = [album4._id];
         await groupArtist.save();
+
+        for (const extraArtist of extraArtists) {
+            const artist = await upsertArtist(extraArtist.artist.isni, extraArtist.artist);
+            await seedAlbumsForArtist(artist, extraArtist.albums);
+        }
 
         console.log("Base de dados povoada com sucesso!");
 
