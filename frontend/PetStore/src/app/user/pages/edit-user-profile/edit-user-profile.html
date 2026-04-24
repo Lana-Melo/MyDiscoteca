@@ -9,15 +9,17 @@
         <div class="col-wide">
             <p-text>Loading...</p-text>
         </div>
-    } @else if (errorMessage) {
-        <div class="col-wide">
-            <p-text color="notification-error">{{ errorMessage }}</p-text>
-        </div>
     } @else if (successMessage) {
         <div class="col-wide">
             <p-text color="notification-success">{{ successMessage }}</p-text>
         </div>
     } @else {
+        @if (errorMessage) {
+            <div class="col-wide">
+                <p-text color="notification-error">{{ errorMessage }}</p-text>
+            </div>
+        }
+
         <div class="col-wide grid grid-cols-subgrid">
 
             <div class="col-span-one-half">
@@ -61,4 +63,24 @@
             </a>
         </div>
     }
+
+    <p-modal [open]="warningOpen" [aria]="{'aria-label': 'Profile warning'}" (dismiss)="closeWarning()">
+        <p-heading slot="header" size="large" tag="h2">
+            Dados invalidos
+        </p-heading>
+
+        <p-text color="notification-warning">Corrige estes pontos antes de guardar:</p-text>
+
+        <ul>
+            @for (message of warningMessages; track message) {
+                <li>
+                    <p-text>{{ message }}</p-text>
+                </li>
+            }
+        </ul>
+
+        <p-button-group slot="footer">
+            <p-button type="button" (click)="closeWarning()">OK</p-button>
+        </p-button-group>
+    </p-modal>
 </div>
