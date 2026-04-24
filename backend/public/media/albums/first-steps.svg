@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#b8f2e6"/><stop offset="1" stop-color="#5e60ce"/></linearGradient></defs>
+  <rect width="600" height="600" fill="url(#g)"/>
+  <path d="M110 430 250 280l90 90 150-180v240H110z" fill="#fff" opacity=".85"/>
+  <text x="300" y="520" font-size="54" text-anchor="middle" fill="#102a43" font-family="Arial">First Steps</text>
+</svg>

@@ -24,6 +24,12 @@ const artistSchema = new mongoose.Schema({
     trim: true
   },
 
+  imageUrl: {
+    type: String,
+    trim: true,
+    default: '/api/media/placeholders/artist.svg'
+  },
+
   // Ano em que o artista iniciou atividade.
   yearStarted: {
     type: Number,

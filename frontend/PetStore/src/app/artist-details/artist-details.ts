@@ -17,6 +17,9 @@ import { ArtistInfo } from '../artist';
       <div class="col-wide">
         <p-heading>{{artist.name}}</p-heading>
       </div>
+      <div class="col-wide">
+        <img class="artist-image" [src]="artist.imageUrl ?? '/api/media/placeholders/artist.svg'" [alt]="artist.name" />
+      </div>
       <div class="col-wide grid grid-cols-subgrid">
         <div class="col-span-one-half">
           <p-input-text label="ISNI" [value]="artist.isni" [disabled]="true"></p-input-text>
@@ -52,7 +55,10 @@ import { ArtistInfo } from '../artist';
       <div class="col-wide grid grid-cols-subgrid">
         @for (album of artist.albums; track album._id) {
         <div class="col-span-one-half">
-          <p-input-text [label]="album.releaseYear.toString()" [value]="album.title" [disabled]="true"></p-input-text>
+          <div class="album-card">
+            <img class="album-image" [src]="album.imageUrl ?? '/api/media/placeholders/album.svg'" [alt]="album.title" />
+            <p-input-text [label]="album.releaseYear.toString()" [value]="album.title" [disabled]="true"></p-input-text>
+          </div>
         </div>
         }
       </div>
@@ -60,7 +66,29 @@ import { ArtistInfo } from '../artist';
       }
     </div>
   `,
-  styles: ``,
+  styles: `
+    .artist-image {
+      width: 100%;
+      max-width: 24rem;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 1rem;
+      display: block;
+    }
+
+    .album-card {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .album-image {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 0.75rem;
+      display: block;
+    }
+  `,
 })
 export class ArtistDetails implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);

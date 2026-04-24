@@ -11,7 +11,7 @@ const Artist = require('../models/artistModel');
 // Registo de um novo álbum.
 exports.create = async (req, res) => {
     try {
-        const { mbdi, title, releaseYear, type, artistId } = req.body;
+        const { mbdi, title, releaseYear, type, artistId, imageUrl } = req.body;
 
         // Verificar se o artista existe (se foi fornecido um artistId)
         let artist = null;
@@ -29,6 +29,7 @@ exports.create = async (req, res) => {
         const newAlbum = new Album({
             mbdi: mbdi,
             title: title,
+            imageUrl: imageUrl,
             releaseYear: releaseYear,
             type: type,
             artist: artistId || undefined
@@ -43,7 +44,7 @@ exports.create = async (req, res) => {
         }
 
         if (newAlbum.artist) {
-            await newAlbum.populate('artist', 'isni name type');
+            await newAlbum.populate('artist', 'isni name type imageUrl');
         }
 
         res.status(200).json({
@@ -53,6 +54,7 @@ exports.create = async (req, res) => {
                 id: newAlbum.id,
                 mbdi: newAlbum.mbdi,
                 title: newAlbum.title,
+                imageUrl: newAlbum.imageUrl,
                 releaseYear: newAlbum.releaseYear,
                 type: newAlbum.type,
                 artist: newAlbum.artist
@@ -71,7 +73,7 @@ exports.create = async (req, res) => {
 // Obter a lista de todos os álbuns.
 exports.getAll = async (req, res) => {
     try {
-        const albums = await Album.find().populate('artist', 'isni name type');
+        const albums = await Album.find().populate('artist', 'isni name type imageUrl');
 
         res.status(200).json({
             success: true,
@@ -90,7 +92,7 @@ exports.getAll = async (req, res) => {
 exports.getById = async (req, res) => {
     try {
         const id = req.params.id;
-        const album = await Album.findById(id).populate('artist', 'isni name type');
+        const album = await Album.findById(id).populate('artist', 'isni name type imageUrl');
 
         if (!album) {
             return res.status(404).json({
@@ -106,6 +108,7 @@ exports.getById = async (req, res) => {
                 id: album.id,
                 mbdi: album.mbdi,
                 title: album.title,
+                imageUrl: album.imageUrl,
                 releaseYear: album.releaseYear,
                 type: album.type,
                 artist: album.artist

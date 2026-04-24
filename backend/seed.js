@@ -32,36 +32,40 @@ const seedDatabase = async () => {
 
         // 1. Criar Artistas Solo
         const artist1 = new Artist({
-            isni: "0000000100000001",
-            name: "John Doe",
-            yearStarted: 2010,
+            isni: "0000000117226071",
+            name: "Bruno Mars",
+            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Bruno%20Mars.jpg",
+            yearStarted: 2004,
             type: "solo"
         });
         await artist1.save();
 
         const artist2 = new Artist({
-            isni: "0000000100000002",
-            name: "Jane Smith",
-            yearStarted: 2015,
+            isni: "0000000455128183",
+            name: "Anderson .Paak",
+            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Anderson%20.Paak.jpg",
+            yearStarted: 2009,
             type: "solo"
         });
         await artist2.save();
 
         // 2. Criar Grupo de Artistas
         const groupArtist = new Artist({
-            isni: "0000000100000003",
-            name: "The Doe Smiths",
-            yearStarted: 2018,
+            isni: "0000000502548122",
+            name: "Silk Sonic",
+            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Silk%20Sonic.jpg",
+            yearStarted: 2021,
             type: "group",
             members: [artist1._id, artist2._id]
         });
         await groupArtist.save();
 
-        // 3. Criar Álbuns associados ao artista solo 1
+        // 3. Criar Álbuns associados ao Bruno Mars
         const album1 = new Album({
-            mbdi: "mbdi-1111-2222-3333-4444",
-            title: "First Steps",
-            releaseYear: 2012,
+            mbdi: "b3d1fbf7-dd1c-4119-a16e-58c2feb5bcb0",
+            title: "Doo-Wops & Hooligans",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Bruno_Mars_-_Doo-Wops_%26_Hooligans.png/250px-Bruno_Mars_-_Doo-Wops_%26_Hooligans.png",
+            releaseYear: 2010,
             type: "LP",
             artist: artist1._id
         });
@@ -69,10 +73,11 @@ const seedDatabase = async () => {
         artist1.albums.push(album1._id);
 
         const album2 = new Album({
-            mbdi: "mbdi-5555-6666-7777-8888",
-            title: "Solo Hit",
-            releaseYear: 2014,
-            type: "single",
+            mbdi: "80ea43b7-2c32-4a79-9fb0-8ff1761ebe09",
+            title: "24K Magic",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/2/2b/Bruno_Mars_-_24K_Magic_%28Official_Album_Cover%29.png/250px-Bruno_Mars_-_24K_Magic_%28Official_Album_Cover%29.png",
+            releaseYear: 2016,
+            type: "LP",
             artist: artist1._id
         });
         await album2.save();
@@ -80,27 +85,31 @@ const seedDatabase = async () => {
         
         await artist1.save();
 
-        // 4. Criar Álbum associado ao grupo
+        // 4. Criar Álbum associado ao Anderson .Paak
         const album3 = new Album({
-            mbdi: "mbdi-9999-0000-aaaa-bbbb",
-            title: "Together At Last",
+            mbdi: "59732510-a2ad-447d-bd8b-9cbdfef39f88",
+            title: "Ventura",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/5/57/Anderson_Paak_-_Ventura.png/250px-Anderson_Paak_-_Ventura.png",
             releaseYear: 2019,
-            type: "EP",
-            artist: groupArtist._id
+            type: "LP",
+            artist: artist2._id
         });
         await album3.save();
-        groupArtist.albums.push(album3._id);
-        await groupArtist.save();
+        artist2.albums.push(album3._id);
+        await artist2.save();
 
-        // 5. Criar Álbum sem artista associado
+        // 5. Criar Álbum associado ao grupo
         const album4 = new Album({
-            mbdi: "mbdi-cccc-dddd-eeee-ffff",
-            title: "Unknown Origins",
-            releaseYear: 2023,
-            type: "LP"
-            // artist é opcional
+            mbdi: "5efd4506-bf30-4f3f-a5f0-0f7a5ef1df3e",
+            title: "An Evening with Silk Sonic",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/8/8e/Silk_Sonic_-_An_Evening_with_Silk_Sonic.png/250px-Silk_Sonic_-_An_Evening_with_Silk_Sonic.png",
+            releaseYear: 2021,
+            type: "LP",
+            artist: groupArtist._id
         });
         await album4.save();
+        groupArtist.albums.push(album4._id);
+        await groupArtist.save();
 
         console.log("Base de dados povoada com sucesso!");
 

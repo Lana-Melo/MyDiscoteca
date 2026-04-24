@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <rect width="600" height="600" fill="#f6bd60"/>
+  <circle cx="225" cy="245" r="120" fill="#84a59d"/>
+  <circle cx="375" cy="245" r="120" fill="#f28482"/>
+  <text x="300" y="500" font-size="40" text-anchor="middle" fill="#2f4858" font-family="Arial">Together At Last</text>
+</svg>

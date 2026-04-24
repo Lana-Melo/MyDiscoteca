@@ -1,6 +1,6 @@
 <a [routerLink]="['/artist/details', artistId()]">
     <p-button-tile label="Go to artist profile" [description]="artistName() ?? ''">
-        <img [src]="artistImg()" alt="Some description" />
+        <img [src]="artistImg()" [alt]="artistName() ?? 'Artist image'" />
         <p-text slot="footer" theme="dark">
             {{artistSince()}}
         </p-text>

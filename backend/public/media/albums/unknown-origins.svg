@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <rect width="600" height="600" fill="#0b132b"/>
+  <circle cx="300" cy="300" r="180" fill="#1c2541"/>
+  <path d="M300 150c50 80 50 220 0 300-50-80-50-220 0-300z" fill="#5bc0be"/>
+  <text x="300" y="540" font-size="38" text-anchor="middle" fill="#e0fbfc" font-family="Arial">Unknown Origins</text>
+</svg>

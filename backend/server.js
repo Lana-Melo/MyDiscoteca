@@ -13,6 +13,7 @@ if (fs.existsSync('.env')) {
 
 // Para criar o servidor e suportar a programação da API.
 const express = require('express');
+const path = require('path');
 
 // Para interagir com a base de dados MongoDB.
 const mongoose = require('mongoose');
@@ -63,6 +64,8 @@ app.use(bearer());
 // Content-Type: application/json, isto é, com dados no formato JSON.
 app.use(express.json());
 
+app.use('/api/media', express.static(path.join(__dirname, 'public', 'media')));
+
 // -----
 
 // Processamento de um pedido com método GET associado à rota '/'.
@@ -112,4 +115,3 @@ app.use('/api/albums', albumRoutes);
 })();
 
 // -----
-

@@ -20,6 +20,7 @@
             <app-artist-card
                 [artistId]="artist._id ?? artist.id ?? ''"
                 [artistName]="artist.name"
+                [artistImg]="artist.imageUrl ?? '/api/media/placeholders/artist.svg'"
                 [artistSince]="artist.yearStarted">
             </app-artist-card>
         </div>

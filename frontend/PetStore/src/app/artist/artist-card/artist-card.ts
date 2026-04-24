@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { RouterLink } from '@angular/router';
 
@@ -13,5 +13,5 @@ export class ArtistCard {
   artistId = input<string>();
   artistName = input<string>();
   artistSince = input<number>();
-  artistImg = computed(() => `assets/${this.artistName()}.jpg`);
+  artistImg = input('/api/media/placeholders/artist.svg');
 }

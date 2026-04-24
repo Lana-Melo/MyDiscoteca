@@ -24,6 +24,12 @@ const albumSchema = new mongoose.Schema({
     trim: true
   },
 
+  imageUrl: {
+    type: String,
+    trim: true,
+    default: '/api/media/placeholders/album.svg'
+  },
+
   // Ano de lançamento do álbum.
   releaseYear: {
     type: Number,

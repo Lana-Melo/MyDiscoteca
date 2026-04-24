@@ -5,6 +5,7 @@ export interface ArtistMember {
   _id: string;
   isni: string;
   name: string;
+  imageUrl?: string;
   yearStarted: number;
   type: 'solo' | 'group';
 }
@@ -13,6 +14,7 @@ export interface ArtistAlbum {
   _id: string;
   mbdi: string;
   title: string;
+  imageUrl?: string;
   releaseYear: number;
   type: string;
 }
@@ -22,6 +24,7 @@ export interface ArtistInfo {
   id?: string;
   isni: string;
   name: string;
+  imageUrl?: string;
   yearStarted: number;
   type: 'solo' | 'group';
   members?: ArtistMember[];
