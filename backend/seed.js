@@ -151,6 +151,21 @@ const seedDatabase = async () => {
 
         await seedTracksForAlbum(offTheWall, offTheWallSongs);
 
+        // Off the Wall - Suportes Físicos
+        console.log("A criar suportes físicos do Off the Wall...");
+        const otwVinyl = await upsertPhysicalSupport(offTheWall._id, "Vinyl", {
+            type: "Vinyl",
+            album: offTheWall._id
+        });
+        const otwVinylVersions = [
+            await upsertVersion("0074643574514", { eanCode: "0074643574514", designation: "Original 1979 Vinyl", physicalSupport: otwVinyl._id })
+        ];
+        otwVinyl.versions = otwVinylVersions.map(v => v._id);
+        await otwVinyl.save();
+
+        offTheWall.physicalSupports = [otwVinyl._id];
+        await offTheWall.save();
+
         // ----- Thriller (1982) -----
         console.log("A criar álbum: Thriller...");
         const thriller = await upsertAlbum("seed-mj-thriller", {
@@ -288,6 +303,21 @@ const seedDatabase = async () => {
 
         await seedTracksForAlbum(dangerous, dangerousSongs);
 
+        // Dangerous - Suportes Físicos
+        console.log("A criar suportes físicos do Dangerous...");
+        const dangerousCD = await upsertPhysicalSupport(dangerous._id, "CD", {
+            type: "CD",
+            album: dangerous._id
+        });
+        const dangerousCDVersions = [
+            await upsertVersion("0074644540026", { eanCode: "0074644540026", designation: "Original 1991 CD", physicalSupport: dangerousCD._id })
+        ];
+        dangerousCD.versions = dangerousCDVersions.map(v => v._id);
+        await dangerousCD.save();
+
+        dangerous.physicalSupports = [dangerousCD._id];
+        await dangerous.save();
+
         // ----- Invincible (2001) -----
         console.log("A criar álbum: Invincible...");
         const invincible = await upsertAlbum("seed-mj-invincible", {
@@ -319,6 +349,22 @@ const seedDatabase = async () => {
         ];
 
         await seedTracksForAlbum(invincible, invincibleSongs);
+
+        // Invincible - Suportes Físicos
+        console.log("A criar suportes físicos do Invincible...");
+        const invincibleCD = await upsertPhysicalSupport(invincible._id, "CD", {
+            type: "CD",
+            album: invincible._id
+        });
+        const invincibleCDVersions = [
+            await upsertVersion("0074646940026", { eanCode: "0074646940026", designation: "Original 2001 Silver CD", physicalSupport: invincibleCD._id }),
+            await upsertVersion("0074646940027", { eanCode: "0074646940027", designation: "2001 Blue Limited Edition CD", physicalSupport: invincibleCD._id })
+        ];
+        invincibleCD.versions = invincibleCDVersions.map(v => v._id);
+        await invincibleCD.save();
+
+        invincible.physicalSupports = [invincibleCD._id];
+        await invincible.save();
 
         // ----- Atualizar artista com todos os álbuns -----
         mj.albums = [offTheWall._id, thriller._id, bad._id, dangerous._id, invincible._id];

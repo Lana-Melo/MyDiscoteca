@@ -61,7 +61,7 @@ import { AlbumCollection, Version } from '../../../models/album-collection';
       } @else {
         <div class="col-wide">
           <p-text>You don't have any albums in your collection yet.</p-text>
-          <a [routerLink]="['/artists']">
+          <a [routerLink]="['/search']">
             <p-button-pure icon="arrow-head-right">Browse artists to add albums</p-button-pure>
           </a>
         </div>
