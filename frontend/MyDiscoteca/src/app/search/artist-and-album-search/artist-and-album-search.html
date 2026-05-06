@@ -1,0 +1,56 @@
+<div class="grid-template">
+    <div class="col-basic grid grid-cols-subgrid">
+        <div class="col-span-one-half">
+            <p-radio-group
+                name="searchMode"
+                label="Search by"
+                direction="row"
+                [value]="searchMode"
+                (change)="onModeChange($event)">
+                <p-radio-group-option value="artist" label="Artist"></p-radio-group-option>
+                <p-radio-group-option value="album" label="Album"></p-radio-group-option>
+            </p-radio-group>
+        </div>
+    </div>
+    <div class="col-basic grid grid-cols-subgrid">
+        <div class="col-span-one-half">
+            <p-input-search
+                [label]="searchMode === 'artist' ? 'Search artists' : 'Search albums'"
+                [placeholder]="searchMode === 'artist' ? 'Ex.: Beatles' : 'Ex.: Thriller'"
+                name="search"
+                [compact]="true"
+                [clear]="true"
+                [indicator]="true"
+                (input)="filter($event)">
+            </p-input-search>
+        </div>
+    </div>
+    <div class="col-full flex justify-center border-contrast-low">
+    </div>
+    <div class="col-basic grid grid-cols-subgrid gap-y-4">
+        @if (searchMode === 'artist') {
+            @for (artist of artistFilteredList; track artist._id) {
+            <div class="col-span-one-third">
+                <app-artist-card
+                    [artistId]="artist._id ?? artist.id ?? ''"
+                    [artistName]="artist.name"
+                    [artistImg]="artist.imageUrl ?? '/api/media/placeholders/artist.svg'"
+                    [artistSince]="artist.yearStarted">
+                </app-artist-card>
+            </div>
+            }
+        } @else {
+            @for (album of albumFilteredList; track album._id) {
+            <div class="col-span-one-third">
+                <app-album-card
+                    [albumId]="album._id ?? album.id ?? ''"
+                    [albumTitle]="album.title"
+                    [albumImg]="album.imageUrl ?? '/api/media/placeholders/album.svg'"
+                    [albumYear]="album.releaseYear"
+                    [artistName]="album.artist?.name">
+                </app-album-card>
+            </div>
+            }
+        }
+    </div>
+</div>

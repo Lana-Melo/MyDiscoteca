@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ArtistAlbum, ArtistInfo } from '../../models/artist';
-import { UserService } from '../../services/user.service';
-import { UserInfo } from '../../models/user';
-import { ArtistService } from '../../services/artist.service';
+import { ArtistAlbum, ArtistInfo } from '../../../models/artist';
+import { UserService } from '../../../services/user.service';
+import { UserInfo } from '../../../models/user';
+import { ArtistService } from '../../../services/artist.service';
 
 @Component({
   selector: 'artist-details',
@@ -13,7 +13,7 @@ import { ArtistService } from '../../services/artist.service';
   template: `
     <div class="grid-template">
       <div class="col-wide">
-        <p-button-pure icon="arrow-left" [routerLink]="['/artists']">Back to artists</p-button-pure>
+        <p-button-pure icon="arrow-left" [routerLink]="['/search']">Back to search</p-button-pure>
       </div>
       @if (artist) {
       <div class="col-wide">

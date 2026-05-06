@@ -1,16 +1,15 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
-import { ArtistCard } from '../artist/artist-card/artist-card';
+import { ArtistCard } from '../artist/components/artist-card/artist-card';
 import { FavoriteArtist, UserInfo } from '../models/user';
 import { UserService } from '../services/user.service';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-dashboard',
   imports: [PorscheDesignSystemModule, ArtistCard],
-  templateUrl: './home.html',
-  styleUrls: ['./home.css'],
+  templateUrl: './dashboard.html',
 })
-export class Home implements OnInit {
+export class Dashboard implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly userService = inject(UserService);
 

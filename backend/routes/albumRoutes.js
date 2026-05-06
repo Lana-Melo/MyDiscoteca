@@ -20,6 +20,9 @@ router.post('/', albumController.create);
 // Rota para obter a lista de todos os álbuns.
 router.get('/', albumController.getAll);
 
+// Rota para pesquisar álbuns por título (deve estar antes de /:id).
+router.get('/search', albumController.searchAlbums);
+
 // Rota para obter um álbum pelo seu id.
 router.get('/:id', albumController.getById);
 

@@ -22,8 +22,8 @@ export class App {
     this.isNavOpen = !this.isNavOpen;
   }
 
-  goToArtists() {
-    this.router.navigate(['/artists']);
+  goToSearch() {
+    this.router.navigate(['/search']);
   }
 
   get isLoggedIn() {

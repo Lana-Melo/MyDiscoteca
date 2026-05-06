@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
-import { ArtistAlbum, ArtistInfo } from '../../models/artist';
-import { ArtistService } from '../../services/artist.service';
+import { ArtistAlbum, ArtistInfo } from '../../../models/artist';
+import { ArtistService } from '../../../services/artist.service';
 
 @Component({
   selector: 'artist-albums',

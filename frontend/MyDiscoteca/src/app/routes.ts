@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { Home } from './home/home';
+import { Dashboard } from './dashboard/dashboard';
 import { UserProfile } from './user/pages/user-profile/user-profile';
 import { EditUserProfile } from './user/pages/edit-user-profile/edit-user-profile';
 import { Login } from './user/pages/login/login';
-import { ArtistAlbums } from './artist/artist-albums/artist-albums';
-import { ArtistDetails } from './artist/artist-details/artist-details';
-import { ArtistSearch } from './artist/artist-search/artist-search';
+import { ArtistAlbums } from './artist/pages/artist-albums/artist-albums';
+import { ArtistDetails } from './artist/pages/artist-details/artist-details';
+import { ArtistAndAlbumSearch } from './search/artist-and-album-search/artist-and-album-search';
 import { authGuard } from './auth.guard';
 import { RegisterUser } from './user/pages/register-user/register-user';
 
@@ -22,8 +22,8 @@ const routeConfig: Routes = [
   },
   {
     path: 'dashboard',
-    component: Home,
-    title: 'Home page',
+    component: Dashboard,
+    title: 'Dashboard',
     canActivate: [authGuard],
   },
   {
@@ -32,9 +32,9 @@ const routeConfig: Routes = [
     title: 'Create Account',
   },
   {
-    path: 'artists',
-    component: ArtistSearch,
-    title: 'Artists',
+    path: 'search',
+    component: ArtistAndAlbumSearch,
+    title: 'Search',
     canActivate: [authGuard],
   },
   {
