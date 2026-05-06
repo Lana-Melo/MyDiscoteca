@@ -2,6 +2,17 @@
     <div class="col-wide">
         <p-heading>Profile</p-heading>  
     </div>
+    @if (successMessage) {
+        <div class="col-wide">
+            <p-inline-notification
+                headingTag="h2"
+                state="success"
+                heading="Profile updated"
+                [description]="successMessage"
+                [dismissButton]="false">
+            </p-inline-notification>
+        </div>
+    }
     <!--
     <div class="col-wide grid grid-cols-subgrid">
         <div class="col-span-one-half">
