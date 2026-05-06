@@ -1,0 +1,115 @@
+<div class="grid-template">
+    <div class="col-basic">
+        <p-button-pure icon="arrow-left" [routerLink]="['/search']">Back to search</p-button-pure>
+    </div>
+    @if (album) {
+        <div class="col-basic">
+            <p-heading align="center" size="large">{{ album.title }}</p-heading>
+        </div>
+        <div class="col-basic flex justify-center">
+            <img
+                class="album-image"
+                [src]="album.imageUrl ?? '/api/media/placeholders/album.svg'"
+                [alt]="album.title"
+                (error)="handleImageError($event)"
+            />
+        </div>
+        <div class="col-basic grid grid-cols-subgrid">
+            <div class="col-span-one-third">
+                <p-input-text label="Release Year" [value]="album.releaseYear.toString()" [disabled]="true"></p-input-text>
+            </div>
+            <div class="col-span-one-third">
+                <p-input-text label="Type" [value]="album.type" [disabled]="true"></p-input-text>
+            </div>
+            <div class="col-span-one-third">
+                <p-input-text label="Artist" [value]="album.artist?.name ?? 'Unknown'" [disabled]="true"></p-input-text>
+            </div>
+        </div>
+        <div class="col-basic">
+            <p-divider></p-divider>
+        </div>
+        <div class="col-basic">
+            <p-heading align="center" size="medium">Album tracks</p-heading>
+        </div>
+        @if (album.tracks && album.tracks.length > 0) {
+            <div class="col-basic">
+                <p-carousel
+                  slidesPerPage="3">
+                    @for (track of album.tracks; track track._id) {
+                        <div class="h-[150px] bg-surface">
+                            <div class="flex flex-col h-full box-border" style="padding: 1rem 1.5rem;">
+                                <p-text weight="semi-bold" class="shrink-0 text-center w-full">
+                                    Track #{{ track.sequentialNumber }}
+                                </p-text>
+                                <div class="flex-1 flex items-center justify-center overflow-hidden">
+                                    <p-text class="line-clamp-3">
+                                        {{ track.song.title }}
+                                    </p-text>
+                                </div>
+                                <p-text color="contrast-medium" class="shrink-0 text-center w-full prose-text-sm">
+                                    {{ formatDuration(track.song.duration) }}
+                                </p-text>
+                            </div>
+                        </div>
+                    }
+                </p-carousel>
+            </div>
+        } @else {
+            <div class="col-basic">
+                <p-text>No tracks available.</p-text>
+            </div>
+            }
+        <div class="col-basic">
+            <p-heading align="center" size="medium">Album versions</p-heading>
+        </div>
+        @if (album.physicalSupports && album.physicalSupports.length > 0) {
+            <div class="col-basic">
+                @for (support of album.physicalSupports; track support._id) {
+                    <p-accordion
+                        [open]="openAccordions[support._id] ?? false"
+                        [heading]="support.type"
+                        (update)="onAccordionUpdate(support._id, $event)">
+                        @if (support.versions && support.versions.length > 0) {
+                            @for (version of support.versions; track version._id; let last = $last) {
+                                <div class="grid grid-cols-2 items-center gap-4">
+                                    <div>
+                                        <p-text weight="semi-bold" color="contrast-medium">Version: {{ version.designation }}</p-text>
+                                        <p-text color="contrast-medium">EAN: {{ version.eanCode }}</p-text>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <p-button
+                                            icon="add"
+                                            variant="ghost"
+                                            [compact]="true"
+                                            [aria]="{ 'aria-label': 'Add to my collection' }"
+                                            (click)="addToCollection(version._id)">
+                                            Add to my collection
+                                        </p-button>
+                                    </div>
+                                </div>
+                                @if (!last) {
+                                    <p-divider></p-divider>
+                                }
+                            }
+                        } @else {
+                            <p-text>No versions available for this format.</p-text>
+                        }
+                    </p-accordion>
+                }
+            </div>
+            <div class="col-basic">
+                <p-button
+                    icon="add"
+                    variant="secondary"
+                    [aria]="{ 'aria-label': 'Contribute with a new album version' }"
+                    (click)="requestNewVersion()">
+                    Contribute with a new album version
+                </p-button>
+            </div>
+        } @else {
+            <div class="col-basic" align="center">
+                <p-text>No versions available.</p-text>
+            </div>
+        }
+    }
+</div>

@@ -184,8 +184,8 @@ const seedDatabase = async () => {
             album: thriller._id
         });
         const thrillerVinylVersions = [
-            await upsertVersion("5099750441121", { eanCode: "5099750441121", designation: "Original 1982 Black Vinyl", physicalSupport: thrillerVinyl._id }),
-            await upsertVersion("0886973266625", { eanCode: "0886973266625", designation: "25th Anniversary Edition Vinyl", physicalSupport: thrillerVinyl._id })
+            await upsertVersion("5099750441121", { eanCode: "5099750441121", designation: "Original 1982 Black", physicalSupport: thrillerVinyl._id }),
+            await upsertVersion("0886973266625", { eanCode: "0886973266625", designation: "25th Anniversary Edition", physicalSupport: thrillerVinyl._id })
         ];
         thrillerVinyl.versions = thrillerVinylVersions.map(v => v._id);
         await thrillerVinyl.save();
@@ -195,8 +195,8 @@ const seedDatabase = async () => {
             album: thriller._id
         });
         const thrillerCDVersions = [
-            await upsertVersion("5099750441138", { eanCode: "5099750441138", designation: "Original 1982 CD", physicalSupport: thrillerCD._id }),
-            await upsertVersion("5099750490228", { eanCode: "5099750490228", designation: "2001 Special Edition CD", physicalSupport: thrillerCD._id })
+            await upsertVersion("5099750441138", { eanCode: "5099750441138", designation: "Original 1982", physicalSupport: thrillerCD._id }),
+            await upsertVersion("5099750490228", { eanCode: "5099750490228", designation: "2001 Special Edition", physicalSupport: thrillerCD._id })
         ];
         thrillerCD.versions = thrillerCDVersions.map(v => v._id);
         await thrillerCD.save();
@@ -239,8 +239,8 @@ const seedDatabase = async () => {
             album: bad._id
         });
         const badVinylVersions = [
-            await upsertVersion("5099747032318", { eanCode: "5099747032318", designation: "Original 1987 Black Vinyl", physicalSupport: badVinyl._id }),
-            await upsertVersion("5099747032820", { eanCode: "5099747032820", designation: "2001 Special Edition Vinyl", physicalSupport: badVinyl._id })
+            await upsertVersion("5099747032318", { eanCode: "5099747032318", designation: "Original 1987 Black", physicalSupport: badVinyl._id }),
+            await upsertVersion("5099747032820", { eanCode: "5099747032820", designation: "2001 Special Edition", physicalSupport: badVinyl._id })
         ];
         badVinyl.versions = badVinylVersions.map(v => v._id);
         await badVinyl.save();
@@ -250,7 +250,7 @@ const seedDatabase = async () => {
             album: bad._id
         });
         const badCDVersions = [
-            await upsertVersion("5099747032325", { eanCode: "5099747032325", designation: "Original 1987 CD", physicalSupport: badCD._id })
+            await upsertVersion("5099747032325", { eanCode: "5099747032325", designation: "Original 1987", physicalSupport: badCD._id })
         ];
         badCD.versions = badCDVersions.map(v => v._id);
         await badCD.save();

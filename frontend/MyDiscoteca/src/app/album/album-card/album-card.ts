@@ -1,10 +1,11 @@
 import { Component, input } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-album-card',
   standalone: true,
-  imports: [PorscheDesignSystemModule],
+  imports: [PorscheDesignSystemModule, RouterLink],
   templateUrl: './album-card.html',
   styles: ``,
 })

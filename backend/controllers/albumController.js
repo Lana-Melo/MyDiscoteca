@@ -92,7 +92,18 @@ exports.getAll = async (req, res) => {
 exports.getById = async (req, res) => {
     try {
         const id = req.params.id;
-        const album = await Album.findById(id).populate('artist', 'isni name type imageUrl');
+        const album = await Album.findById(id)
+            .populate('artist', 'isni name type imageUrl')
+            .populate({
+                path: 'tracks',
+                select: 'sequentialNumber song',
+                populate: { path: 'song', select: 'title duration' }
+            })
+            .populate({
+                path: 'physicalSupports',
+                select: 'type versions',
+                populate: { path: 'versions', select: 'eanCode designation' }
+            });
 
         if (!album) {
             return res.status(404).json({
@@ -111,7 +122,9 @@ exports.getById = async (req, res) => {
                 imageUrl: album.imageUrl,
                 releaseYear: album.releaseYear,
                 type: album.type,
-                artist: album.artist
+                artist: album.artist,
+                tracks: album.tracks,
+                physicalSupports: album.physicalSupports
             }
         });
 
