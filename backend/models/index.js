@@ -7,6 +7,11 @@
 // prontos para serem usados pelos controllers e pelas referencias entre schemas.
 
 require('./artistModel');
+require('./albumModel');
+require('./songModel');
+require('./trackModel');
+require('./physicalSupportModel');
+require('./versionModel');
 require('./userModel');
 
 // -----

@@ -1,6 +1,6 @@
 // -----
 // seed.js
-// Script para popular a base de dados com Artistas e Álbuns
+// Script para popular a base de dados - Discografia de Michael Jackson
 // -----
 
 const { loadEnvFile } = require('node:process');
@@ -12,6 +12,10 @@ if (fs.existsSync('.env')) {
 const mongoose = require('mongoose');
 const Artist = require('./models/artistModel');
 const Album = require('./models/albumModel');
+const Song = require('./models/songModel');
+const Track = require('./models/trackModel');
+const PhysicalSupport = require('./models/physicalSupportModel');
+const Version = require('./models/versionModel');
 
 const DB_URI = process.env.DB_URI;
 
@@ -19,6 +23,8 @@ if (!DB_URI) {
     console.error("Erro: Variável de ambiente DB_URI não definida.");
     process.exit(1);
 }
+
+// ----- Funções auxiliares de upsert -----
 
 async function upsertArtist(isni, artistData) {
     return Artist.findOneAndUpdate(
@@ -36,506 +42,287 @@ async function upsertAlbum(mbdi, albumData) {
     );
 }
 
-async function seedAlbumsForArtist(artist, albums) {
-    const savedAlbums = [];
-
-    for (const album of albums) {
-        const savedAlbum = await upsertAlbum(album.mbdi, {
-            ...album,
-            artist: artist._id
-        });
-
-        savedAlbums.push(savedAlbum);
-    }
-
-    artist.albums = savedAlbums.map((album) => album._id);
-    await artist.save();
-    return savedAlbums;
+async function upsertSong(isrcCode, songData) {
+    return Song.findOneAndUpdate(
+        { isrcCode },
+        { $set: songData },
+        { new: true, upsert: true, runValidators: true }
+    );
 }
 
+async function upsertPhysicalSupport(albumId, type, supportData) {
+    return PhysicalSupport.findOneAndUpdate(
+        { album: albumId, type },
+        { $set: supportData },
+        { new: true, upsert: true, runValidators: true }
+    );
+}
+
+async function upsertVersion(eanCode, versionData) {
+    return Version.findOneAndUpdate(
+        { eanCode },
+        { $set: versionData },
+        { new: true, upsert: true, runValidators: true }
+    );
+}
+
+async function seedTracksForAlbum(album, songs) {
+    const tracks = await Promise.all(
+        songs.map((song, i) =>
+            Track.findOneAndUpdate(
+                { album: album._id, song: song._id },
+                { $set: { sequentialNumber: i + 1, song: song._id, album: album._id } },
+                { new: true, upsert: true, runValidators: true }
+            )
+        )
+    );
+    album.tracks = tracks.map(t => t._id);
+    await album.save();
+    return tracks;
+}
+
+// -----
+
+/*
+// ===== Seed anterior (comentado) =====
+
+async function seedAlbumsForArtist(artist, albums) { ... }
+
 const extraArtists = [
-    {
-        artist: {
-            isni: "seed-eminem",
-            name: "Eminem",
-            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Eminem_2021_Color_Corrected.jpg",
-            yearStarted: 1988,
-            type: "solo"
-        },
-        albums: [
-            {
-                mbdi: "seed-eminem-the-slim-shady-lp",
-                title: "The Slim Shady LP",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/3/35/Eminem_-_The_Slim_Shady_LP_CD_cover.jpg",
-                releaseYear: 1999,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-eminem-the-marshall-mathers-lp",
-                title: "The Marshall Mathers LP",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/a/ae/The_Marshall_Mathers_LP.jpg",
-                releaseYear: 2000,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-eminem-the-eminem-show",
-                title: "The Eminem Show",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/3/35/The_Eminem_Show.jpg",
-                releaseYear: 2002,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-eminem-encore",
-                title: "Encore",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/b/b4/Encore_%28Eminem_album%29_coverart.jpg",
-                releaseYear: 2004,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-eminem-relapse",
-                title: "Relapse",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/6/60/Eminem_-_Relapse.jpg",
-                releaseYear: 2009,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-eminem-recovery",
-                title: "Recovery",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/6/60/Recovery_Album_Cover.jpg",
-                releaseYear: 2010,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-eminem-the-marshall-mathers-lp-2",
-                title: "The Marshall Mathers LP 2",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/3/3e/The_Marshall_Mathers_LP_2.png",
-                releaseYear: 2013,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-eminem-kamikaze",
-                title: "Kamikaze",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/0/0d/Eminem_Kamikaze.jpg",
-                releaseYear: 2018,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-eminem-music-to-be-murdered-by",
-                title: "Music to Be Murdered By",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/8/80/Eminem_-_Music_to_Be_Murdered_By.png",
-                releaseYear: 2020,
-                type: "LP"
-            }
-        ]
-    },
-    {
-        artist: {
-            isni: "seed-luiz-gonzaga",
-            name: "Luiz Gonzaga",
-            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Luiz_Gonzaga_(1957).jpg",
-            yearStarted: 1941,
-            type: "solo"
-        },
-        albums: [
-            {
-                mbdi: "seed-luiz-gonzaga-luiz-gonzaga-canta-seus-sucessos",
-                title: "Luiz Gonzaga Canta Seus Sucessos",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 1958,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-luiz-gonzaga-o-rei-do-baiao",
-                title: "O Rei do Baiao",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 1961,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-luiz-gonzaga-a-triste-partida",
-                title: "A Triste Partida",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 1964,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-luiz-gonzaga-sanfona-do-povo",
-                title: "Sanfona do Povo",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 1964,
-                type: "LP"
-            }
-        ]
-    },
-    {
-        artist: {
-            isni: "seed-quim-barreiros",
-            name: "Quim Barreiros",
-            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Quim_Barreiros_no_Pereiro_-_2008.jpg",
-            yearStarted: 1971,
-            type: "solo"
-        },
-        albums: [
-            {
-                mbdi: "seed-quim-barreiros-bacalhau-a-portuguesa",
-                title: "Bacalhau a Portuguesa",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 1986,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-quim-barreiros-mestre-de-culinaria",
-                title: "Mestre de Culinaria",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 1991,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-quim-barreiros-a-garagem-da-vizinha",
-                title: "A Garagem da Vizinha",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 2000,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-quim-barreiros-o-melhor-de-quim-barreiros",
-                title: "O Melhor de Quim Barreiros",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 2002,
-                type: "LP"
-            }
-        ]
-    },
-    {
-        artist: {
-            isni: "seed-belchior",
-            name: "Belchior",
-            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Belchior.jpg",
-            yearStarted: 1971,
-            type: "solo"
-        },
-        albums: [
-            {
-                mbdi: "seed-belchior-mote-e-glosa",
-                title: "Mote e Glosa",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/1/12/Mote_e_Glosa.jpg",
-                releaseYear: 1974,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-belchior-alucinacao",
-                title: "Alucinacao",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/3/38/Alucina%C3%A7%C3%A3o.jpg",
-                releaseYear: 1976,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-belchior-coracao-selvagem",
-                title: "Coracao Selvagem",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/5/5a/Cora%C3%A7%C3%A3o_Selvagem.jpg",
-                releaseYear: 1977,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-belchior-todos-os-sentidos",
-                title: "Todos os Sentidos",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 1978,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-belchior-era-uma-vez-um-homem",
-                title: "Era uma Vez um Homem e o seu Tempo",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 1979,
-                type: "LP"
-            }
-        ]
-    },
-    {
-        artist: {
-            isni: "seed-caetano-veloso",
-            name: "Caetano Veloso",
-            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Caetano_Veloso_(cropped).jpg",
-            yearStarted: 1965,
-            type: "solo"
-        },
-        albums: [
-            {
-                mbdi: "seed-caetano-veloso-caetano-veloso-1968",
-                title: "Caetano Veloso",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/4/40/Caetano_Veloso_%281968%29.jpg",
-                releaseYear: 1968,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-caetano-veloso-transa",
-                title: "Transa",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/e/e5/Transa.jpg",
-                releaseYear: 1972,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-caetano-veloso-bicho",
-                title: "Bicho",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/0/02/Bicho_caetano_veloso.jpg",
-                releaseYear: 1977,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-caetano-veloso-livro",
-                title: "Livro",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/f/f7/Livro_Caetano_Veloso.jpg",
-                releaseYear: 1997,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-caetano-veloso-abracaco",
-                title: "Abracaco",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/pt/9/9d/Abra%C3%A7a%C3%A7o.jpg",
-                releaseYear: 2012,
-                type: "LP"
-            }
-        ]
-    },
-    {
-        artist: {
-            isni: "seed-ice-spice",
-            name: "Ice Spice",
-            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Ice_Spice,_2024_2.jpg",
-            yearStarted: 2021,
-            type: "solo"
-        },
-        albums: [
-            {
-                mbdi: "seed-ice-spice-like",
-                title: "Like..?",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/3/3e/Ice_Spice_-_Like..%3F.png",
-                releaseYear: 2023,
-                type: "EP"
-            },
-            {
-                mbdi: "seed-ice-spice-y2k",
-                title: "Y2K!",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/96/Ice_Spice_-_Y2K%21.png",
-                releaseYear: 2024,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-ice-spice-y2k-im-just-a-girl",
-                title: "Y2K!: I'm Just A Girl",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/96/Ice_Spice_-_Y2K%21.png",
-                releaseYear: 2024,
-                type: "LP"
-            }
-        ]
-    },
-    {
-        artist: {
-            isni: "seed-skillet",
-            name: "Skillet",
-            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Skillet_-_853537431.jpg",
-            yearStarted: 1996,
-            type: "group"
-        },
-        albums: [
-            {
-                mbdi: "seed-skillet-collide",
-                title: "Collide",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/1/1b/Skillet_-_Collide.jpg",
-                releaseYear: 2003,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-skillet-comatose",
-                title: "Comatose",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/0/07/Skilletcomatose.jpg",
-                releaseYear: 2006,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-skillet-awake",
-                title: "Awake",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/c/cd/Skilletawake.jpg",
-                releaseYear: 2009,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-skillet-rise",
-                title: "Rise",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/d/dd/Skillet_Rise.jpg",
-                releaseYear: 2013,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-skillet-unleashed",
-                title: "Unleashed",
-                imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/99/Skillet_Unleashed.jpg",
-                releaseYear: 2016,
-                type: "LP"
-            }
-        ]
-    },
-    {
-        artist: {
-            isni: "seed-bloodlines",
-            name: "Bloodlines",
-            imageUrl: "/api/media/placeholders/artist.svg",
-            yearStarted: 2018,
-            type: "group"
-        },
-        albums: [
-            {
-                mbdi: "seed-bloodlines-hevel",
-                title: "Hevel",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 2021,
-                type: "EP"
-            },
-            {
-                mbdi: "seed-bloodlines-holiness-cries",
-                title: "Holiness Cries",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 2023,
-                type: "EP"
-            },
-            {
-                mbdi: "seed-bloodlines-wake-the-dead",
-                title: "Wake the Dead",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 2024,
-                type: "EP"
-            }
-        ]
-    },
-    {
-        artist: {
-            isni: "seed-baroes-da-pisadinha",
-            name: "Baroes da Pisadinha",
-            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Show_%22Os_Bar%C3%B5es_da_Pisadinha%22_na_ExpoLondrina_2022.jpg",
-            yearStarted: 2015,
-            type: "group"
-        },
-        albums: [
-            {
-                mbdi: "seed-baroes-da-pisadinha-ao-vivo-em-sao-paulo",
-                title: "Ao Vivo em Sao Paulo",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 2019,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-baroes-da-pisadinha-paredao-dos-baroes",
-                title: "Paredao dos Baroes",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 2020,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-baroes-da-pisadinha-conquistas",
-                title: "Conquistas",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 2021,
-                type: "LP"
-            },
-            {
-                mbdi: "seed-baroes-da-pisadinha-da-roca-para-o-mundo",
-                title: "Da Roca para o Mundo",
-                imageUrl: "/api/media/placeholders/album.svg",
-                releaseYear: 2022,
-                type: "LP"
-            }
-        ]
-    }
+    { artist: { isni: "seed-eminem", name: "Eminem", ... }, albums: [...] },
+    { artist: { isni: "seed-luiz-gonzaga", name: "Luiz Gonzaga", ... }, albums: [...] },
+    { artist: { isni: "seed-quim-barreiros", name: "Quim Barreiros", ... }, albums: [...] },
+    { artist: { isni: "seed-belchior", name: "Belchior", ... }, albums: [...] },
+    { artist: { isni: "seed-caetano-veloso", name: "Caetano Veloso", ... }, albums: [...] },
+    { artist: { isni: "seed-ice-spice", name: "Ice Spice", ... }, albums: [...] },
+    { artist: { isni: "seed-skillet", name: "Skillet", ... }, albums: [...] },
+    { artist: { isni: "seed-bloodlines", name: "Bloodlines", ... }, albums: [...] },
+    { artist: { isni: "seed-baroes-da-pisadinha", name: "Baroes da Pisadinha", ... }, albums: [...] }
 ];
+
+const seedDatabase = async () => {
+    // Bruno Mars, Anderson .Paak, Silk Sonic + extraArtists
+};
+
+seedDatabase();
+// ===== Fim da seed anterior =====
+*/
+
+// -----
 
 const seedDatabase = async () => {
     try {
         await mongoose.connect(DB_URI);
         console.log("Ligação bem sucedida ao MongoDB para povoamento.");
 
-        console.log("A atualizar dados iniciais sem apagar referencias existentes.");
-
-        // 1. Criar Artistas Solo
-        const artist1 = await upsertArtist("0000000117226071", {
-            isni: "0000000117226071",
-            name: "Bruno Mars",
-            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Bruno%20Mars.jpg",
-            yearStarted: 2004,
+        // ----- Michael Jackson -----
+        console.log("A criar artista: Michael Jackson...");
+        const mj = await upsertArtist("0000000121707484", {
+            isni: "0000000121707484",
+            name: "Michael Jackson",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Michael_Jordan_in_2014.jpg/330px-Michael_Jordan_in_2014.jpg",
+            yearStarted: 1964,
             type: "solo"
         });
 
-        const artist2 = await upsertArtist("0000000455128183", {
-            isni: "0000000455128183",
-            name: "Anderson .Paak",
-            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Anderson%20.Paak.jpg",
-            yearStarted: 2009,
-            type: "solo"
-        });
-
-        // 2. Criar Grupo de Artistas
-        const groupArtist = await upsertArtist("0000000502548122", {
-            isni: "0000000502548122",
-            name: "Silk Sonic",
-            imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Silk%20Sonic.jpg",
-            yearStarted: 2021,
-            type: "group",
-            members: [artist1._id, artist2._id]
-        });
-
-        // 3. Criar Álbuns associados ao Bruno Mars
-        const album1 = await upsertAlbum("b3d1fbf7-dd1c-4119-a16e-58c2feb5bcb0", {
-            mbdi: "b3d1fbf7-dd1c-4119-a16e-58c2feb5bcb0",
-            title: "Doo-Wops & Hooligans",
-            imageUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Bruno_Mars_-_Doo-Wops_%26_Hooligans.png/250px-Bruno_Mars_-_Doo-Wops_%26_Hooligans.png",
-            releaseYear: 2010,
+        // ----- Off the Wall (1979) -----
+        console.log("A criar álbum: Off the Wall...");
+        const offTheWall = await upsertAlbum("seed-mj-off-the-wall", {
+            mbdi: "seed-mj-off-the-wall",
+            title: "Off the Wall",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/90/Offthewall.jpg",
+            releaseYear: 1979,
             type: "LP",
-            artist: artist1._id
+            artist: mj._id
         });
 
-        const album2 = await upsertAlbum("80ea43b7-2c32-4a79-9fb0-8ff1761ebe09", {
-            mbdi: "80ea43b7-2c32-4a79-9fb0-8ff1761ebe09",
-            title: "24K Magic",
-            imageUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/2/2b/Bruno_Mars_-_24K_Magic_%28Official_Album_Cover%29.png/250px-Bruno_Mars_-_24K_Magic_%28Official_Album_Cover%29.png",
-            releaseYear: 2016,
+        const offTheWallSongs = [
+            await upsertSong("USMJA7900001", { isrcCode: "USMJA7900001", title: "Don't Stop 'Til You Get Enough", duration: 365, artists: [mj._id] }),
+            await upsertSong("USMJA7900002", { isrcCode: "USMJA7900002", title: "Rock with You", duration: 222, artists: [mj._id] }),
+            await upsertSong("USMJA7900003", { isrcCode: "USMJA7900003", title: "Workin' Day and Night", duration: 314, artists: [mj._id] }),
+            await upsertSong("USMJA7900004", { isrcCode: "USMJA7900004", title: "Get on the Floor", duration: 279, artists: [mj._id] }),
+            await upsertSong("USMJA7900005", { isrcCode: "USMJA7900005", title: "Off the Wall", duration: 245, artists: [mj._id] }),
+            await upsertSong("USMJA7900006", { isrcCode: "USMJA7900006", title: "Girlfriend", duration: 185, artists: [mj._id] }),
+            await upsertSong("USMJA7900007", { isrcCode: "USMJA7900007", title: "She's Out of My Life", duration: 218, artists: [mj._id] }),
+            await upsertSong("USMJA7900008", { isrcCode: "USMJA7900008", title: "I Can't Help It", duration: 269, artists: [mj._id] }),
+            await upsertSong("USMJA7900009", { isrcCode: "USMJA7900009", title: "It's the Falling in Love", duration: 229, artists: [mj._id] }),
+            await upsertSong("USMJA7900010", { isrcCode: "USMJA7900010", title: "Burn This Disco Out", duration: 220, artists: [mj._id] })
+        ];
+
+        await seedTracksForAlbum(offTheWall, offTheWallSongs);
+
+        // ----- Thriller (1982) -----
+        console.log("A criar álbum: Thriller...");
+        const thriller = await upsertAlbum("seed-mj-thriller", {
+            mbdi: "seed-mj-thriller",
+            title: "Thriller",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png",
+            releaseYear: 1982,
             type: "LP",
-            artist: artist1._id
+            artist: mj._id
         });
 
-        // 4. Criar Álbum associado ao Anderson .Paak
-        const album3 = await upsertAlbum("59732510-a2ad-447d-bd8b-9cbdfef39f88", {
-            mbdi: "59732510-a2ad-447d-bd8b-9cbdfef39f88",
-            title: "Ventura",
-            imageUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/5/57/Anderson_Paak_-_Ventura.png/250px-Anderson_Paak_-_Ventura.png",
-            releaseYear: 2019,
+        const thrillerSongs = [
+            await upsertSong("USMJA8200001", { isrcCode: "USMJA8200001", title: "Wanna Be Startin' Somethin'", duration: 363, artists: [mj._id] }),
+            await upsertSong("USMJA8200002", { isrcCode: "USMJA8200002", title: "Baby Be Mine", duration: 260, artists: [mj._id] }),
+            await upsertSong("USMJA8200003", { isrcCode: "USMJA8200003", title: "The Girl Is Mine", duration: 222, artists: [mj._id] }),
+            await upsertSong("USMJA8200004", { isrcCode: "USMJA8200004", title: "Thriller", duration: 357, artists: [mj._id] }),
+            await upsertSong("USMJA8200005", { isrcCode: "USMJA8200005", title: "Beat It", duration: 258, artists: [mj._id] }),
+            await upsertSong("USMJA8200006", { isrcCode: "USMJA8200006", title: "Billie Jean", duration: 294, artists: [mj._id] }),
+            await upsertSong("USMJA8200007", { isrcCode: "USMJA8200007", title: "Human Nature", duration: 246, artists: [mj._id] }),
+            await upsertSong("USMJA8200008", { isrcCode: "USMJA8200008", title: "P.Y.T. (Pretty Young Thing)", duration: 239, artists: [mj._id] }),
+            await upsertSong("USMJA8200009", { isrcCode: "USMJA8200009", title: "The Lady in My Life", duration: 299, artists: [mj._id] })
+        ];
+
+        await seedTracksForAlbum(thriller, thrillerSongs);
+
+        // Thriller - Suportes Físicos
+        console.log("A criar suportes físicos do Thriller...");
+
+        const thrillerVinyl = await upsertPhysicalSupport(thriller._id, "Vinyl", {
+            type: "Vinyl",
+            album: thriller._id
+        });
+        const thrillerVinylVersions = [
+            await upsertVersion("5099750441121", { eanCode: "5099750441121", designation: "Original 1982 Black Vinyl", physicalSupport: thrillerVinyl._id }),
+            await upsertVersion("0886973266625", { eanCode: "0886973266625", designation: "25th Anniversary Edition Vinyl", physicalSupport: thrillerVinyl._id })
+        ];
+        thrillerVinyl.versions = thrillerVinylVersions.map(v => v._id);
+        await thrillerVinyl.save();
+
+        const thrillerCD = await upsertPhysicalSupport(thriller._id, "CD", {
+            type: "CD",
+            album: thriller._id
+        });
+        const thrillerCDVersions = [
+            await upsertVersion("5099750441138", { eanCode: "5099750441138", designation: "Original 1982 CD", physicalSupport: thrillerCD._id }),
+            await upsertVersion("5099750490228", { eanCode: "5099750490228", designation: "2001 Special Edition CD", physicalSupport: thrillerCD._id })
+        ];
+        thrillerCD.versions = thrillerCDVersions.map(v => v._id);
+        await thrillerCD.save();
+
+        thriller.physicalSupports = [thrillerVinyl._id, thrillerCD._id];
+        await thriller.save();
+
+        // ----- Bad (1987) -----
+        console.log("A criar álbum: Bad...");
+        const bad = await upsertAlbum("seed-mj-bad", {
+            mbdi: "seed-mj-bad",
+            title: "Bad",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/en/5/51/Michael_Jackson_-_Bad.png",
+            releaseYear: 1987,
             type: "LP",
-            artist: artist2._id
+            artist: mj._id
         });
 
-        // 5. Criar Álbum associado ao grupo
-        const album4 = await upsertAlbum("5efd4506-bf30-4f3f-a5f0-0f7a5ef1df3e", {
-            mbdi: "5efd4506-bf30-4f3f-a5f0-0f7a5ef1df3e",
-            title: "An Evening with Silk Sonic",
-            imageUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/8/8e/Silk_Sonic_-_An_Evening_with_Silk_Sonic.png/250px-Silk_Sonic_-_An_Evening_with_Silk_Sonic.png",
-            releaseYear: 2021,
+        const badSongs = [
+            await upsertSong("USMJA8700001", { isrcCode: "USMJA8700001", title: "Bad", duration: 247, artists: [mj._id] }),
+            await upsertSong("USMJA8700002", { isrcCode: "USMJA8700002", title: "The Way You Make Me Feel", duration: 299, artists: [mj._id] }),
+            await upsertSong("USMJA8700003", { isrcCode: "USMJA8700003", title: "Speed Demon", duration: 241, artists: [mj._id] }),
+            await upsertSong("USMJA8700004", { isrcCode: "USMJA8700004", title: "Liberian Girl", duration: 232, artists: [mj._id] }),
+            await upsertSong("USMJA8700005", { isrcCode: "USMJA8700005", title: "Just Good Friends", duration: 250, artists: [mj._id] }),
+            await upsertSong("USMJA8700006", { isrcCode: "USMJA8700006", title: "Another Part of Me", duration: 232, artists: [mj._id] }),
+            await upsertSong("USMJA8700007", { isrcCode: "USMJA8700007", title: "Man in the Mirror", duration: 319, artists: [mj._id] }),
+            await upsertSong("USMJA8700008", { isrcCode: "USMJA8700008", title: "I Just Can't Stop Loving You", duration: 252, artists: [mj._id] }),
+            await upsertSong("USMJA8700009", { isrcCode: "USMJA8700009", title: "Dirty Diana", duration: 281, artists: [mj._id] }),
+            await upsertSong("USMJA8700010", { isrcCode: "USMJA8700010", title: "Smooth Criminal", duration: 257, artists: [mj._id] }),
+            await upsertSong("USMJA8700011", { isrcCode: "USMJA8700011", title: "Leave Me Alone", duration: 279, artists: [mj._id] })
+        ];
+
+        await seedTracksForAlbum(bad, badSongs);
+
+        // Bad - Suportes Físicos
+        console.log("A criar suportes físicos do Bad...");
+
+        const badVinyl = await upsertPhysicalSupport(bad._id, "Vinyl", {
+            type: "Vinyl",
+            album: bad._id
+        });
+        const badVinylVersions = [
+            await upsertVersion("5099747032318", { eanCode: "5099747032318", designation: "Original 1987 Black Vinyl", physicalSupport: badVinyl._id }),
+            await upsertVersion("5099747032820", { eanCode: "5099747032820", designation: "2001 Special Edition Vinyl", physicalSupport: badVinyl._id })
+        ];
+        badVinyl.versions = badVinylVersions.map(v => v._id);
+        await badVinyl.save();
+
+        const badCD = await upsertPhysicalSupport(bad._id, "CD", {
+            type: "CD",
+            album: bad._id
+        });
+        const badCDVersions = [
+            await upsertVersion("5099747032325", { eanCode: "5099747032325", designation: "Original 1987 CD", physicalSupport: badCD._id })
+        ];
+        badCD.versions = badCDVersions.map(v => v._id);
+        await badCD.save();
+
+        bad.physicalSupports = [badVinyl._id, badCD._id];
+        await bad.save();
+
+        // ----- Dangerous (1991) -----
+        console.log("A criar álbum: Dangerous...");
+        const dangerous = await upsertAlbum("seed-mj-dangerous", {
+            mbdi: "seed-mj-dangerous",
+            title: "Dangerous",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/90/Dangerous.png",
+            releaseYear: 1991,
             type: "LP",
-            artist: groupArtist._id
+            artist: mj._id
         });
 
-        artist1.albums = [album1._id, album2._id];
-        await artist1.save();
+        const dangerousSongs = [
+            await upsertSong("USMJA9100001", { isrcCode: "USMJA9100001", title: "Jam", duration: 365, artists: [mj._id] }),
+            await upsertSong("USMJA9100002", { isrcCode: "USMJA9100002", title: "Why You Wanna Trip on Me", duration: 302, artists: [mj._id] }),
+            await upsertSong("USMJA9100003", { isrcCode: "USMJA9100003", title: "In the Closet", duration: 392, artists: [mj._id] }),
+            await upsertSong("USMJA9100004", { isrcCode: "USMJA9100004", title: "She Drives Me Wild", duration: 238, artists: [mj._id] }),
+            await upsertSong("USMJA9100005", { isrcCode: "USMJA9100005", title: "Remember the Time", duration: 244, artists: [mj._id] }),
+            await upsertSong("USMJA9100006", { isrcCode: "USMJA9100006", title: "Can't Let Her Get Away", duration: 299, artists: [mj._id] }),
+            await upsertSong("USMJA9100007", { isrcCode: "USMJA9100007", title: "Heal the World", duration: 385, artists: [mj._id] }),
+            await upsertSong("USMJA9100008", { isrcCode: "USMJA9100008", title: "Black or White", duration: 253, artists: [mj._id] }),
+            await upsertSong("USMJA9100009", { isrcCode: "USMJA9100009", title: "Who Is It", duration: 396, artists: [mj._id] }),
+            await upsertSong("USMJA9100010", { isrcCode: "USMJA9100010", title: "Give In to Me", duration: 329, artists: [mj._id] }),
+            await upsertSong("USMJA9100011", { isrcCode: "USMJA9100011", title: "Will You Be There", duration: 462, artists: [mj._id] }),
+            await upsertSong("USMJA9100012", { isrcCode: "USMJA9100012", title: "Keep the Faith", duration: 358, artists: [mj._id] }),
+            await upsertSong("USMJA9100013", { isrcCode: "USMJA9100013", title: "Gone Too Soon", duration: 179, artists: [mj._id] }),
+            await upsertSong("USMJA9100014", { isrcCode: "USMJA9100014", title: "Dangerous", duration: 420, artists: [mj._id] })
+        ];
 
-        artist2.albums = [album3._id];
-        await artist2.save();
+        await seedTracksForAlbum(dangerous, dangerousSongs);
 
-        groupArtist.members = [artist1._id, artist2._id];
-        groupArtist.albums = [album4._id];
-        await groupArtist.save();
+        // ----- Invincible (2001) -----
+        console.log("A criar álbum: Invincible...");
+        const invincible = await upsertAlbum("seed-mj-invincible", {
+            mbdi: "seed-mj-invincible",
+            title: "Invincible",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/98/Michael_Jackson_-_Invincible.png",
+            releaseYear: 2001,
+            type: "LP",
+            artist: mj._id
+        });
 
-        for (const extraArtist of extraArtists) {
-            const artist = await upsertArtist(extraArtist.artist.isni, extraArtist.artist);
-            await seedAlbumsForArtist(artist, extraArtist.albums);
-        }
+        const invincibleSongs = [
+            await upsertSong("USMJA0100001", { isrcCode: "USMJA0100001", title: "Unbreakable", duration: 386, artists: [mj._id] }),
+            await upsertSong("USMJA0100002", { isrcCode: "USMJA0100002", title: "Heartbreaker", duration: 310, artists: [mj._id] }),
+            await upsertSong("USMJA0100003", { isrcCode: "USMJA0100003", title: "Invincible", duration: 287, artists: [mj._id] }),
+            await upsertSong("USMJA0100004", { isrcCode: "USMJA0100004", title: "Break of Dawn", duration: 325, artists: [mj._id] }),
+            await upsertSong("USMJA0100005", { isrcCode: "USMJA0100005", title: "Heaven Can Wait", duration: 296, artists: [mj._id] }),
+            await upsertSong("USMJA0100006", { isrcCode: "USMJA0100006", title: "You Rock My World", duration: 341, artists: [mj._id] }),
+            await upsertSong("USMJA0100007", { isrcCode: "USMJA0100007", title: "Butterflies", duration: 278, artists: [mj._id] }),
+            await upsertSong("USMJA0100008", { isrcCode: "USMJA0100008", title: "Speechless", duration: 197, artists: [mj._id] }),
+            await upsertSong("USMJA0100009", { isrcCode: "USMJA0100009", title: "2000 Watts", duration: 284, artists: [mj._id] }),
+            await upsertSong("USMJA0100010", { isrcCode: "USMJA0100010", title: "You Are My Life", duration: 274, artists: [mj._id] }),
+            await upsertSong("USMJA0100011", { isrcCode: "USMJA0100011", title: "Privacy", duration: 300, artists: [mj._id] }),
+            await upsertSong("USMJA0100012", { isrcCode: "USMJA0100012", title: "Don't Walk Away", duration: 265, artists: [mj._id] }),
+            await upsertSong("USMJA0100013", { isrcCode: "USMJA0100013", title: "Cry", duration: 299, artists: [mj._id] }),
+            await upsertSong("USMJA0100014", { isrcCode: "USMJA0100014", title: "The Lost Children", duration: 238, artists: [mj._id] }),
+            await upsertSong("USMJA0100015", { isrcCode: "USMJA0100015", title: "Whatever Happens", duration: 299, artists: [mj._id] }),
+            await upsertSong("USMJA0100016", { isrcCode: "USMJA0100016", title: "Threatened", duration: 261, artists: [mj._id] })
+        ];
+
+        await seedTracksForAlbum(invincible, invincibleSongs);
+
+        // ----- Atualizar artista com todos os álbuns -----
+        mj.albums = [offTheWall._id, thriller._id, bad._id, dangerous._id, invincible._id];
+        await mj.save();
 
         console.log("Base de dados povoada com sucesso!");
 

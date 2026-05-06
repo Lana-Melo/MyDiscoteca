@@ -52,7 +52,19 @@ const albumSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Artist',
     required: false
-  }
+  },
+
+  // Faixas que compõem este álbum (ordenadas pelo sequentialNumber da Track).
+  tracks: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Track'
+  }],
+
+  // Distribuições físicas deste álbum (CD, Vinyl, Cassette).
+  physicalSupports: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'PhysicalSupport'
+  }]
 },
 
 // Adiciona campos createdAt e updatedAt ao esquema.
