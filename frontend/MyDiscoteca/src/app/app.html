@@ -42,7 +42,26 @@
       </p-link-pure>
     -->
       @if (isLoggedIn) {
-        <p-button-pure [routerLink]="['/user/profile']" icon="user"></p-button-pure>
+        <div class="flex items-center gap-static-sm">
+          @if (currentUserFirstName) {
+            <p-text size="small">{{ currentUserFirstName }}</p-text>
+          }
+
+          @if (showProfilePopover) {
+            <p-popover direction="bottom" [aria]="{'aria-label': 'User menu'}">
+              <p-button-pure
+                slot="button"
+                type="button"
+                icon="user">
+              </p-button-pure>
+
+              <div class="flex flex-col items-start gap-static-sm">
+                <p-button-pure type="button" icon="user" (click)="goToProfile()">Profile</p-button-pure>
+                <p-button-pure type="button" icon="close" (click)="logout()">Logout</p-button-pure>
+              </div>
+            </p-popover>
+          }
+        </div>
       }
 
     </div>
@@ -54,18 +73,21 @@
   <!-- NAVIGATION BAR -->
   @if (isLoggedIn) {
     <div class="col-full flex justify-center border-t-thin border-contrast-low py-static-sm flex justify-center min-h-[48px]">
-        @if (isNavOpen) {
-        <p-tabs-bar>
-          <p-button-pure type="button" icon="search" (click)="goToSearch()">Explore artists and albums</p-button-pure>
-          <p-button-pure type="button" icon="close" (click)="logout()">Logout</p-button-pure>
-        </p-tabs-bar>
-        }
     </div>
+    <nav aria-label="Main navigation">
+      <p-drilldown
+        [open]="isNavOpen"
+        (dismiss)="closeNav()">
+        <p-drilldown-link>
+          <a [routerLink]="['/search']" (click)="closeNav()">Explore artists and albums</a>
+        </p-drilldown-link>
+      </p-drilldown>
+    </nav>
   }
 
 </header>
 
-<main>
+<main class="pt-static-md">
   <router-outlet></router-outlet>
 </main>
 

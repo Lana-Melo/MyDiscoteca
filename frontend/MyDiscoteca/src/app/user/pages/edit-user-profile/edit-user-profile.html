@@ -20,14 +20,16 @@
             </div>
         }
 
-        <div class="col-wide grid grid-cols-subgrid">
+        <div class="col-wide grid grid-cols-subgrid gap-y-3">
 
             <div class="col-span-one-half">
                 <p-input-text label="Name" [(ngModel)]="username" name="username"></p-input-text>
+                <p-text color="contrast-medium">Use only letters and numbers.</p-text>
             </div>
 
             <div class="col-span-one-half">
                 <p-input-date label="Birth Date" [(ngModel)]="birthDate" name="birthDate"></p-input-date>
+                <p-text color="contrast-medium">User must be at least 13 years old.</p-text>
             </div>
 
             <div class="col-span-one-half">
@@ -36,6 +38,8 @@
 
             <div class="col-span-one-half">
                 <p-input-password label="New Password (optional)" name="newPassword" [(ngModel)]="newPassword" [toggle]="true"></p-input-password>
+                <p-text color="contrast-medium">Use at least 8 characters. At least one uppercase,
+                    one lowercase, and a number.</p-text>
             </div>
         </div>
 

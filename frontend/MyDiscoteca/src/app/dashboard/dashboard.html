@@ -9,6 +9,7 @@
     </div>
   } @else if (favoriteArtistId && favoriteArtistName) {
     <div class="col-narrow">
+      <p-heading size="medium" align="center">Your favorite artist 👑</p-heading>
       <app-artist-card
         [artistId]="favoriteArtistId"
         [artistName]="favoriteArtistName"

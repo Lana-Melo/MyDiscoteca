@@ -38,6 +38,10 @@
                     [artistSince]="artist.yearStarted">
                 </app-artist-card>
             </div>
+            } @empty {
+                <div class="col-basic">
+                    <p-text>No results :(</p-text>
+                </div>
             }
         } @else {
             @for (album of albumFilteredList; track album._id) {
@@ -50,7 +54,11 @@
                     [artistName]="album.artist?.name">
                 </app-album-card>
             </div>
+            } @empty {
+                <div class="col-basic">
+                    <p-text>No results :(</p-text>
+                </div>
             }
-        }
+        } 
     </div>
 </div>

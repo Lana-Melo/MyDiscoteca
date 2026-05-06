@@ -19,6 +19,7 @@ export class RegisterUser {
   favoriteArtist = '';
   showError = signal(false);
   errorMessage = signal('');
+  errorMessages = signal<string[]>([]);
 
   cd = inject(ChangeDetectorRef);
   router = inject(Router);
@@ -30,8 +31,16 @@ export class RegisterUser {
     const password = this.password;
     const birthDate = this.normalizeBirthDate(this.birthDate);
 
-    if (!username || !email || !password || !birthDate) {
-      this.errorMessage.set('Username, email, password and birth date are required.');
+    const validationMessages = this.validateRegistrationFields(
+      username,
+      email,
+      password,
+      birthDate
+    );
+
+    if (validationMessages.length > 0) {
+      this.errorMessage.set('Please fix the invalid account data.');
+      this.errorMessages.set(validationMessages);
       this.showError.set(true);
       this.cd.markForCheck();
       return;
@@ -39,6 +48,7 @@ export class RegisterUser {
 
     this.showError.set(false);
     this.errorMessage.set('');
+    this.errorMessages.set([]);
 
     const payload: RegisterUserPayload = {
       username,
@@ -50,11 +60,18 @@ export class RegisterUser {
 
     this.userService.registerUser(payload).subscribe({
       next: () => {
-        alert('User registered successfully!');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/login'], {
+          state: { successMessage: 'User registered successfully!' }
+        });
       },
       error: (err) => {
-        this.errorMessage.set(err.error?.message || 'Unable to register user.');
+        const errorMessages = this.extractErrorMessages(err);
+        this.errorMessage.set(
+          errorMessages.length > 0
+            ? 'Please fix the invalid account data.'
+            : err.error?.message || 'Unable to register user.'
+        );
+        this.errorMessages.set(errorMessages);
         this.showError.set(true);
         this.cd.markForCheck();
       }
@@ -71,5 +88,65 @@ export class RegisterUser {
     }
 
     return value.toISOString().slice(0, 10);
+  }
+
+  private validateRegistrationFields(
+    username: string,
+    email: string,
+    password: string,
+    birthDate: string
+  ): string[] {
+    const messages: string[] = [];
+
+    if (!username) {
+      messages.push('Username is required.');
+    } else if (!/^[A-Za-z0-9]+$/.test(username)) {
+      messages.push('Username can only contain letters and numbers.');
+    }
+
+    if (!email) {
+      messages.push('Email is required.');
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      messages.push('Email must be in a valid format (email@example.something).');
+    }
+
+    if (!password) {
+      messages.push('Password is required.');
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password)) {
+      messages.push('Password must have at least 8 characters, including uppercase, lowercase, and a number.');
+    }
+
+    if (!birthDate) {
+      messages.push('Birth date is required.');
+    } else if (!this.isAtLeast13YearsOld(birthDate)) {
+      messages.push('User must be at least 13 years old.');
+    }
+
+    return messages;
+  }
+
+  private isAtLeast13YearsOld(birthDateValue: string): boolean {
+    const birthDate = new Date(birthDateValue);
+
+    if (Number.isNaN(birthDate.getTime())) {
+      return false;
+    }
+
+    const today = new Date();
+    const minimumBirthDate = new Date(
+      today.getFullYear() - 13,
+      today.getMonth(),
+      today.getDate()
+    );
+
+    return birthDate <= minimumBirthDate;
+  }
+
+  private extractErrorMessages(err: any): string[] {
+    if (Array.isArray(err.error?.errors) && err.error.errors.length > 0) {
+      return err.error.errors;
+    }
+
+    return err.error?.message ? [err.error.message] : [];
   }
 }

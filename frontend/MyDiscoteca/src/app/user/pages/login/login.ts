@@ -16,10 +16,18 @@ export class Login {
   password = '';
   isLoading = false;
   errorMessage = '';
+  successMessage = '';
 
   private readonly router = inject(Router);
   private readonly userService = inject(UserService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
+  constructor() {
+    this.successMessage =
+      this.router.getCurrentNavigation()?.extras.state?.['successMessage'] ||
+      history.state?.successMessage ||
+      '';
+  }
 
   login() {
     if (!this.username || !this.password) {
@@ -29,6 +37,7 @@ export class Login {
 
     this.isLoading = true;
     this.errorMessage = '';
+    this.successMessage = '';
 
     this.userService.login({
       username: this.username,
