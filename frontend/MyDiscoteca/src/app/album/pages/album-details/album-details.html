@@ -14,34 +14,48 @@
                 (error)="handleImageError($event)"
             />
         </div>
-        <div class="col-basic grid grid-cols-subgrid">
-            <div class="col-span-one-third">
-                <p-input-text label="Release Year" [value]="album.releaseYear.toString()" [disabled]="true"></p-input-text>
-            </div>
-            <div class="col-span-one-third">
-                <p-input-text label="Type" [value]="album.type" [disabled]="true"></p-input-text>
-            </div>
-            <div class="col-span-one-third">
-                <p-input-text label="Artist" [value]="album.artist?.name ?? 'Unknown'" [disabled]="true"></p-input-text>
-            </div>
+        <div class="col-basic">
+            <p-accordion
+                heading="Details"
+                [open]="detailsOpen"
+                (update)="onDetailsUpdate($event)">
+                <div class="flex gap-2">
+                    <p-text weight="semibold">Artist:</p-text>
+                    <p-text>{{ album.artist?.name ?? 'Unknown' }}</p-text>
+                </div>
+                <div class="flex gap-2">
+                    <p-text weight="semibold">Release Year:</p-text>
+                    <p-text>{{ album.releaseYear }}</p-text>
+                </div>
+                <div class="flex gap-2">
+                    <p-text weight="semibold">Type:</p-text>
+                    <p-text>{{ album.type }}</p-text>
+                </div>
+                <div class="flex gap-2">
+                    <p-text weight="semibold">MBID:</p-text>
+                    <p-text>{{ album.mbdi }}</p-text>
+                </div>
+            </p-accordion>
         </div>
         <div class="col-basic">
             <p-divider></p-divider>
         </div>
         <div class="col-basic">
-            <p-heading align="center" size="medium">Album tracks</p-heading>
+            <p-heading align="left" size="medium">Tracks</p-heading>
         </div>
         @if (album.tracks && album.tracks.length > 0) {
             <div class="col-basic">
+                <!-- slidesPerPage: breakpoint object para tornar o carrossel responsivo (1 slide em mobile, até 5 em desktop) -->
                 <p-carousel
-                  slidesPerPage="3">
+                  [slidesPerPage]="{ base: 1, s: 2, m: 5, l: 5 }"
+                  style="--p-carousel-px: 0">
                     @for (track of album.tracks; track track._id) {
-                        <div class="h-[150px] bg-surface">
+                        <div class="h-[200px] bg-surface">
                             <div class="flex flex-col h-full box-border" style="padding: 1rem 1.5rem;">
                                 <p-text weight="semi-bold" class="shrink-0 text-center w-full">
                                     Track #{{ track.sequentialNumber }}
                                 </p-text>
-                                <div class="flex-1 flex items-center justify-center overflow-hidden">
+                                <div class="flex-1 flex items-center overflow-hidden">
                                     <p-text class="line-clamp-3">
                                         {{ track.song.title }}
                                     </p-text>
@@ -58,9 +72,12 @@
             <div class="col-basic">
                 <p-text>No tracks available.</p-text>
             </div>
-            }
+        }
         <div class="col-basic">
-            <p-heading align="center" size="medium">Album versions</p-heading>
+            <p-divider></p-divider>
+        </div>
+        <div class="col-basic">
+            <p-heading align="left" size="medium">Versions</p-heading>
         </div>
         @if (album.physicalSupports && album.physicalSupports.length > 0) {
             <div class="col-basic">
@@ -73,8 +90,10 @@
                             @for (version of support.versions; track version._id; let last = $last) {
                                 <div class="grid grid-cols-2 items-center gap-4">
                                     <div>
-                                        <p-text weight="semi-bold" color="contrast-medium">Version: {{ version.designation }}</p-text>
-                                        <p-text color="contrast-medium">EAN: {{ version.eanCode }}</p-text>
+                                        <p-text weight="semi-bold" color="contrast-medium">Version EAN:{{ version.eanCode }}</p-text>
+                                        @if (support.versions.length > 1) {
+                                            <p-text color="contrast-medium">Details: {{ version.designation }}</p-text>
+                                        }  
                                     </div>
                                     <div class="flex justify-end">
                                         <p-button

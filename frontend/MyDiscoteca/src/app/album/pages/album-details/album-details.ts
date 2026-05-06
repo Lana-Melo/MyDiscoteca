@@ -26,6 +26,7 @@ export class AlbumDetails implements OnInit {
   albumService: AlbumService = inject(AlbumService);
 
   album: AlbumInfo | undefined;
+  detailsOpen = false;
   openAccordions: Record<string, boolean> = {};
 
   ngOnInit(): void {
@@ -46,6 +47,11 @@ export class AlbumDetails implements OnInit {
     const img = event.target as HTMLImageElement | null;
     if (!img) return;
     img.src = '/api/media/placeholders/album.svg';
+  }
+
+  onDetailsUpdate(event: CustomEvent<{ open: boolean }>): void {
+    this.detailsOpen = event.detail.open;
+    this.changeDetectorRef.markForCheck();
   }
 
   onAccordionUpdate(id: string, event: CustomEvent<{ open: boolean }>): void {
