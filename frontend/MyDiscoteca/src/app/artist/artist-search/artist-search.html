@@ -24,6 +24,12 @@
                 [artistSince]="artist.yearStarted">
             </app-artist-card>
         </div>
+        } @empty {
+            @if (hasSearched) {
+                <div class="col-wide">
+                    <p-text>No results :(</p-text>
+                </div>
+            }
         }
     </div>
 </div>

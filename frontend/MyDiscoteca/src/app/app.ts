@@ -39,8 +39,12 @@ export class App implements OnInit {
     this.isNavOpen = !this.isNavOpen;
   }
 
-  goToArtists() {
+  closeNav() {
     this.isNavOpen = false;
+  }
+
+  goToArtists() {
+    this.closeNav();
     this.router.navigate(['/artists']);
   }
 

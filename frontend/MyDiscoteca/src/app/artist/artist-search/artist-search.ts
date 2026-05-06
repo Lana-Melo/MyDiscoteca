@@ -14,6 +14,7 @@ import { ArtistService } from '../../services/artist.service';
 export class ArtistSearch implements OnInit {
   artistList: ArtistInfo[] = [];
   artistFilteredList: ArtistInfo[] = [];
+  hasSearched = false;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   artistService: ArtistService = inject(ArtistService);
@@ -29,10 +30,13 @@ export class ArtistSearch implements OnInit {
   filter(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     if (!value) {
+      this.hasSearched = false;
       this.artistFilteredList = this.artistList;
       this.changeDetectorRef.markForCheck();
       return;
     }
+
+    this.hasSearched = true;
     // Usa o endpoint de pesquisa do backend
     this.artistService.searchArtists(value).subscribe((artists: ArtistInfo[]) => {
       this.artistFilteredList = artists;
