@@ -33,6 +33,38 @@ function isAtLeast13YearsOld(birthDate) {
   return birthDate <= minimumBirthDate;
 }
 
+const userAlbumVersionCollectionItemSchema = new mongoose.Schema(
+  {
+    album: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Album',
+      required: true
+    },
+    ean13: {
+      type: String,
+      required: true,
+      trim: true,
+      match: [/^\d{13}$/, 'EAN-13 must contain exactly 13 digits.']
+    },
+    physicalFormat: {
+      type: String,
+      required: true,
+      enum: ['CD', 'vinyl', 'cassette']
+    },
+    designation: {
+      type: String,
+      trim: true,
+      default: null
+    },
+    addedAt: {
+      type: Date,
+      default: Date.now
+    }
+  },
+  { _id: true }
+);
+
+
 // Esquema que representa um utilizador.
 const userSchema = new mongoose.Schema(
   {
@@ -89,6 +121,11 @@ const userSchema = new mongoose.Schema(
     albumLists: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: 'AlbumList',
+      default: []
+    },
+
+    albumVersionCollection: {
+      type: [userAlbumVersionCollectionItemSchema],
       default: []
     }
   },
