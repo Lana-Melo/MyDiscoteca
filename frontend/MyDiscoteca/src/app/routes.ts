@@ -8,6 +8,7 @@ import { ArtistDetails } from './artist/pages/artist-details/artist-details';
 import { ArtistAndAlbumSearch } from './search/artist-and-album-search/artist-and-album-search';
 import { authGuard } from './auth.guard';
 import { RegisterUser } from './user/pages/register-user/register-user';
+import { NewAlbumVersionRequest } from './contribution/new-album-request';
 
 const routeConfig: Routes = [
   {
@@ -35,6 +36,12 @@ const routeConfig: Routes = [
     path: 'search',
     component: ArtistAndAlbumSearch,
     title: 'Search',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'contributions/album-version/new',
+    component: NewAlbumVersionRequest,
+    title: 'Contributte with a New Album Version',
     canActivate: [authGuard],
   },
   {
