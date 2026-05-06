@@ -5,7 +5,6 @@
 // Para usar os modelos definidos em Mongoose.
 const User = require('../models/userModel');
 const Artist = require('../models/artistModel');
-const Album = require('../models/albumModel');
 
 // Para cifrar dados, em particular senhas de utilizadores.
 const bcrypt = require('bcrypt');
@@ -32,40 +31,8 @@ function buildUserResponse(userDocument) {
     birthDate: userDocument.birthDate,
     favoriteArtist: userDocument.favoriteArtist,
     albumLists: userDocument.albumLists,
-    albumVersionCollection: (userDocument.albumVersionCollection || []).map(
-      buildAlbumVersionCollectionItemResponse
-    ),
     createdAt: userDocument.createdAt,
     updatedAt: userDocument.updatedAt
-  };
-}
-
-function buildAlbumVersionCollectionItemResponse(collectionItem) {
-  return {
-    id: collectionItem.id,
-    album: collectionItem.album && typeof collectionItem.album === 'object'
-      ? {
-          id: collectionItem.album.id,
-          mbdi: collectionItem.album.mbdi,
-          title: collectionItem.album.title,
-          imageUrl: collectionItem.album.imageUrl,
-          releaseYear: collectionItem.album.releaseYear,
-          type: collectionItem.album.type,
-          artist: collectionItem.album.artist && typeof collectionItem.album.artist === 'object'
-            ? {
-                id: collectionItem.album.artist.id,
-                isni: collectionItem.album.artist.isni,
-                name: collectionItem.album.artist.name,
-                imageUrl: collectionItem.album.artist.imageUrl,
-                type: collectionItem.album.artist.type
-              }
-            : null
-        }
-      : collectionItem.album,
-    ean13: collectionItem.ean13,
-    physicalFormat: collectionItem.physicalFormat,
-    designation: collectionItem.designation,
-    addedAt: collectionItem.addedAt
   };
 }
 
@@ -253,85 +220,6 @@ exports.getMe = async (req, res) => {
       error,
       res,
       'Server error while fetching the user profile.'
-    );
-  }
-};
-
-exports.removeAlbumVersionFromCollection = async (req, res) => {
-  try {
-    const userId = resolveAuthenticatedUserId(req);
-    const collectionItemId = req.params.itemId;
-
-    if (!userId) {
-      return res.status(401).json({
-        success: false,
-        message: 'Could not identify the authenticated user.'
-      });
-    }
-
-    if (!collectionItemId) {
-      return res.status(400).json({
-        success: false,
-        message: 'Collection item id is required.'
-      });
-    }
-
-    const user = await User.findById(userId)
-      .populate('favoriteArtist', 'isni name imageUrl yearStarted type')
-      .populate({
-        path: 'albumVersionCollection.album',
-        select: 'mbdi title imageUrl releaseYear type artist',
-        populate: {
-          path: 'artist',
-          select: 'isni name imageUrl type'
-        }
-      });
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found.'
-      });
-    }
-
-    const collectionItemIndex = user.albumVersionCollection.findIndex(
-      (collectionItem) => String(collectionItem._id) === collectionItemId
-    );
-
-    if (collectionItemIndex === -1) {
-      return res.status(404).json({
-        success: false,
-        message: 'Collection item not found.'
-      });
-    }
-
-    const removedItem = user.albumVersionCollection[collectionItemIndex];
-
-    user.albumVersionCollection.splice(collectionItemIndex, 1);
-
-    await user.populate('favoriteArtist', 'isni name imageUrl yearStarted type');
-    await user.populate({
-      path: 'albumVersionCollection.album',
-      select: 'mbdi title imageUrl releaseYear type artist',
-      populate: {
-        path: 'artist',
-        select: 'isni name imageUrl type'
-      }
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: 'Album version removed from the user collection successfully.',
-      removedItem: buildAlbumVersionCollectionItemResponse(removedItem),
-      collection: user.albumVersionCollection.map(
-        buildAlbumVersionCollectionItemResponse
-      )
-    });
-  } catch (error) {
-    return handleUserError(
-      error,
-      res,
-      'Server error while removing the album version from the user collection.'
     );
   }
 };

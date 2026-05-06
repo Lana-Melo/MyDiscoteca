@@ -23,9 +23,6 @@ router.get('/me', userController.getMe);
 // Rota para atualizar o perfil do utilizador autenticado.
 router.put('/me', userController.updateMe);
 
-// Rota para remover uma versao de album da colecao do utilizador autenticado.
-router.delete('/me/collection/:itemId', userController.removeAlbumVersionFromCollection);
-
 module.exports = router;
 
 // -----
