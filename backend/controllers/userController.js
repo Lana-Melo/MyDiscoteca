@@ -109,17 +109,35 @@ exports.create = async (req, res) => {
       albumLists
     } = req.body;
 
+    const normalizedUsername =
+      typeof username === 'string' ? username.trim() : '';
+    const normalizedEmail =
+      typeof email === 'string' ? email.trim().toLowerCase() : '';
+    const validationMessages = User.validateUserRequirements({
+      username: normalizedUsername,
+      email: normalizedEmail,
+      password,
+      birthDate
+    });
+
     if (!username || !email || !password || !birthDate) {
       return res.status(400).json({
         success: false,
-        message: 'Username, email, password, and birthDate are required.'
+        message: 'Username, email, password, and birthDate are required.',
+        errors: validationMessages
       });
     }
 
-    const normalizedEmail = email.trim().toLowerCase();
+    if (validationMessages.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'User data does not meet the requirements.',
+        errors: validationMessages
+      });
+    }
 
     const existingUser = await User.findOne({
-      $or: [{ username }, { email: normalizedEmail }]
+      $or: [{ username: normalizedUsername }, { email: normalizedEmail }]
     });
 
     if (existingUser) {
@@ -146,7 +164,7 @@ exports.create = async (req, res) => {
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
     const newUser = new User({
-      username,
+      username: normalizedUsername,
       email: normalizedEmail,
       passwordHash,
       birthDate,
@@ -266,9 +284,29 @@ exports.updateMe = async (req, res) => {
       }
     }
 
-    if (username !== undefined && username !== user.username) {
+    const normalizedUsername =
+      typeof username === 'string' ? username.trim() : username;
+    const normalizedEmail =
+      typeof email === 'string' ? email.trim().toLowerCase() : email;
+
+    const validationMessages = User.validateUserRequirements({
+      username: normalizedUsername,
+      email: normalizedEmail,
+      password: passwordToUpdate,
+      birthDate
+    });
+
+    if (validationMessages.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'User data does not meet the requirements.',
+        errors: validationMessages
+      });
+    }
+
+    if (normalizedUsername !== undefined && normalizedUsername !== user.username) {
       const usernameInUse = await User.findOne({
-        username,
+        username: normalizedUsername,
         _id: { $ne: userId }
       });
 
@@ -279,12 +317,10 @@ exports.updateMe = async (req, res) => {
           });
         }
 
-      user.username = username;
+      user.username = normalizedUsername;
     }
 
     if (email !== undefined) {
-      const normalizedEmail = email.trim().toLowerCase();
-
       if (normalizedEmail !== user.email) {
         const emailInUse = await User.findOne({
           email: normalizedEmail,

@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ArtistAlbum, ArtistInfo } from '../../models/artist';
-import { UserService } from '../../services/user.service';
-import { UserInfo } from '../../models/user';
-import { ArtistService } from '../../services/artist.service';
+import { ArtistAlbum, ArtistInfo } from '../../../models/artist';
+import { UserService } from '../../../services/user.service';
+import { UserInfo } from '../../../models/user';
+import { ArtistService } from '../../../services/artist.service';
 
 @Component({
   selector: 'artist-details',
@@ -13,7 +13,7 @@ import { ArtistService } from '../../services/artist.service';
   template: `
     <div class="grid-template">
       <div class="col-wide">
-        <p-button-pure icon="arrow-left" [routerLink]="['/artists']">Back to artists</p-button-pure>
+        <p-button-pure icon="arrow-left" [routerLink]="['/search']">Back to search</p-button-pure>
       </div>
       @if (artist) {
       <div class="col-wide">
@@ -91,6 +91,20 @@ import { ArtistService } from '../../services/artist.service';
       </div>
       }
       }
+      <p-modal [open]="overwriteFavoriteOpen" [aria]="{'aria-label': 'Overwrite favorite artist'}" (dismiss)="cancelOverwriteFavorite()">
+        <p-heading slot="header" size="large" tag="h2">
+          Favorite artist
+        </p-heading>
+
+        <p-text>
+          You already have {{ currentFavoriteArtistName }} as your favorite artist, do you want to overwrite?
+        </p-text>
+
+        <p-button-group slot="footer">
+          <p-button type="button" (click)="confirmOverwriteFavorite()">yes, overwrite</p-button>
+          <p-button type="button" variant="secondary" (click)="cancelOverwriteFavorite()">no, cancel</p-button>
+        </p-button-group>
+      </p-modal>
     </div>
   `,
   styles: `
@@ -133,6 +147,8 @@ export class ArtistDetails implements OnInit {
   isSavingFavorite = false;
   favoriteMessage = '';
   favoriteError = '';
+  overwriteFavoriteOpen = false;
+  pendingFavoriteArtistId: string | null = null;
 
   get visibleAlbums(): ArtistAlbum[] {
     return (this.artist?.albums ?? [])
@@ -169,7 +185,54 @@ export class ArtistDetails implements OnInit {
       return;
     }
 
-    const favoriteArtist = this.isFavorite ? null : artistId;
+    if (this.isFavorite) {
+      this.saveFavoriteArtist(null);
+      return;
+    }
+
+    if (this.user?.favoriteArtist) {
+      this.pendingFavoriteArtistId = artistId;
+      this.overwriteFavoriteOpen = true;
+      this.favoriteMessage = '';
+      this.favoriteError = '';
+      this.changeDetectorRef.markForCheck();
+      return;
+    }
+
+    this.saveFavoriteArtist(artistId);
+  }
+
+  confirmOverwriteFavorite() {
+    if (!this.pendingFavoriteArtistId) {
+      return;
+    }
+
+    this.overwriteFavoriteOpen = false;
+    this.saveFavoriteArtist(this.pendingFavoriteArtistId);
+    this.pendingFavoriteArtistId = null;
+  }
+
+  cancelOverwriteFavorite() {
+    this.overwriteFavoriteOpen = false;
+    this.pendingFavoriteArtistId = null;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  get currentFavoriteArtistName(): string {
+    const favoriteArtist = this.user?.favoriteArtist;
+
+    if (!favoriteArtist) {
+      return '';
+    }
+
+    if (typeof favoriteArtist === 'string') {
+      return favoriteArtist;
+    }
+
+    return favoriteArtist.name;
+  }
+
+  private saveFavoriteArtist(favoriteArtist: string | null) {
     this.isSavingFavorite = true;
     this.favoriteMessage = '';
     this.favoriteError = '';

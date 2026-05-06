@@ -107,9 +107,9 @@ export class EditUserProfile implements OnInit {
       next: () => {
         this.successMessage = 'Profile updated successfully!';
         this.isLoading = false;
-        setTimeout(() => {
-          this.router.navigate(['/user/profile']);
-        }, 1500);
+        this.router.navigate(['/user/profile'], {
+          state: { successMessage: this.successMessage }
+        });
       },
       error: (err) => {
         this.showWarning(this.extractWarningMessages(err));

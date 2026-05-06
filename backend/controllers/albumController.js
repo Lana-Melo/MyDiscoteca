@@ -123,6 +123,36 @@ exports.getById = async (req, res) => {
     }
 }
 
+// Search albums by title.
+exports.searchAlbums = async (req, res) => {
+    try {
+        const { q } = req.query;
+
+        if (!q) {
+            return res.status(400).json({
+                success: false,
+                message: 'Query parameter q is required.'
+            });
+        }
+
+        const albums = await Album.find({
+            title: { $regex: q, $options: 'i' }
+        }).populate('artist', 'isni name type imageUrl');
+
+        res.status(200).json({
+            success: true,
+            message: 'Album search results retrieved successfully.',
+            albums: albums
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server error while searching albums.'
+        });
+    }
+}
+
 // Deletar um álbum pelo seu id.
 exports.delete = async (req, res) => {
     try {

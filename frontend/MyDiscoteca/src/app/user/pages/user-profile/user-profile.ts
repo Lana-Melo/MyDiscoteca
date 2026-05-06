@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { UserService } from '../../../services/user.service';
 import { UserInfo } from '../../../models/user';
@@ -13,12 +13,18 @@ import { UserInfo } from '../../../models/user';
 export class UserProfile implements OnInit {
   private readonly userService = inject(UserService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
 
   user: UserInfo | undefined;
   isLoading = true;
   errorMessage = '';
+  successMessage = '';
 
   ngOnInit(): void {
+    this.successMessage =
+      this.router.getCurrentNavigation()?.extras.state?.['successMessage'] ||
+      history.state?.successMessage ||
+      '';
     this.loadCurrentUserProfile();
   }
 
