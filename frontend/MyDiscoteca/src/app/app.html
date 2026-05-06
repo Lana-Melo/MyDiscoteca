@@ -42,7 +42,26 @@
       </p-link-pure>
     -->
       @if (isLoggedIn) {
-        <p-button-pure [routerLink]="['/user/profile']" icon="user"></p-button-pure>
+        <div class="flex items-center gap-static-sm">
+          @if (currentUserFirstName) {
+            <p-text size="small">{{ currentUserFirstName }}</p-text>
+          }
+
+          @if (showProfilePopover) {
+            <p-popover direction="bottom" [aria]="{'aria-label': 'User menu'}">
+              <p-button-pure
+                slot="button"
+                type="button"
+                icon="user">
+              </p-button-pure>
+
+              <div class="flex flex-col items-start gap-static-sm">
+                <p-button-pure type="button" icon="user" (click)="goToProfile()">Profile</p-button-pure>
+                <p-button-pure type="button" icon="close" (click)="logout()">Logout</p-button-pure>
+              </div>
+            </p-popover>
+          }
+        </div>
       }
 
     </div>
@@ -57,7 +76,6 @@
         @if (isNavOpen) {
         <p-tabs-bar>
           <p-button-pure type="button" icon="search" (click)="goToArtists()">Explore artists</p-button-pure>
-          <p-button-pure type="button" icon="close" (click)="logout()">Logout</p-button-pure>
         </p-tabs-bar>
         }
     </div>
