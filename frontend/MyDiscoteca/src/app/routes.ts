@@ -8,6 +8,7 @@ import { ArtistDetails } from './artist/artist-details/artist-details';
 import { ArtistSearch } from './artist/artist-search/artist-search';
 import { authGuard } from './auth.guard';
 import { RegisterUser } from './user/pages/register-user/register-user';
+import { UserCollection } from './user/pages/user-collection/user-collection';
 
 const routeConfig: Routes = [
   {
@@ -47,6 +48,12 @@ const routeConfig: Routes = [
     path: 'user/profile/edit',
     component: EditUserProfile,
     title: 'Edit User Profile',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'user/collection',
+    component: UserCollection,
+    title: 'My Album Collection',
     canActivate: [authGuard],
   },
   {

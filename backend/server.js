@@ -104,6 +104,12 @@ const albumRoutes = require('./routes/albumRoutes');
 // As rotas sobre álbuns têm todas o prefixo /api/albums.
 app.use('/api/albums', albumRoutes);
 
+// Importar as rotas que a API expõe sobre a coleção de álbuns
+const albumCollectionRoutes = require('./routes/albumCollectionRoutes');
+
+// As rotas sobre a coleção de álbuns têm todas o prefixo /api/album-collection.
+app.use('/api/album-collection', albumCollectionRoutes);
+
 // -----
 
 // Faz a ligação à base de dados MongoDB.
