@@ -62,6 +62,12 @@ exports.create = async (req, res) => {
         });
 
     } catch (error) {
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({
+                success: false,
+                message: Object.values(error.errors).map(e => e.message).join(' ')
+            });
+        }
         res.status(500).json({
             success: false,
             message: 'Erro do servidor durante o registo de um álbum.'

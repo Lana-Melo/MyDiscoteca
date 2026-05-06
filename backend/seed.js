@@ -115,6 +115,11 @@ const seedDatabase = async () => {
         await mongoose.connect(DB_URI);
         console.log("Ligação bem sucedida ao MongoDB para povoamento.");
 
+        if (process.env.DROP_DB === 'true') {
+            await mongoose.connection.dropDatabase();
+            console.log("Base de dados limpa (DROP_DB=true).");
+        }
+
         // ----- Michael Jackson -----
         console.log("A criar artista: Michael Jackson...");
         const mj = await upsertArtist("0000000121707484", {
@@ -127,8 +132,8 @@ const seedDatabase = async () => {
 
         // ----- Off the Wall (1979) -----
         console.log("A criar álbum: Off the Wall...");
-        const offTheWall = await upsertAlbum("seed-mj-off-the-wall", {
-            mbdi: "seed-mj-off-the-wall",
+        const offTheWall = await upsertAlbum("a0d9d43c-46eb-4e17-a5b2-0b18f1e8b2cb", {
+            mbdi: "a0d9d43c-46eb-4e17-a5b2-0b18f1e8b2cb",
             title: "Off the Wall",
             imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/90/Offthewall.jpg",
             releaseYear: 1979,
@@ -153,8 +158,8 @@ const seedDatabase = async () => {
 
         // ----- Thriller (1982) -----
         console.log("A criar álbum: Thriller...");
-        const thriller = await upsertAlbum("seed-mj-thriller", {
-            mbdi: "seed-mj-thriller",
+        const thriller = await upsertAlbum("b10bbbfc-cf9e-4200-be17-e2c3e1d2600d", {
+            mbdi: "b10bbbfc-cf9e-4200-be17-e2c3e1d2600d",
             title: "Thriller",
             imageUrl: "https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png",
             releaseYear: 1982,
@@ -206,8 +211,8 @@ const seedDatabase = async () => {
 
         // ----- Bad (1987) -----
         console.log("A criar álbum: Bad...");
-        const bad = await upsertAlbum("seed-mj-bad", {
-            mbdi: "seed-mj-bad",
+        const bad = await upsertAlbum("94a0b5b9-3b35-4a11-8f5d-f5f9e6c9f27b", {
+            mbdi: "94a0b5b9-3b35-4a11-8f5d-f5f9e6c9f27b",
             title: "Bad",
             imageUrl: "https://upload.wikimedia.org/wikipedia/en/5/51/Michael_Jackson_-_Bad.png",
             releaseYear: 1987,
@@ -260,8 +265,8 @@ const seedDatabase = async () => {
 
         // ----- Dangerous (1991) -----
         console.log("A criar álbum: Dangerous...");
-        const dangerous = await upsertAlbum("seed-mj-dangerous", {
-            mbdi: "seed-mj-dangerous",
+        const dangerous = await upsertAlbum("b7a77143-e2a8-4cec-96b7-3b1d1d4a5e9e", {
+            mbdi: "b7a77143-e2a8-4cec-96b7-3b1d1d4a5e9e",
             title: "Dangerous",
             imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/90/Dangerous.png",
             releaseYear: 1991,
@@ -290,8 +295,8 @@ const seedDatabase = async () => {
 
         // ----- Invincible (2001) -----
         console.log("A criar álbum: Invincible...");
-        const invincible = await upsertAlbum("seed-mj-invincible", {
-            mbdi: "seed-mj-invincible",
+        const invincible = await upsertAlbum("8e6c5f3c-9e7e-4a5d-8f5d-c3b9e6c9f27b", {
+            mbdi: "8e6c5f3c-9e7e-4a5d-8f5d-c3b9e6c9f27b",
             title: "Invincible",
             imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/98/Michael_Jackson_-_Invincible.png",
             releaseYear: 2001,

@@ -9,12 +9,19 @@ const mongoose = require('mongoose');
 
 // Esquema que representa um álbum.
 const albumSchema = new mongoose.Schema({
-  // MBDI: MusicBrainz Database Identifier ou código único.
+  // MBID: MusicBrainz Identifier — UUID de 36 caracteres no formato xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.
   mbdi: {
     type: String,
     required: true,
     unique: true,
-    trim: true
+    trim: true,
+    lowercase: true,
+    minlength: [36, 'MBID deve ter exatamente 36 caracteres.'],
+    maxlength: [36, 'MBID deve ter exatamente 36 caracteres.'],
+    match: [
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+      'MBID deve ser um UUID válido no formato xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.'
+    ]
   },
 
   // Título do álbum.
