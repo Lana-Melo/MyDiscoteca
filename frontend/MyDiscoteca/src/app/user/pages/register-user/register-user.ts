@@ -60,8 +60,9 @@ export class RegisterUser {
 
     this.userService.registerUser(payload).subscribe({
       next: () => {
-        alert('User registered successfully!');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/login'], {
+          state: { successMessage: 'User registered successfully!' }
+        });
       },
       error: (err) => {
         const errorMessages = this.extractErrorMessages(err);

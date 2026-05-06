@@ -8,6 +8,11 @@
       <p-inline-notification headingTag="h2" state="error" heading="Login failed" [description]="errorMessage" [dismissButton]="false"></p-inline-notification>
     </div>
   }
+  @if (successMessage) {
+    <div class="col-narrow">
+      <p-inline-notification headingTag="h2" state="success" heading="Registration complete" [description]="successMessage" [dismissButton]="false"></p-inline-notification>
+    </div>
+  }
 
   <div class="col-narrow">
       <p-input-text label="Username" [(ngModel)]="username" name="username"></p-input-text>
