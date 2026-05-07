@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3001
 
 # Seed the database and start the server
-CMD ["sh", "-c", "node seed.js && node server.js"]
+CMD ["sh", "docker-entrypoint.sh"]

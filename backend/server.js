@@ -104,6 +104,9 @@ const albumRoutes = require('./routes/albumRoutes');
 // As rotas sobre álbuns têm todas o prefixo /api/albums.
 app.use('/api/albums', albumRoutes);
 
+const contributionRoutes = require('./routes/contributionRoutes');
+app.use('/api/contributions', contributionRoutes);
+
 // -----
 
 // Faz a ligação à base de dados MongoDB.

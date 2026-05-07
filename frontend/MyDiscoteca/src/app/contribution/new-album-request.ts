@@ -9,10 +9,10 @@ import { ContributionService } from '../services/contribution.service';
 type PhysicalSupportOption = 'CD' | 'Vinyl' | 'Cassette';
 
 @Component({
-  selector: 'app-new-album-version-request',
+  selector: 'app-new-album-request',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, PorscheDesignSystemModule],
-  templateUrl: './new-album-version-request.html',
+  templateUrl: './new-album-request.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewAlbumVersionRequest {
