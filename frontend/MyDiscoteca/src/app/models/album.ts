@@ -9,6 +9,29 @@ export interface AlbumArtist {
   imageUrl?: string;
 }
 
+export interface AlbumSong {
+  title: string;
+  duration: number;
+}
+
+export interface AlbumTrack {
+  _id: string;
+  sequentialNumber: number;
+  song: AlbumSong;
+}
+
+export interface AlbumVersion {
+  _id: string;
+  eanCode: string;
+  designation: string;
+}
+
+export interface AlbumPhysicalSupport {
+  _id: string;
+  type: 'CD' | 'Vinyl' | 'Cassette';
+  versions: AlbumVersion[];
+}
+
 export interface AlbumInfo {
   _id?: string;
   id?: string;
@@ -18,6 +41,8 @@ export interface AlbumInfo {
   releaseYear: number;
   type: 'single' | 'EP' | 'LP';
   artist?: AlbumArtist;
+  tracks?: AlbumTrack[];
+  physicalSupports?: AlbumPhysicalSupport[];
 }
 
 export interface AlbumsApiResponse {

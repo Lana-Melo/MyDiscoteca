@@ -5,10 +5,10 @@ import { EditUserProfile } from './user/pages/edit-user-profile/edit-user-profil
 import { Login } from './user/pages/login/login';
 import { ArtistAlbums } from './artist/pages/artist-albums/artist-albums';
 import { ArtistDetails } from './artist/pages/artist-details/artist-details';
+import { AlbumDetails } from './album/pages/album-details/album-details';
 import { ArtistAndAlbumSearch } from './search/artist-and-album-search/artist-and-album-search';
 import { authGuard } from './auth.guard';
 import { RegisterUser } from './user/pages/register-user/register-user';
-import { NewAlbumVersionRequest } from './contribution/new-album-request';
 
 const routeConfig: Routes = [
   {
@@ -39,12 +39,6 @@ const routeConfig: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'contributions/album-version/new',
-    component: NewAlbumVersionRequest,
-    title: 'Contributte with a New Album Version',
-    canActivate: [authGuard],
-  },
-  {
     path: 'user/profile',
     component: UserProfile,
     title: 'User Profile',
@@ -54,6 +48,12 @@ const routeConfig: Routes = [
     path: 'user/profile/edit',
     component: EditUserProfile,
     title: 'Edit User Profile',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'album/details/:id',
+    component: AlbumDetails,
+    title: 'Album Details',
     canActivate: [authGuard],
   },
   {

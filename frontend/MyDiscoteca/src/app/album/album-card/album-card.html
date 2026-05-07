@@ -1,6 +1,8 @@
-<p-button-tile label="See more" [description]="albumTitle() ?? ''">
-    <img [src]="albumImg()" [alt]="albumTitle() ?? 'Album cover'" (error)="handleImageError($event)" />
-    <p-text slot="footer" theme="dark">
-        {{artistName() ?? 'Unknown artist'}}, {{ albumYear() }}
-    </p-text>
-</p-button-tile>
+<a [routerLink]="['/album/details', albumId()]">
+    <p-button-tile label="See more" [description]="albumTitle() ?? ''">
+        <img [src]="albumImg()" [alt]="albumTitle() ?? 'Album cover'" (error)="handleImageError($event)" />
+        <p-text slot="footer" theme="dark">
+            {{artistName() ?? 'Unknown artist'}}, {{ albumYear() }}
+        </p-text>
+    </p-button-tile>
+</a>

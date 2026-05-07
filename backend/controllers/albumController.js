@@ -62,6 +62,12 @@ exports.create = async (req, res) => {
         });
 
     } catch (error) {
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({
+                success: false,
+                message: Object.values(error.errors).map(e => e.message).join(' ')
+            });
+        }
         res.status(500).json({
             success: false,
             message: 'Erro do servidor durante o registo de um álbum.'
@@ -92,7 +98,18 @@ exports.getAll = async (req, res) => {
 exports.getById = async (req, res) => {
     try {
         const id = req.params.id;
-        const album = await Album.findById(id).populate('artist', 'isni name type imageUrl');
+        const album = await Album.findById(id)
+            .populate('artist', 'isni name type imageUrl')
+            .populate({
+                path: 'tracks',
+                select: 'sequentialNumber song',
+                populate: { path: 'song', select: 'title duration' }
+            })
+            .populate({
+                path: 'physicalSupports',
+                select: 'type versions',
+                populate: { path: 'versions', select: 'eanCode designation' }
+            });
 
         if (!album) {
             return res.status(404).json({
@@ -111,7 +128,9 @@ exports.getById = async (req, res) => {
                 imageUrl: album.imageUrl,
                 releaseYear: album.releaseYear,
                 type: album.type,
-                artist: album.artist
+                artist: album.artist,
+                tracks: album.tracks,
+                physicalSupports: album.physicalSupports
             }
         });
 
