@@ -12,6 +12,7 @@ export interface AlbumVersionRequestPayload {
 export interface AlbumVersionRequestResponse {
   _id: string;
   albumId: string;
+  albumTitle?: string;
   eanCode: string;
   physicalSupport: 'CD' | 'Vinyl' | 'Cassette';
   designation?: string;
@@ -34,8 +35,8 @@ export class ContributionService {
     );
   }
 
-  getMyRequests(): Observable<AlbumVersionRequestResponse[]> {
-    return this.http.get<AlbumVersionRequestResponse[]>(
+  getMyRequests(): Observable<any> {
+    return this.http.get<any>(
       `${this.baseUrl}/album-version/my-requests`
     );
   }

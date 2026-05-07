@@ -1,0 +1,99 @@
+<div class="grid-template">
+  <div class="col-wide">
+    <p-button-pure icon="arrow-left" [routerLink]="['/dashboard']">
+      Back to dashboard
+    </p-button-pure>
+  </div>
+
+  <div class="col-wide text-center">
+    <p-heading align="center" size="large">My Album Version Requests</p-heading>
+    <p-text color="contrast-medium">
+      Track the status of your submitted album version requests.
+    </p-text>
+  </div>
+
+  <!-- Filtro por estado -->
+  <div class="col-narrow">
+    <label class="flex flex-col gap-2">
+      <p-text tag="span">Filter by status</p-text>
+      <select
+        class="rounded border border-neutral-300 px-3 py-2"
+        [(ngModel)]="selectedStatus"
+        name="selectedStatus"
+        (ngModelChange)="onStatusFilterChange()">
+        <option value="">All</option>
+        <option value="em análise">Em análise</option>
+        <option value="aceite">Aceite</option>
+        <option value="recusado">Recusado</option>
+      </select>
+    </label>
+  </div>
+
+  <!-- Estado de carregamento -->
+  @if (isLoading) {
+    <div class="col-narrow text-center">
+      <p-spinner></p-spinner>
+    </div>
+  }
+
+  <!-- Erro ao carregar -->
+  @if (showError) {
+    <div class="col-narrow">
+      <p-inline-notification
+        headingTag="h2"
+        state="error"
+        heading="Unable to load requests"
+        description="An error occurred while fetching your requests. Please try again."
+        [dismissButton]="false">
+      </p-inline-notification>
+    </div>
+  }
+
+  <!-- Sem pedidos -->
+  @if (!isLoading && !showError && filteredRequests.length === 0) {
+    <div class="col-narrow text-center">
+      <p-text color="contrast-medium">
+        {{ selectedStatus ? 'No requests found with the selected status.' : 'You have not submitted any requests yet.' }}
+      </p-text>
+    </div>
+  }
+
+  <!-- Lista de pedidos -->
+  @if (!isLoading && filteredRequests.length > 0) {
+    <div class="col-narrow flex flex-col gap-4">
+      @for (request of filteredRequests; track request._id) {
+        <div class="rounded border border-neutral-200 p-4 flex flex-col gap-2">
+
+          <div class="flex items-center justify-between">
+            <p-heading size="small">{{ request.albumTitle ?? request.albumId }}</p-heading>
+            <p-text [style]="'color: ' + getStatusTextColor(request.status)">
+            {{ request.status }}
+            </p-text>
+          </div>
+
+          <p-text color="contrast-medium" size="x-small">
+            ID: {{ request._id }}
+          </p-text>
+
+          <p-text>
+            Designation: {{ request.designation || 'No designation provided' }}
+          </p-text>
+
+          <p-text>
+            Physical support: {{ request.physicalSupport }}
+          </p-text>
+
+          <p-text>
+            EAN-13: {{ request.eanCode }}
+          </p-text>
+
+          <p-text color="contrast-medium" size="small">
+            Submitted on: {{ request.createdAt | date:'dd/MM/yyyy HH:mm' }}
+          </p-text>
+
+        </div>
+      }
+    </div>
+  }
+
+</div>

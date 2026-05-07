@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
-import { AlbumInfo } from '../models/album';
-import { AlbumService } from '../services/album.service';
-import { ContributionService } from '../services/contribution.service';
+import { AlbumInfo } from '../../models/album';
+import { AlbumService } from '../../services/album.service';
+import { ContributionService } from '../../services/contribution.service';
 type PhysicalSupportOption = 'CD' | 'Vinyl' | 'Cassette';
 
 @Component({
