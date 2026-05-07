@@ -11,6 +11,7 @@ import { authGuard } from './auth.guard';
 import { RegisterUser } from './user/pages/register-user/register-user';
 import { NewAlbumVersionRequest } from './contribution/new-album-request/new-album-request';
 import { MyRequests } from './contribution/my-requests/my-requests';
+import { MyNotifications } from './contribution/notification/notification';
 
 const routeConfig: Routes = [
   {
@@ -50,6 +51,12 @@ const routeConfig: Routes = [
     path: 'contributions/album-version/my-requests',
     component: MyRequests,
     title: 'My Requests',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'contributions/notifications',
+    component: MyNotifications,
+    title: 'Notifications',
     canActivate: [authGuard],
   },
   {

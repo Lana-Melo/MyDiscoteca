@@ -165,7 +165,9 @@ exports.respondToRequest = async (req, res) => {
       });
     }
 
-    const contribution = await Contribution.findById(id);
+    const contribution = await Contribution.findById(id)
+      .populate('album');
+
     if (!contribution) {
       return res.status(404).json({
         success: false,
@@ -182,6 +184,47 @@ exports.respondToRequest = async (req, res) => {
 
     contribution.status = status;
     await contribution.save();
+
+    // Se aceite, criar a versão no álbum
+    if (status === 'aceite') {
+      const PhysicalSupport = require('../models/physicalSupportModel');
+      const Version = require('../models/versionModel');
+      const Album = require('../models/albumModel');
+
+      // Encontrar ou criar o suporte físico para este álbum
+      let physicalSupport = await PhysicalSupport.findOne({
+        album: contribution.album._id,
+        type: contribution.physicalSupport
+      });
+
+      if (!physicalSupport) {
+        physicalSupport = new PhysicalSupport({
+          type: contribution.physicalSupport,
+          album: contribution.album._id
+        });
+        await physicalSupport.save();
+
+        // Adicionar ao álbum
+        await Album.findByIdAndUpdate(
+          contribution.album._id,
+          { $push: { physicalSupports: physicalSupport._id } }
+        );
+      }
+
+      // Criar a versão
+      const newVersion = new Version({
+        eanCode: contribution.eanCode,
+        designation: contribution.designation || 'Standard Edition',
+        physicalSupport: physicalSupport._id
+      });
+      await newVersion.save();
+
+      // Adicionar versão ao suporte físico
+      await PhysicalSupport.findByIdAndUpdate(
+        physicalSupport._id,
+        { $push: { versions: newVersion._id } }
+      );
+    }
 
     res.status(200).json({
       success: true,
