@@ -18,6 +18,7 @@
                 [label]="searchMode === 'artist' ? 'Search artists' : 'Search albums'"
                 [placeholder]="searchMode === 'artist' ? 'Ex.: Beatles' : 'Ex.: Thriller'"
                 name="search"
+                [value]="searchQuery"
                 [compact]="true"
                 [clear]="true"
                 [indicator]="true"
