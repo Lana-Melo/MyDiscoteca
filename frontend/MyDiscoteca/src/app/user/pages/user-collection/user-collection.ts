@@ -16,8 +16,23 @@ import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/a
         </a>
       </div>
 
-      <div class="col-wide">
+      <div class="col-wide flex justify-between items-center">
         <p-heading>My Album Collection</p-heading>
+        @if (collection && collection.versions.length > 0) {
+          <div style="min-width: 200px;">
+            <p-select
+              label="Sort by"
+              [value]="sortBy"
+              (change)="onSortChange($event)">
+              <p-select-option value="addedAt_desc">Date Added (Newest)</p-select-option>
+              <p-select-option value="addedAt_asc">Date Added (Oldest)</p-select-option>
+              <p-select-option value="title_asc">Title (A-Z)</p-select-option>
+              <p-select-option value="artist_asc">Artist (A-Z)</p-select-option>
+              <p-select-option value="ean_asc">EAN-13 (0-9)</p-select-option>
+              <p-select-option value="type_asc">Format</p-select-option>
+            </p-select>
+          </div>
+        }
       </div>
 
       @if (isLoading) {
@@ -30,17 +45,21 @@ import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/a
         </div>
       } @else if (collection && collection.versions.length > 0) {
         <div class="col-wide grid grid-cols-subgrid">
-          @for (item of collection.versions; track item.version._id) {
+          @for (item of sortedVersions; track item.version._id) {
             <div class="col-span-one-half">
               <div class="version-card">
-                <img
-                  class="album-image"
-                  [src]="getAlbumImageUrl(item)"
-                  [alt]="getAlbumTitle(item)"
-                  (error)="handleImageError($event)"
-                />
+                <a [routerLink]="['/album/details', getAlbumId(item)]" [queryParams]="{ from: 'collection' }">
+                  <img
+                    class="album-image"
+                    [src]="getAlbumImageUrl(item)"
+                    [alt]="getAlbumTitle(item)"
+                    (error)="handleImageError($event)"
+                  />
+                </a>
                 <div class="version-info">
-                  <p-heading size="small">{{ getAlbumTitle(item) }}</p-heading>
+                  <a [routerLink]="['/album/details', getAlbumId(item)]" [queryParams]="{ from: 'collection' }" class="album-link">
+                    <p-heading size="small">{{ getAlbumTitle(item) }}</p-heading>
+                  </a>
                   <p-text size="small">{{ getArtistName(item) }}</p-text>
                   <p-text size="x-small" color="contrast-medium">
                     {{ getSupportType(item) }} - {{ item.version.designation }}
@@ -97,6 +116,16 @@ import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/a
       flex-direction: column;
       gap: 0.25rem;
     }
+
+    .album-link {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .album-link:hover {
+      text-decoration: underline;
+    }
   `,
 })
 export class UserCollection implements OnInit {
@@ -107,6 +136,7 @@ export class UserCollection implements OnInit {
   isLoading = true;
   isRemoving = false;
   errorMessage = '';
+  sortBy = 'addedAt_desc';
 
   ngOnInit(): void {
     this.loadCollection();
@@ -128,6 +158,34 @@ export class UserCollection implements OnInit {
     });
   }
 
+  get sortedVersions(): AlbumCollectionItem[] {
+    if (!this.collection) return [];
+    
+    return [...this.collection.versions].sort((a, b) => {
+      switch (this.sortBy) {
+        case 'addedAt_desc':
+          return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
+        case 'addedAt_asc':
+          return new Date(a.addedAt).getTime() - new Date(b.addedAt).getTime();
+        case 'title_asc':
+          return this.getAlbumTitle(a).localeCompare(this.getAlbumTitle(b));
+        case 'artist_asc':
+          return this.getArtistName(a).localeCompare(this.getArtistName(b));
+        case 'ean_asc':
+          return a.version.eanCode.localeCompare(b.version.eanCode);
+        case 'type_asc':
+          return this.getSupportType(a).localeCompare(this.getSupportType(b));
+        default:
+          return 0;
+      }
+    });
+  }
+
+  onSortChange(event: any): void {
+    this.sortBy = event.detail.value || event.target.value;
+    this.changeDetectorRef.markForCheck();
+  }
+
   removeVersion(versionId: string): void {
     if (confirm('Are you sure you want to remove this version from your collection?')) {
       this.isRemoving = true;
@@ -147,6 +205,10 @@ export class UserCollection implements OnInit {
   getAlbum(item: AlbumCollectionItem): any {
     const support = item.version.physicalSupport as any;
     return support?.album;
+  }
+
+  getAlbumId(item: AlbumCollectionItem): string {
+    return this.getAlbum(item)?._id || '';
   }
 
   getAlbumTitle(item: AlbumCollectionItem): string {
@@ -181,3 +243,4 @@ export class UserCollection implements OnInit {
     }
   }
 }
+

@@ -1,6 +1,6 @@
 <div class="grid-template">
     <div class="col-basic">
-        <p-button-pure icon="arrow-left" [routerLink]="['/search']">Back to search</p-button-pure>
+        <p-button-pure icon="arrow-left" [routerLink]="[backLink]">{{ backLabel }}</p-button-pure>
     </div>
     @if (successMessage) {
         <div class="col-basic">

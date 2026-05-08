@@ -37,8 +37,16 @@ export class AlbumDetails implements OnInit {
   collection: AlbumCollection | undefined;
   successMessage = '';
   errorMessage = '';
+  backLink = '/search';
+  backLabel = 'Back to search';
 
   ngOnInit(): void {
+    const from = this.route.snapshot.queryParamMap.get('from');
+    if (from === 'collection') {
+      this.backLink = '/user/collection';
+      this.backLabel = 'Back to collection';
+    }
+
     const albumId = this.route.snapshot.params['id'];
     this.albumService.getAlbumById(albumId).subscribe((album) => {
       this.album = album;
