@@ -46,6 +46,18 @@ export class AlbumDetails implements OnInit {
     if (from === 'collection') {
       this.backLink = '/user/collection';
       this.backLabel = 'Back to collection';
+    } else if (from === 'artist') {
+      const artistId = this.route.snapshot.queryParamMap.get('artistId');
+      if (artistId) {
+        this.backLink = `/artist/details/${artistId}`;
+        this.backLabel = 'Back to artist';
+      }
+    } else if (from === 'artist-albums') {
+      const artistId = this.route.snapshot.queryParamMap.get('artistId');
+      if (artistId) {
+        this.backLink = `/artist/details/${artistId}/albums`;
+        this.backLabel = 'Back to artist albums';
+      }
     }
 
     const albumId = this.route.snapshot.params['id'];

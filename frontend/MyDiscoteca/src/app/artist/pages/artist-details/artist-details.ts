@@ -73,13 +73,17 @@ import { ArtistService } from '../../../services/artist.service';
         @for (album of visibleAlbums; track album._id) {
         <div class="col-span-one-third">
           <div class="album-card">
-            <img
-              class="album-image"
-              [src]="album.imageUrl ?? '/api/media/placeholders/album.svg'"
-              [alt]="album.title"
-              (error)="handleImageError($event, 'album')"
-            />
-            <p-input-text [label]="album.releaseYear.toString()" [value]="album.title" [disabled]="true"></p-input-text>
+            <a [routerLink]="['/album/details', album._id]" [queryParams]="{ from: 'artist', artistId: artist.id ?? artist._id }" style="display: block;">
+              <img
+                class="album-image"
+                [src]="album.imageUrl ?? '/api/media/placeholders/album.svg'"
+                [alt]="album.title"
+                (error)="handleImageError($event, 'album')"
+              />
+            </a>
+            <a [routerLink]="['/album/details', album._id]" [queryParams]="{ from: 'artist', artistId: artist.id ?? artist._id }" style="text-decoration: none; display: block;">
+              <p-input-text [label]="album.releaseYear.toString()" [value]="album.title" [disabled]="true" style="pointer-events: none;"></p-input-text>
+            </a>
           </div>
         </div>
         }
