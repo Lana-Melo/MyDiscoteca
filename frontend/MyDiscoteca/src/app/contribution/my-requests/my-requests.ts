@@ -39,6 +39,15 @@ export class MyRequests implements OnInit {
     }
   }
 
+  translateStatus(status: string): string {
+    switch (status) {
+      case 'Aceite':   return 'Accepted';
+      case 'Recusado': return 'Rejected';
+      case 'Em análise': return 'Under Review';
+      default:         return status;
+    }
+  }
+
   private loadRequests(): void {
     this.isLoading = true;
     this.showError = false;

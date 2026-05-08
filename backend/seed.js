@@ -1,12 +1,12 @@
 // -----
 // seed.js
-// Script para popular a base de dados - Discografia de Michael Jackson
+// Script to populate the database - Michael Jackson's Discography
 // -----
 
 const { loadEnvFile } = require('node:process');
 const fs = require('fs');
 if (fs.existsSync('.env')) {
-  loadEnvFile();
+    loadEnvFile();
 }
 
 const mongoose = require('mongoose');
@@ -20,11 +20,11 @@ const Version = require('./models/versionModel');
 const DB_URI = process.env.DB_URI;
 
 if (!DB_URI) {
-    console.error("Erro: Variável de ambiente DB_URI não definida.");
+    console.error("Error: DB_URI environment variable not defined.");
     process.exit(1);
 }
 
-// ----- Funções auxiliares de upsert -----
+// ----- Helper functions for upsert -----
 
 async function upsertArtist(isni, artistData) {
     return Artist.findOneAndUpdate(
@@ -144,7 +144,7 @@ async function seedPhysicalSupportsForAlbum(album, supports) {
 }
 
 async function seedAlbumForArtist(artist, albumData) {
-    console.log(`A criar álbum: ${albumData.title}...`);
+    console.log(`Creating album: ${albumData.title}...`);
 
     const album = await upsertAlbum(albumData.mbdi, {
         mbdi: albumData.mbdi,
@@ -174,7 +174,7 @@ async function seedArtistCatalog(catalog) {
     const seededArtists = [];
 
     for (const artistData of catalog) {
-        console.log(`A criar artista: ${artistData.name}...`);
+        console.log(`Creating artist: ${artistData.name}...`);
 
         const artist = await upsertArtist(artistData.isni, {
             isni: artistData.isni,
@@ -216,7 +216,7 @@ async function assertSprint2SeedCoverage(seedMbdis) {
     const foundMbdis = new Set(albums.map(album => album.mbdi));
     const problems = seedMbdis
         .filter(mbdi => !foundMbdis.has(mbdi))
-        .map(mbdi => `Álbum seedado não encontrado: ${mbdi}`);
+        .map(mbdi => `Seeded album not found: ${mbdi}`);
 
     let trackCount = 0;
     let versionCount = 0;
@@ -257,11 +257,11 @@ async function assertSprint2SeedCoverage(seedMbdis) {
     }
 
     if (problems.length > 0) {
-        throw new Error(`Seed Sprint 2 incompleta:\n- ${problems.join('\n- ')}`);
+        throw new Error(`Sprint 2 Seed incomplete:\n- ${problems.join('\n- ')}`);
     }
 
     console.log(
-        `Seed Sprint 2 validada: ${albums.length} álbuns, ${trackCount} tracks, ${versionCount} versões.`
+        `Sprint 2 Seed validated: ${albums.length} albums, ${trackCount} tracks, ${versionCount} versions.`
     );
 }
 
@@ -802,15 +802,15 @@ seedDatabase();
 const seedDatabase = async () => {
     try {
         await mongoose.connect(DB_URI);
-        console.log("Ligação bem sucedida ao MongoDB para povoamento.");
+        console.log("Successful connection to MongoDB for seeding.");
 
         if (process.env.DROP_DB === 'true') {
             await mongoose.connection.dropDatabase();
-            console.log("Base de dados limpa (DROP_DB=true).");
+            console.log("Database cleared (DROP_DB=true).");
         }
 
         // ----- Michael Jackson -----
-        console.log("A criar artista: Michael Jackson...");
+        console.log("Creating artist: Michael Jackson...");
         const mj = await upsertArtist("0000000121707484", {
             isni: "0000000121707484",
             name: "Michael Jackson",
@@ -820,7 +820,7 @@ const seedDatabase = async () => {
         });
 
         // ----- Off the Wall (1979) -----
-        console.log("A criar álbum: Off the Wall...");
+        console.log("Creating album: Off the Wall...");
         const offTheWall = await upsertAlbum("a0d9d43c-46eb-4e17-a5b2-0b18f1e8b2cb", {
             mbdi: "a0d9d43c-46eb-4e17-a5b2-0b18f1e8b2cb",
             title: "Off the Wall",
@@ -867,7 +867,7 @@ const seedDatabase = async () => {
         ]);
 
         // Off the Wall - Suportes Físicos
-        console.log("A criar suportes físicos do Off the Wall...");
+        console.log("Creating physical supports for Off the Wall...");
         const otwVinyl = await upsertPhysicalSupport(offTheWall._id, "Vinyl", {
             type: "Vinyl",
             album: offTheWall._id
@@ -882,7 +882,7 @@ const seedDatabase = async () => {
         await offTheWall.save();
 
         // ----- Thriller (1982) -----
-        console.log("A criar álbum: Thriller...");
+        console.log("Creating album: Thriller...");
         const thriller = await upsertAlbum("b10bbbfc-cf9e-4200-be17-e2c3e1d2600d", {
             mbdi: "b10bbbfc-cf9e-4200-be17-e2c3e1d2600d",
             title: "Thriller",
@@ -907,7 +907,7 @@ const seedDatabase = async () => {
         await seedTracksForAlbum(thriller, thrillerSongs);
 
         // Thriller - Suportes Físicos
-        console.log("A criar suportes físicos do Thriller...");
+        console.log("Creating physical supports for Thriller...");
 
         const thrillerVinyl = await upsertPhysicalSupport(thriller._id, "Vinyl", {
             type: "Vinyl",
@@ -959,7 +959,7 @@ const seedDatabase = async () => {
         await thriller.save();
 
         // ----- Bad (1987) -----
-        console.log("A criar álbum: Bad...");
+        console.log("Creating album: Bad...");
         const bad = await upsertAlbum("94a0b5b9-3b35-4a11-8f5d-f5f9e6c9f27b", {
             mbdi: "94a0b5b9-3b35-4a11-8f5d-f5f9e6c9f27b",
             title: "Bad",
@@ -986,7 +986,7 @@ const seedDatabase = async () => {
         await seedTracksForAlbum(bad, badSongs);
 
         // Bad - Suportes Físicos
-        console.log("A criar suportes físicos do Bad...");
+        console.log("Creating physical supports for Bad...");
 
         const badVinyl = await upsertPhysicalSupport(bad._id, "Vinyl", {
             type: "Vinyl",
@@ -1037,7 +1037,7 @@ const seedDatabase = async () => {
         await bad.save();
 
         // ----- Dangerous (1991) -----
-        console.log("A criar álbum: Dangerous...");
+        console.log("Creating album: Dangerous...");
         const dangerous = await upsertAlbum("b7a77143-e2a8-4cec-96b7-3b1d1d4a5e9e", {
             mbdi: "b7a77143-e2a8-4cec-96b7-3b1d1d4a5e9e",
             title: "Dangerous",
@@ -1088,7 +1088,7 @@ const seedDatabase = async () => {
         ]);
 
         // Dangerous - Suportes Físicos
-        console.log("A criar suportes físicos do Dangerous...");
+        console.log("Creating physical supports for Dangerous...");
         const dangerousCD = await upsertPhysicalSupport(dangerous._id, "CD", {
             type: "CD",
             album: dangerous._id
@@ -1103,7 +1103,7 @@ const seedDatabase = async () => {
         await dangerous.save();
 
         // ----- Invincible (2001) -----
-        console.log("A criar álbum: Invincible...");
+        console.log("Creating album: Invincible...");
         const invincible = await upsertAlbum("8e6c5f3c-9e7e-4a5d-8f5d-c3b9e6c9f27b", {
             mbdi: "8e6c5f3c-9e7e-4a5d-8f5d-c3b9e6c9f27b",
             title: "Invincible",
@@ -1150,7 +1150,7 @@ const seedDatabase = async () => {
         ]);
 
         // Invincible - Suportes Físicos
-        console.log("A criar suportes físicos do Invincible...");
+        console.log("Creating physical supports for Invincible...");
         const invincibleCD = await upsertPhysicalSupport(invincible._id, "CD", {
             type: "CD",
             album: invincible._id
@@ -1173,14 +1173,14 @@ const seedDatabase = async () => {
         await seedArtistCatalog(additionalCatalog);
         await assertSprint2SeedCoverage(sprint2SeedAlbumMbdis);
 
-        console.log("Base de dados povoada com sucesso!");
+        console.log("Database populated successfully!");
 
     } catch (error) {
-        console.error("Erro ao povoar a base de dados:", error);
+        console.error("Error populating the database:", error);
         process.exitCode = 1;
     } finally {
         await mongoose.disconnect();
-        console.log("Desconectado do MongoDB.");
+        console.log("Disconnected from MongoDB.");
         process.exit(process.exitCode || 0);
     }
 };

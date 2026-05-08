@@ -61,8 +61,8 @@ const artistSchema = new mongoose.Schema({
   }]
 },
 
-// Adiciona campos createdAt e updatedAt ao esquema.
-{ timestamps: true });
+  // Adiciona campos createdAt e updatedAt ao esquema.
+  { timestamps: true });
 
 // Modelo de artista para manipular
 // documentos numa coleção do MongoDB.

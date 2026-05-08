@@ -47,7 +47,7 @@ exports.getMyNotifications = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Notificações obtidas com sucesso.',
+      message: 'Notifications retrieved successfully.',
       notifications: notifications.map(n => ({
         _id: n._id,
         albumTitle: n.albumTitle,
@@ -62,7 +62,7 @@ exports.getMyNotifications = async (req, res) => {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: 'Erro do servidor ao obter as notificações.'
+      message: 'Server error while fetching notifications.'
     });
   }
 };
@@ -95,7 +95,7 @@ exports.markAsSeen = async (req, res) => {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: 'Erro do servidor ao atualizar as notificações.'
+      message: 'Server error while updating notifications.'
     });
   }
 };

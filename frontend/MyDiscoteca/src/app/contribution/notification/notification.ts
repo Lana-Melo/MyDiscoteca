@@ -34,4 +34,12 @@ export class MyNotifications implements OnInit {
       }
     });
   }
+
+  translateStatus(status: string): string {
+    switch (status) {
+      case 'Aceite':   return 'Accepted';
+      case 'Recusado': return 'Rejected';
+      default:         return status;
+    }
+  }
 }

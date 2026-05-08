@@ -41,7 +41,7 @@ const notificationSchema = new mongoose.Schema({
     type: String,
     enum: {
       values: ['Aceite', 'Recusado'],
-      message: 'O estado deve ser "Aceite" ou "Recusado".'
+      message: 'The state must be "Accepted" or "Rejected".'
     },
     required: true
   },
@@ -53,8 +53,8 @@ const notificationSchema = new mongoose.Schema({
   }
 },
 
-// Adiciona campos createdAt e updatedAt ao esquema.
-{ timestamps: true });
+  // Adiciona campos createdAt e updatedAt ao esquema.
+  { timestamps: true });
 
 module.exports = mongoose.model('Notification', notificationSchema);
 

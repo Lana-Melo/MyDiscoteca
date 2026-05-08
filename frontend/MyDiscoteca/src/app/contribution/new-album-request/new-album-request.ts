@@ -74,13 +74,13 @@ export class NewAlbumVersionRequest {
     }).subscribe({
       next: (response) => {
         this.isSubmitting = false;
-        this.successMessage = 'Request submitted successfully. Status: Em análise.';
+        this.successMessage = 'Request submitted successfully. Status: Under Review.';
         this.submittedRequestSummary = {
           albumTitle: selectedAlbum?.title ?? 'Unknown album',
           eanCode: response.eanCode,
           physicalSupport: response.physicalSupport,
           designation: response.designation ?? '',
-          status: response.status,
+          status: this.translateStatus(response.status),
         };
         this.resetForm();
         this.changeDetectorRef.markForCheck();
@@ -100,6 +100,15 @@ export class NewAlbumVersionRequest {
         this.changeDetectorRef.markForCheck();
       }
     });
+  }
+
+  translateStatus(status: string): string {
+    switch (status) {
+      case 'Aceite':   return 'Accepted';
+      case 'Recusado': return 'Rejected';
+      case 'Em análise': return 'Under Review';
+      default:         return status;
+    }
   }
 
   private loadAlbums(): void {

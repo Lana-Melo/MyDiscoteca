@@ -26,12 +26,12 @@ const contributionSchema = new mongoose.Schema({
   // EAN-13: European Article Number, código de barras com 13 dígitos.
   eanCode: {
     type: String,
-    required: [true, 'EAN-13 é obrigatório.'],
+    required: [true, 'EAN-13 is required.'],
     trim: true,
     unique: true,
-    minlength: [13, 'EAN-13 deve ter exatamente 13 dígitos.'],
-    maxlength: [13, 'EAN-13 deve ter exatamente 13 dígitos.'],
-    match: [/^\d{13}$/, 'EAN-13 deve conter exatamente 13 dígitos numéricos.']
+    minlength: [13, 'EAN-13 must have exactly 13 digits.'],
+    maxlength: [13, 'EAN-13 must have exactly 13 digits.'],
+    match: [/^\d{13}$/, 'EAN-13 must contain exactly 13 numeric digits.']
   },
 
   // Suporte físico proposto (CD, vinil, ou cassete).
@@ -39,9 +39,9 @@ const contributionSchema = new mongoose.Schema({
     type: String,
     enum: {
       values: ['CD', 'Vinyl', 'Cassette'],
-      message: 'O suporte físico deve ser CD, Vinyl ou Cassette.'
+      message: 'Physical support must be CD, Vinyl, or Cassette.'
     },
-    required: [true, 'O suporte físico é obrigatório.']
+    required: [true, 'Physical support is required.']
   },
 
   // Designação opcional da versão (ex.: "Red Cover Edition").
@@ -56,14 +56,14 @@ const contributionSchema = new mongoose.Schema({
     type: String,
     enum: {
       values: ['Em análise', 'Aceite', 'Recusado'],
-      message: 'O estado deve ser "Em análise", "Aceite" ou "Recusado".'
+      message: 'Status must be "Em análise", "Aceite", or "Recusado".'
     },
     default: 'Em análise'
   }
 },
 
-// Adiciona campos createdAt e updatedAt ao esquema.
-{ timestamps: true });
+  // Adiciona campos createdAt e updatedAt ao esquema.
+  { timestamps: true });
 
 // Modelo de contribuição para manipular
 // documentos numa coleção do MongoDB.

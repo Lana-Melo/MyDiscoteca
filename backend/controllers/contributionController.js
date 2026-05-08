@@ -41,10 +41,10 @@ exports.createContribution = async (req, res) => {
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
-        message: 'O código EAN-13 já está em uso por outra submissão.'
+        message: 'The EAN-13 code is already in use by another submission.'
       });
     }
-    res.status(500).json({ success: false, message: 'Erro ao guardar.' });
+    res.status(500).json({ success: false, message: 'Error while saving.' });
   }
 };
 
@@ -56,7 +56,7 @@ exports.submitAlbumVersionRequest = async (req, res) => {
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: 'Utilizador não autenticado.'
+        message: 'User not authenticated.'
       });
     }
 
@@ -67,7 +67,7 @@ exports.submitAlbumVersionRequest = async (req, res) => {
     if (!album) {
       return res.status(404).json({
         success: false,
-        message: 'Álbum não encontrado.'
+        message: 'Album not found.'
       });
     }
 
@@ -102,7 +102,7 @@ exports.submitAlbumVersionRequest = async (req, res) => {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: 'Erro do servidor ao submeter o pedido de contribuição.'
+      message: 'Server error while submitting contribution request.'
     });
   }
 };
@@ -117,7 +117,7 @@ exports.getMyRequests = async (req, res) => {
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: 'Utilizador não autenticado.'
+        message: 'User not authenticated.'
       });
     }
 
@@ -130,7 +130,7 @@ exports.getMyRequests = async (req, res) => {
       if (!allowedStatuses.includes(status)) {
         return res.status(400).json({
           success: false,
-          message: 'Estado inválido. Os valores possíveis são: "em análise", "aceite", "recusado".'
+          message: 'Invalid status. Possible values are: "em análise", "aceite", "recusado".'
         });
       }
       filter.status = status;
@@ -142,11 +142,11 @@ exports.getMyRequests = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Pedidos do utilizador obtidos com sucesso.',
+      message: 'User requests retrieved successfully.',
       contributions: contributions.map(c => ({
         _id: c._id,
         albumId: c.album?._id,
-        albumTitle: c.album?.title ?? 'Álbum desconhecido',
+        albumTitle: c.album?.title ?? 'Unknown album',
         eanCode: c.eanCode,
         physicalSupport: c.physicalSupport,
         designation: c.designation,
@@ -159,7 +159,7 @@ exports.getMyRequests = async (req, res) => {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: 'Erro do servidor ao obter os pedidos de contribuição.'
+      message: 'Server error while retrieving contribution requests.'
     });
   }
 };
@@ -178,7 +178,7 @@ exports.respondToRequest = async (req, res) => {
     if (!allowedStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
-        message: 'Estado inválido. Os valores possíveis são: "Aceite" ou "Recusado".'
+        message: 'Invalid status. Possible values are: "Aceite" or "Recusado".'
       });
     }
 
@@ -188,25 +188,25 @@ exports.respondToRequest = async (req, res) => {
     if (!contribution) {
       return res.status(404).json({
         success: false,
-        message: 'Pedido de contribuição não encontrado.'
+        message: 'Contribution request not found.'
       });
     }
 
     if (contribution.status !== 'Em análise') {
       return res.status(409).json({
         success: false,
-        message: 'Este pedido já foi respondido.'
+        message: 'This request has already been answered.'
       });
     }
 
     contribution.status = status;
     await contribution.save();
 
-    // Criar notificação para o utilizador que submeteu o pedido (US14).
+    // Create notification for the user who submitted the request (US14).
     await Notification.create({
       user: contribution.user,
       contribution: contribution._id,
-      albumTitle: contribution.album?.title ?? 'Álbum desconhecido',
+      albumTitle: contribution.album?.title ?? 'Unknown album',
       designation: contribution.designation,
       status
     });
@@ -253,7 +253,7 @@ exports.respondToRequest = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: `Pedido marcado como "${status}".`,
+      message: `Request marked as "${status}".`,
       contribution: {
         _id: contribution._id,
         status: contribution.status,
@@ -265,7 +265,7 @@ exports.respondToRequest = async (req, res) => {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: 'Erro do servidor ao responder ao pedido de contribuição.'
+      message: 'Server error while responding to contribution request.'
     });
   }
 };
