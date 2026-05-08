@@ -82,7 +82,7 @@ Albums are identified by their **MBID** (MusicBrainz Identifier), artists by the
 
 ### Database Structure Diagram
 
-The entity-relationship diagram of the MongoDB collections is available at [`mydiscotecadb.png`](./mydiscotecadb.png).
+The entity-relationship diagram of the MongoDB collections is available at [`mydiscotecadb-sprint2.png`](./mydiscotecadb-sprint2.png).
 
 ### Project Structure
 
