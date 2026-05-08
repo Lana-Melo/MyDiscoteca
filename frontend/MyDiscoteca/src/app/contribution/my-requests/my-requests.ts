@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { ContributionService, AlbumVersionRequestResponse } from '../../services/contribution.service';
 
@@ -13,7 +12,6 @@ import { ContributionService, AlbumVersionRequestResponse } from '../../services
   templateUrl: './my-requests.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class MyRequests implements OnInit {
   requests: AlbumVersionRequestResponse[] = [];
   filteredRequests: AlbumVersionRequestResponse[] = [];
@@ -47,7 +45,6 @@ export class MyRequests implements OnInit {
 
     this.contributionService.getMyRequests().subscribe({
       next: (response) => {
-        // O backend devolve { contributions: [...] } ou diretamente um array.
         const data = Array.isArray(response)
           ? response
           : (response as any).contributions ?? [];
@@ -70,17 +67,4 @@ export class MyRequests implements OnInit {
       ? this.requests.filter(r => r.status === this.selectedStatus)
       : [...this.requests];
   }
-
-  private readonly http = inject(HttpClient);
-  private readonly router = inject(Router);
-    respondToRequest(id: string, status: 'Aceite' | 'Recusado'): void {
-      this.http.post(`/api/contributions/album-version/${id}/respond`, { status })
-        .subscribe({
-          next: () => {
-            this.loadRequests();
-            this.router.navigate(['/contributions/notifications']);
-          },
-          error: () => alert('Erro ao responder ao pedido.')
-        });
-    }
 }

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit }
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
-import { NotificationService } from '../../services/notification.service';
+import { AppNotification, NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-my-notifications',
@@ -12,8 +12,9 @@ import { NotificationService } from '../../services/notification.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyNotifications implements OnInit {
-  notifications: any[] = [];
+  notifications: AppNotification[] = [];
   isLoading = true;
+  showError = false;
 
   private readonly notificationService = inject(NotificationService);
   private readonly cdr = inject(ChangeDetectorRef);
@@ -27,6 +28,7 @@ export class MyNotifications implements OnInit {
         this.cdr.markForCheck();
       },
       error: () => {
+        this.showError = true;
         this.isLoading = false;
         this.cdr.markForCheck();
       }
