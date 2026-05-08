@@ -24,6 +24,7 @@ const contributionSchema = new mongoose.Schema({
   eanCode: {
     type: String,
     required: [true, 'EAN-13 is required.'],
+    required: [true, 'EAN-13 is required.'],
     trim: true,
     unique: true,
     minlength: [13, 'EAN-13 must be exactly 13 digits.'],

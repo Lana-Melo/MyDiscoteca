@@ -1,76 +1,52 @@
 <div class="grid-template">
-      <div class="col-wide">
-        <p-button-pure icon="arrow-left" [routerLink]="['/login']">
-          Back to login
-        </p-button-pure>
-      </div>
+  <div class="col-wide">
+    <p-button-pure icon="arrow-left" [routerLink]="['/login']">
+      Back to login
+    </p-button-pure>
+  </div>
 
-      <div class="col-wide">
-        <p-heading align="center" size="large" tag="h1">Register New User</p-heading>
-      </div>
+  <div class="col-wide">
+    <p-heading align="center" size="large" tag="h1">Register New User</p-heading>
+  </div>
 
-    @if(showError()){
-        <div class="col-narrow">
-            <p-inline-notification
-                headingTag="h2"
-                state="error"
-                heading="Registration failed"
-                [description]="errorMessage()"
-                [dismissButton]="false">
-            </p-inline-notification>
-            @if (errorMessages().length > 0) {
-              <ul class="mt-2 list-disc pl-5">
-                @for (message of errorMessages(); track message) {
-                  <li>
-                    <p-text>{{ message }}</p-text>
-                  </li>
-                }
-              </ul>
-            }
-        </div>
+  @if(showError()){
+  <div class="col-narrow">
+    <p-inline-notification headingTag="h2" state="error" heading="Registration failed" [description]="errorMessage()"
+      [dismissButton]="false">
+    </p-inline-notification>
+    @if (errorMessages().length > 0) {
+    <ul class="mt-2 list-disc pl-5">
+      @for (message of errorMessages(); track message) {
+      <li>
+        <p-text>{{ message }}</p-text>
+      </li>
+      }
+    </ul>
     }
-    <div class="col-narrow">
-        <p-input-text
-        [required]="true"
-        [compact]="true"
-        label="Username"
-        [(ngModel)]="username"
-        name="username">
-        </p-input-text>
-        <p-text color="contrast-medium">Use only letters and numbers.</p-text>
-    </div>
-    <div class="col-narrow">
-        <p-input-email
-        [required]="true"
-        [compact]="true"
-        label="Email"
-        [(ngModel)]="email"
-        name="email">
-        </p-input-email>
-    </div>
-    <div class="col-narrow">
-        <p-input-password
-        [required]="true"
-        [compact]="true"
-        label="Password"
-        name="password"
-        [(ngModel)]="password"
-        [toggle]="true">
-        </p-input-password>
-        <p-text color="contrast-medium">Use at least 8 characters. At least one uppercase,
-          one lowercase, and a number.</p-text>
-    </div>
-    <div class="col-narrow">
-        <p-input-date
-        [required]="true"
-        [compact]="true"
-        label="Birth Date"
-        [(ngModel)]="birthDate"
-        name="birthDate">
-        </p-input-date>
-        <p-text color="contrast-medium">User must be at least 13 years old.</p-text>
-    </div>
-        <!-- comentando pq nao faz sentido ele escolher isto aqui
+  </div>
+  }
+  <div class="col-narrow">
+    <p-input-text [required]="true" [compact]="true" label="Username" [(ngModel)]="username" name="username">
+    </p-input-text>
+    <p-text color="contrast-medium">Use only letters and numbers.</p-text>
+  </div>
+  <div class="col-narrow">
+    <p-input-email [required]="true" [compact]="true" label="Email" [(ngModel)]="email" name="email">
+    </p-input-email>
+  </div>
+  <div class="col-narrow">
+    <p-input-password [required]="true" [compact]="true" label="Password" name="password" [(ngModel)]="password"
+      [toggle]="true">
+    </p-input-password>
+    <p-text color="contrast-medium">Use at least 8 characters. At least one uppercase,
+      one lowercase, and a number.</p-text>
+  </div>
+  <div class="col-narrow">
+    <p-input-date [required]="true" [compact]="true" label="Birth Date" [(ngModel)]="birthDate" name="birthDate">
+    </p-input-date>
+    <p-text color="contrast-medium">User must be at least 13 years old.</p-text>
+  </div>
+  <!-- comentando pq nao faz sentido ele escolher isto aqui
         <div class="col-span-one-half">
           <p-input-text
             label="Favorite Artist (optional)"
@@ -79,9 +55,9 @@
           </p-input-text>
         </div>
         -->
-      <div class="col-narrow flex justify-center gap-4">
-        <p-button type="button" (click)="registerUser()">
-          Register User
-        </p-button>
-      </div>
-    </div>
+  <div class="col-narrow flex justify-center gap-4">
+    <p-button type="button" (click)="registerUser()">
+      Register User
+    </p-button>
+  </div>
+</div>

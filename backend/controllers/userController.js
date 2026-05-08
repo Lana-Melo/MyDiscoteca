@@ -176,7 +176,7 @@ exports.create = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Utilizador registado com sucesso.',
+      message: 'User registered successfully.',
       user: buildUserResponse(newUser)
     });
   } catch (error) {
@@ -212,7 +212,7 @@ exports.getMe = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Perfil do utilizador obtido com sucesso.',
+      message: 'User profile retrieved successfully.',
       user: buildUserResponse(user)
     });
   } catch (error) {
@@ -311,11 +311,11 @@ exports.updateMe = async (req, res) => {
       });
 
       if (usernameInUse) {
-          return res.status(409).json({
-            success: false,
-            message: 'Another user is already using that username.'
-          });
-        }
+        return res.status(409).json({
+          success: false,
+          message: 'Another user is already using that username.'
+        });
+      }
 
       user.username = normalizedUsername;
     }
@@ -368,7 +368,7 @@ exports.updateMe = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Perfil do utilizador atualizado com sucesso.',
+      message: 'User profile updated successfully.',
       user: buildUserResponse(user)
     });
   } catch (error) {

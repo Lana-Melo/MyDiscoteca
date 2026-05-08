@@ -67,7 +67,7 @@ exports.create = async (req, res) => {
         // 200 = Successful operation.
         res.status(200).json({
             success: true,
-            message: 'Artista registado com sucesso.',
+            message: 'Artist registered successfully.',
             artist: {
                 id: newArtist.id,
                 isni: newArtist.isni,
@@ -84,7 +84,7 @@ exports.create = async (req, res) => {
         // 500 = Internal server error.
         res.status(500).json({
             success: false,
-            message: 'Erro do servidor durante o registo de um artista.'
+            message: 'Server error during artist registration.'
         });
 
         // O que terá acontecido?
@@ -109,14 +109,14 @@ exports.getAll = async (req, res) => {
         // 200 = OK.
         res.status(200).json({
             success: true,
-            message: 'Lista de todos os artistas resgatada com sucesso.',
+            message: 'List of all artists retrieved successfully.',
             artists: artists
         });
     } catch (error) {
         // 500 = Internal server error.
         res.status(500).json({
             success: false,
-            message: 'Erro do servidor durante a busca pelos artistas.'
+            message: 'Server error while fetching artists.'
         });
     }
 }
@@ -144,13 +144,13 @@ exports.searchByName = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'Pesquisa concluída com sucesso.',
+            message: 'Search completed successfully.',
             artists: artists
         });
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: 'Erro do servidor durante a pesquisa de artistas.'
+            message: 'Server error during artist search.'
         });
     }
 }
@@ -175,7 +175,7 @@ exports.getById = async (req, res) => {
         // 200 = OK
         res.status(200).json({
             success: true,
-            message: 'Artista encontrado com sucesso.',
+            message: 'Artist found successfully.',
             artist: {
                 id: artist.id,
                 isni: artist.isni,
@@ -192,7 +192,7 @@ exports.getById = async (req, res) => {
         // 500 = Internal server error.
         res.status(500).json({
             success: false,
-            message: 'Erro do servidor durante a busca pelo artista.'
+            message: 'Server error while fetching the artist.'
         });
     }
 }
@@ -217,7 +217,7 @@ exports.delete = async (req, res) => {
         // 200 = OK
         res.status(200).json({
             success: true,
-            message: 'Artista removido com sucesso.',
+            message: 'Artist removed successfully.',
             deleted: deletedArtistDocument
         });
 
@@ -225,7 +225,7 @@ exports.delete = async (req, res) => {
         // 500 = Internal Server Error.
         res.status(500).json({
             success: false,
-            message: 'Erro do servidor durante a remoção de um artista.'
+            message: 'Server error during artist removal.'
         });
 
         // O que terá acontecido?

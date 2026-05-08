@@ -1,4 +1,3 @@
-
 <div class="grid-template">
 
     <div class="col-basic">
@@ -22,26 +21,27 @@
 
         <div class="col-basic grid grid-cols-subgrid gap-y-3">
 
-            <div class="col-span-one-half">
-                <p-input-text label="Name" [(ngModel)]="username" name="username"></p-input-text>
-                <p-text color="contrast-medium">Use only letters and numbers.</p-text>
-            </div>
-
-            <div class="col-span-one-half">
-                <p-input-date label="Birth Date" [(ngModel)]="birthDate" name="birthDate"></p-input-date>
-                <p-text color="contrast-medium">User must be at least 13 years old.</p-text>
-            </div>
-
-            <div class="col-span-one-half">
-                <p-input-email label="Email" [(ngModel)]="email" name="email"></p-input-email>
-            </div>
-
-            <div class="col-span-one-half">
-                <p-input-password label="New Password (optional)" name="newPassword" [(ngModel)]="newPassword" [toggle]="true"></p-input-password>
-                <p-text color="contrast-medium">Use at least 8 characters. At least one uppercase,
-                    one lowercase, and a number.</p-text>
-            </div>
+        <div class="col-span-one-half">
+            <p-input-text label="Name" [(ngModel)]="username" name="username"></p-input-text>
+            <p-text color="contrast-medium">Use only letters and numbers.</p-text>
         </div>
+
+        <div class="col-span-one-half">
+            <p-input-date label="Birth Date" [(ngModel)]="birthDate" name="birthDate"></p-input-date>
+            <p-text color="contrast-medium">User must be at least 13 years old.</p-text>
+        </div>
+
+        <div class="col-span-one-half">
+            <p-input-email label="Email" [(ngModel)]="email" name="email"></p-input-email>
+        </div>
+
+        <div class="col-span-one-half">
+            <p-input-password label="New Password (optional)" name="newPassword" [(ngModel)]="newPassword"
+                [toggle]="true"></p-input-password>
+            <p-text color="contrast-medium">Use at least 8 characters. At least one uppercase,
+                one lowercase, and a number.</p-text>
+        </div>
+    </div>
 
         <div class="col-basic">
             <p-button type="button" [aria]="{'aria-haspopup': 'dialog'}" (click)="openConfirmModal()">
@@ -54,12 +54,9 @@
             (close) → evento emitido pelo filho para fechar
             (confirm) → evento emitido quando o user confirma (guardar)
             -->
-            <app-password-confirm-modal
-                [open]="modalOpen" 
-                (close)="closeModal()"
-                (confirm)="saveConfirmed($event)">
-            </app-password-confirm-modal>
-        </div>
+        <app-password-confirm-modal [open]="modalOpen" (close)="closeModal()" (confirm)="saveConfirmed($event)">
+        </app-password-confirm-modal>
+    </div>
 
         <div class="col-basic">
             <a [routerLink]="['/user/profile']">
@@ -71,15 +68,16 @@
     <p-modal [open]="warningOpen" [aria]="{'aria-label': 'Profile warning'}" (dismiss)="closeWarning()">
         <p-heading slot="header" size="large" tag="h2">
             Invalid data
+            Invalid data
         </p-heading>
 
-        <p-text color="notification-warning">Corrige estes pontos antes de guardar:</p-text>
+        <p-text color="notification-warning">Fix these points before saving:</p-text>
 
         <ul>
             @for (message of warningMessages; track message) {
-                <li>
-                    <p-text>{{ message }}</p-text>
-                </li>
+            <li>
+                <p-text>{{ message }}</p-text>
+            </li>
             }
         </ul>
 

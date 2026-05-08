@@ -61,36 +61,36 @@
       @for (request of filteredRequests; track request._id) {
         <div class="rounded border border-neutral-200 p-4 flex flex-col gap-2">
 
-          <div class="flex items-center justify-between">
-            <p-heading size="small">{{ request.albumTitle ?? request.albumId }}</p-heading>
-            <p-text [style]="'color: ' + getStatusTextColor(request.status)">
-            {{ request.status }}
-            </p-text>
-          </div>
+      <div class="flex items-center justify-between">
+        <p-heading size="small">{{ request.albumTitle ?? request.albumId }}</p-heading>
+        <p-text [style]="'color: ' + getStatusTextColor(request.status)">
+          {{ translateStatus(request.status) }}
+        </p-text>
+      </div>
 
-          <p-text color="contrast-medium" size="x-small">
-            ID: {{ request._id }}
-          </p-text>
+      <p-text color="contrast-medium" size="x-small">
+        ID: {{ request._id }}
+      </p-text>
 
-          <p-text>
-            Designation: {{ request.designation || 'No designation provided' }}
-          </p-text>
+      <p-text>
+        Designation: {{ request.designation || 'No designation provided' }}
+      </p-text>
 
-          <p-text>
-            Physical support: {{ request.physicalSupport }}
-          </p-text>
+      <p-text>
+        Physical support: {{ request.physicalSupport }}
+      </p-text>
 
-          <p-text>
-            EAN-13: {{ request.eanCode }}
-          </p-text>
+      <p-text>
+        EAN-13: {{ request.eanCode }}
+      </p-text>
 
-          <p-text color="contrast-medium" size="small">
-            Submitted on: {{ request.createdAt | date:'dd/MM/yyyy HH:mm' }}
-          </p-text>
+      <p-text color="contrast-medium" size="small">
+        Submitted on: {{ request.createdAt | date:'dd/MM/yyyy HH:mm' }}
+      </p-text>
 
-        </div>
-      }
     </div>
+    }
+  </div>
   }
 
 </div>

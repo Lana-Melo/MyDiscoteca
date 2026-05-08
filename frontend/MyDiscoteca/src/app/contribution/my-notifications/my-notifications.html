@@ -14,9 +14,9 @@
 
   <!-- Estado de carregamento -->
   @if (isLoading) {
-    <div class="col-narrow text-center">
-      <p-spinner></p-spinner>
-    </div>
+  <div class="col-narrow text-center">
+    <p-spinner></p-spinner>
+  </div>
   }
 
   <!-- Erro ao carregar -->
@@ -50,10 +50,9 @@
           [description]="
             (n.designation ? 'Version: ' + n.designation + ' — ' : '') +
             'Submitted on ' + (n.createdAt | date:'dd/MM/yyyy HH:mm')
-          "
-          [dismissButton]="false">
-        </p-inline-notification>
-      }
-    </div>
+          " [dismissButton]="false">
+    </p-inline-notification>
+    }
+  </div>
   }
 </div>

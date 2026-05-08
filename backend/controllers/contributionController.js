@@ -137,9 +137,11 @@ exports.getMyRequests = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'User requests retrieved successfully.',
+      message: 'User requests retrieved successfully.',
       contributions: contributions.map(c => ({
         _id: c._id,
         albumId: c.album?._id,
+        albumTitle: c.album?.title ?? 'Unknown album',
         albumTitle: c.album?.title ?? 'Unknown album',
         eanCode: c.eanCode,
         physicalSupport: c.physicalSupport,
@@ -197,9 +199,11 @@ exports.respondToRequest = async (req, res) => {
     await contribution.save();
 
     // Create notification for the user who submitted the request (US14).
+    // Create notification for the user who submitted the request (US14).
     await Notification.create({
       user: contribution.user,
       contribution: contribution._id,
+      albumTitle: contribution.album?.title ?? 'Unknown album',
       albumTitle: contribution.album?.title ?? 'Unknown album',
       designation: contribution.designation,
       status
@@ -243,6 +247,7 @@ exports.respondToRequest = async (req, res) => {
 
     res.status(200).json({
       success: true,
+      message: `Request marked as "${status}".`,
       message: `Request marked as "${status}".`,
       contribution: {
         _id: contribution._id,

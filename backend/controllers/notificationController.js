@@ -43,6 +43,7 @@ exports.getMyNotifications = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Notifications retrieved successfully.',
+      message: 'Notifications retrieved successfully.',
       notifications: notifications.map(n => ({
         _id: n._id,
         albumTitle: n.albumTitle,

@@ -49,7 +49,7 @@ exports.create = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'Álbum registado com sucesso.',
+            message: 'Album registered successfully.',
             album: {
                 id: newAlbum.id,
                 mbdi: newAlbum.mbdi,
@@ -83,7 +83,7 @@ exports.getAll = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'Lista de todos os álbuns resgatada com sucesso.',
+            message: 'List of all albums retrieved successfully.',
             albums: albums
         });
     } catch (error) {
@@ -120,7 +120,7 @@ exports.getById = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'Álbum encontrado com sucesso.',
+            message: 'Album found successfully.',
             album: {
                 id: album.id,
                 mbdi: album.mbdi,
@@ -196,14 +196,14 @@ exports.delete = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'Álbum removido com sucesso.',
+            message: 'Album removed successfully.',
             deleted: deletedAlbum
         });
 
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: 'Erro do servidor durante a remoção de um álbum.'
+            message: 'Server error during album removal.'
         });
         console.error(error);
     }

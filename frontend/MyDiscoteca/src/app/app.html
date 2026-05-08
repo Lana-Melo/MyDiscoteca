@@ -3,7 +3,7 @@
   <!-- TOP BAR -->
   <div class="col-full flex justify-center py-static-xs px-static-md bg-surface dark">
     <p class="prose-text-xs">
-        <!-- se quisermos aquela barra preta do template, colocar um texto aqui-->
+      <!-- se quisermos aquela barra preta do template, colocar um texto aqui-->
     </p>
   </div>
 
@@ -13,12 +13,8 @@
     <!-- LEFT -->
     <div class="flex gap-static-md items-center">
       @if (isLoggedIn) {
-        <p-button-pure
-          icon="menu-lines"
-          type="button"
-          [aria]="{'aria-label': 'Menu'}"
-          (click)="openNav()">
-        </p-button-pure>
+      <p-button-pure icon="menu-lines" type="button" [aria]="{'aria-label': 'Menu'}" (click)="openNav()">
+      </p-button-pure>
       }
     </div>
 
@@ -26,7 +22,7 @@
     <div class="flex justify-center">
       <div class="flex justify-center items-center">
         <a routerLink="/dashboard" class="text-lg font-semibold tracking-wide">
-            MyDiscoteca 🎶
+          MyDiscoteca 🎶
         </a>
       </div>
     </div>
@@ -35,7 +31,7 @@
     <div class="flex justify-end gap-static-md">
 
 
-    <!--
+      <!--
       <p-button-pure icon="search"></p-button-pure>
     <p-link-pure icon="heart" href="#">
         Favorit Artist
@@ -61,22 +57,18 @@
             <p-text size="small">{{ currentUserFirstName }}</p-text>
           }
 
-          @if (showProfilePopover) {
-            <p-popover direction="bottom" [aria]="{'aria-label': 'User menu'}">
-              <p-button-pure
-                slot="button"
-                type="button"
-                icon="user"
-                [aria]="{'aria-label': 'User profile'}">
-              </p-button-pure>
+        @if (showProfilePopover) {
+        <p-popover direction="bottom" [aria]="{'aria-label': 'User menu'}">
+          <p-button-pure slot="button" type="button" icon="user" [aria]="{'aria-label': 'User profile'}">
+          </p-button-pure>
 
-              <div class="flex flex-col items-start gap-static-sm">
-                <p-button-pure type="button" icon="user" (click)="goToProfile()">Profile</p-button-pure>
-                <p-button-pure type="button" icon="close" (click)="logout()">Logout</p-button-pure>
-              </div>
-            </p-popover>
-          }
-        </div>
+          <div class="flex flex-col items-start gap-static-sm">
+            <p-button-pure type="button" icon="user" (click)="goToProfile()">Profile</p-button-pure>
+            <p-button-pure type="button" icon="close" (click)="logout()">Logout</p-button-pure>
+          </div>
+        </p-popover>
+        }
+      </div>
       }
 
     </div>

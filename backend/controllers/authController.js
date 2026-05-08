@@ -82,7 +82,7 @@ exports.login = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Sessao iniciada com sucesso.',
+      message: 'Session started successfully.',
       token,
       user: buildUserResponse(user)
     });
