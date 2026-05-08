@@ -6,7 +6,7 @@
   </div>
 
   <div class="col-wide text-center">
-    <p-heading align="center" size="large">My Album Version Requests</p-heading>
+    <p-heading align="center" size="large" tag="h1">My Album Version Requests</p-heading>
     <p-text color="contrast-medium">
       Track the status of your submitted album version requests.
     </p-text>
@@ -14,19 +14,16 @@
 
   <!-- Filtro por estado -->
   <div class="col-narrow">
-    <label class="flex flex-col gap-2">
-      <p-text tag="span">Filter by status</p-text>
-      <select
-        class="rounded border border-neutral-300 px-3 py-2"
-        [(ngModel)]="selectedStatus"
-        name="selectedStatus"
-        (ngModelChange)="onStatusFilterChange()">
-        <option value="">All</option>
-        <option value="Em análise">Em análise</option>
-        <option value="Aceite">Aceite</option>
-        <option value="Recusado">Recusado</option>
-      </select>
-    </label>
+    <p-select
+      label="Filter by status"
+      [(ngModel)]="selectedStatus"
+      name="selectedStatus"
+      (change)="onStatusFilterChange()">
+      <p-select-option value="">All</p-select-option>
+      <p-select-option value="Em análise">Em análise</p-select-option>
+      <p-select-option value="Aceite">Aceite</p-select-option>
+      <p-select-option value="Recusado">Recusado</p-select-option>
+    </p-select>
   </div>
 
   <!-- Estado de carregamento -->

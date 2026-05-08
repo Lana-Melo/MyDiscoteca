@@ -6,7 +6,7 @@
   </div>
 
   <div class="col-wide text-center">
-    <p-heading align="center" size="large">Contributte with a New Album Version</p-heading>
+    <p-heading align="center" size="large" tag="h1">Contribute with a New Album Version</p-heading>
     <p-text color="contrast-medium">
       Select an existing album and submit the details of the physical version you want to add.
     </p-text>
@@ -44,23 +44,20 @@
   }
 
   <div class="col-narrow">
-    <label class="flex flex-col gap-2">
-      <p-text tag="span">Album</p-text>
-      <select
-        class="rounded border border-neutral-300 px-3 py-2"
-        [(ngModel)]="selectedAlbumId"
-        name="selectedAlbumId"
-        [disabled]="isLoadingAlbums || isSubmitting">
-        <option value="">
-          {{ isLoadingAlbums ? 'Loading albums...' : 'Select an album' }}
-        </option>
-        @for (album of albums; track album._id ?? album.id) {
-          <option [value]="album._id ?? album.id">
-            {{ album.title }} ({{ album.releaseYear }})
-          </option>
-        }
-      </select>
-    </label>
+    <p-select
+      label="Album"
+      [(ngModel)]="selectedAlbumId"
+      name="selectedAlbumId"
+      [disabled]="isLoadingAlbums || isSubmitting">
+      <p-select-option value="">
+        {{ isLoadingAlbums ? 'Loading albums...' : 'Select an album' }}
+      </p-select-option>
+      @for (album of albums; track album._id ?? album.id) {
+        <p-select-option [value]="album._id ?? album.id">
+          {{ album.title }} ({{ album.releaseYear }})
+        </p-select-option>
+      }
+    </p-select>
   </div>
 
   <div class="col-narrow">

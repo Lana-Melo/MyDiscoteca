@@ -19,7 +19,7 @@
     }
     @if (album) {
         <div class="col-basic">
-            <p-heading align="center" size="large">{{ album.title }}</p-heading>
+            <p-heading align="center" size="large" tag="h1">{{ album.title }}</p-heading>
         </div>
         <div class="col-basic flex justify-center">
             <img
@@ -56,7 +56,7 @@
             <p-divider></p-divider>
         </div>
         <div class="col-basic">
-            <p-heading align="left" size="medium">Tracks</p-heading>
+            <p-heading align="left" size="medium" tag="h2">Tracks</p-heading>
         </div>
         @if (album.tracks && album.tracks.length > 0) {
             <div class="col-basic">
@@ -92,7 +92,7 @@
             <p-divider></p-divider>
         </div>
         <div class="col-basic">
-            <p-heading align="left" size="medium">Versions</p-heading>
+            <p-heading align="left" size="medium" tag="h2">Versions</p-heading>
         </div>
         @if (album.physicalSupports && album.physicalSupports.length > 0) {
             <div class="col-basic">

@@ -18,7 +18,7 @@ import { ArtistService } from '../../../services/artist.service';
 
       @if (artist) {
       <div class="col-wide">
-        <p-heading>{{ artist.name }} Albums</p-heading>
+        <p-heading tag="h1">{{ artist.name }} Albums</p-heading>
       </div>
       <div class="col-wide">
         <p-text>Sorted by release year.</p-text>

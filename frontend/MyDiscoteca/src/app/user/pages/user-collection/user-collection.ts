@@ -17,7 +17,7 @@ import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/a
       </div>
 
       <div class="col-wide flex justify-between items-center">
-        <p-heading>My Album Collection</p-heading>
+        <p-heading tag="h1">My Album Collection</p-heading>
         @if (collection && collection.versions.length > 0) {
           <div style="min-width: 200px;">
             <p-select
