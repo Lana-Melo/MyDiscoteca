@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { AlbumCollectionService } from '../../../services/album-collection.service';
-import { AlbumCollection, Version } from '../../../models/album-collection';
+import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/album-collection';
 
 @Component({
   selector: 'user-collection',
@@ -11,9 +11,9 @@ import { AlbumCollection, Version } from '../../../models/album-collection';
   template: `
     <div class="grid-template">
       <div class="col-wide">
-        <p-button-pure icon="arrow-left" [routerLink]="['/user/profile']">
-          Back to profile
-        </p-button-pure>
+        <a [routerLink]="['/user/profile']">
+          <p-button-pure icon="arrow-left">Back to profile</p-button-pure>
+        </a>
       </div>
 
       <div class="col-wide">
@@ -30,25 +30,31 @@ import { AlbumCollection, Version } from '../../../models/album-collection';
         </div>
       } @else if (collection && collection.versions.length > 0) {
         <div class="col-wide grid grid-cols-subgrid">
-          @for (version of collection.versions; track version._id) {
+          @for (item of collection.versions; track item.version._id) {
             <div class="col-span-one-half">
               <div class="version-card">
                 <img
                   class="album-image"
-                  [src]="getAlbumImageUrl(version)"
-                  [alt]="getAlbumTitle(version)"
+                  [src]="getAlbumImageUrl(item)"
+                  [alt]="getAlbumTitle(item)"
                   (error)="handleImageError($event)"
                 />
                 <div class="version-info">
-                  <p-heading size="small">{{ getAlbumTitle(version) }}</p-heading>
-                  <p-text size="small">{{ getArtistName(version) }}</p-text>
+                  <p-heading size="small">{{ getAlbumTitle(item) }}</p-heading>
+                  <p-text size="small">{{ getArtistName(item) }}</p-text>
                   <p-text size="x-small" color="contrast-medium">
-                    {{ getSupportType(version) }} - {{ version.designation }}
+                    {{ getSupportType(item) }} - {{ item.version.designation }}
+                  </p-text>
+                  <p-text size="x-small" color="contrast-medium">
+                    EAN: {{ item.version.eanCode }}
+                  </p-text>
+                  <p-text size="x-small" color="contrast-medium">
+                    Added on: {{ formatDate(item.addedAt) }}
                   </p-text>
                   <p-button-pure 
                     icon="delete" 
                     color="notification-error" 
-                    (click)="removeVersion(version._id)"
+                    (click)="removeVersion(item.version._id)"
                     [disabled]="isRemoving"
                   >
                     Remove
@@ -138,28 +144,34 @@ export class UserCollection implements OnInit {
     }
   }
 
-  getAlbum(version: Version): any {
-    const support = version.physicalSupport as any;
+  getAlbum(item: AlbumCollectionItem): any {
+    const support = item.version.physicalSupport as any;
     return support?.album;
   }
 
-  getAlbumTitle(version: Version): string {
-    return this.getAlbum(version)?.title || 'Unknown Album';
+  getAlbumTitle(item: AlbumCollectionItem): string {
+    return this.getAlbum(item)?.title || 'Unknown Album';
   }
 
-  getAlbumImageUrl(version: Version): string {
-    return this.getAlbum(version)?.imageUrl || '/api/media/placeholders/album.svg';
+  getAlbumImageUrl(item: AlbumCollectionItem): string {
+    return this.getAlbum(item)?.imageUrl || '/api/media/placeholders/album.svg';
   }
 
-  getArtistName(version: Version): string {
-    const album = this.getAlbum(version);
+  getArtistName(item: AlbumCollectionItem): string {
+    const album = this.getAlbum(item);
     const artist = album?.artist;
     return typeof artist === 'string' ? artist : (artist?.name || 'Unknown Artist');
   }
 
-  getSupportType(version: Version): string {
-    const support = version.physicalSupport as any;
+  getSupportType(item: AlbumCollectionItem): string {
+    const support = item.version.physicalSupport as any;
     return support?.type || 'Unknown Support';
+  }
+
+  formatDate(dateString: string | undefined): string {
+    if (!dateString) return 'Unknown';
+    const date = new Date(dateString);
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
   handleImageError(event: Event): void {

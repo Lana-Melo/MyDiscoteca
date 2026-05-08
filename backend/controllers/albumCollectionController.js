@@ -46,7 +46,7 @@ exports.getMyCollection = async (req, res) => {
 
     let collection = await AlbumCollection.findOne({ user: userId })
       .populate({
-        path: 'versions',
+        path: 'versions.version',
         populate: {
           path: 'physicalSupport',
           populate: {
@@ -121,7 +121,7 @@ exports.addVersion = async (req, res) => {
 
     // Verificar se a versão já está na coleção.
     const alreadyOwned = collection.versions.some(
-      (existingVersionId) => existingVersionId.toString() === versionId
+      (v) => v.version.toString() === versionId
     );
 
     if (alreadyOwned) {
@@ -131,12 +131,12 @@ exports.addVersion = async (req, res) => {
       });
     }
 
-    collection.versions.push(versionId);
+    collection.versions.push({ version: versionId, addedAt: Date.now() });
     await collection.save();
 
     // Populate para devolver dados completos na resposta.
     await collection.populate({
-      path: 'versions',
+      path: 'versions.version',
       populate: {
         path: 'physicalSupport',
         populate: {
@@ -187,7 +187,7 @@ exports.removeVersion = async (req, res) => {
     }
 
     const versionIndex = collection.versions.findIndex(
-      (existingVersionId) => existingVersionId.toString() === versionId
+      (v) => v.version.toString() === versionId
     );
 
     if (versionIndex === -1) {

@@ -26,10 +26,15 @@ export interface Album {
   artist?: ArtistInfo | string;
 }
 
+export interface AlbumCollectionItem {
+  version: Version;
+  addedAt: string;
+}
+
 export interface AlbumCollection {
   _id: string;
   user: string;
-  versions: Version[];
+  versions: AlbumCollectionItem[];
   createdAt?: string;
   updatedAt?: string;
 }

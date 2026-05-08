@@ -21,8 +21,14 @@ const albumCollectionSchema = new mongoose.Schema({
 
   // Versões de suportes físicos que o utilizador possui.
   versions: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Version'
+    version: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Version'
+    },
+    addedAt: {
+      type: Date,
+      default: Date.now
+    }
   }]
 },
 
