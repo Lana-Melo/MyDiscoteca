@@ -74,7 +74,7 @@ export class NewAlbumVersionRequest {
     }).subscribe({
       next: (response) => {
         this.isSubmitting = false;
-        this.successMessage = 'Request submitted successfully. Status: em análise.';
+        this.successMessage = 'Request submitted successfully. Status: Em análise.';
         this.submittedRequestSummary = {
           albumTitle: selectedAlbum?.title ?? 'Unknown album',
           eanCode: response.eanCode,

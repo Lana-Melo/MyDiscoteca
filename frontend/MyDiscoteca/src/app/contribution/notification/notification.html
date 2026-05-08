@@ -26,7 +26,7 @@
       @for (n of notifications; track n._id) {
         <p-inline-notification
           headingTag="h3"
-          [state]="n.status === 'aceite' ? 'success' : 'error'"
+          [state]="n.status === 'Aceite' ? 'success' : 'error'"
           [heading]="'Request ' + n.status"
           [description]="'Album: ' + (n.albumTitle ?? n.albumId) + (n.designation ? ' — ' + n.designation : '')"
           [dismissButton]="false">

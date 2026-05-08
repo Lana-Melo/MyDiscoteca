@@ -54,10 +54,10 @@ const contributionSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: {
-      values: ['em análise', 'aceite', 'recusado'],
-      message: 'O estado deve ser "em análise", "aceite" ou "recusado".'
+      values: ['Em análise', 'Aceite', 'Recusado'],
+      message: 'O estado deve ser "Em análise", "Aceite" ou "Recusado".'
     },
-    default: 'em análise'
+    default: 'Em análise'
   }
 },
 

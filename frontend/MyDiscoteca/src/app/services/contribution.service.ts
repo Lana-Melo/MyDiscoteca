@@ -16,7 +16,7 @@ export interface AlbumVersionRequestResponse {
   eanCode: string;
   physicalSupport: 'CD' | 'Vinyl' | 'Cassette';
   designation?: string;
-  status: 'em análise' | 'aceite' | 'recusado';
+  status: 'Em análise' | 'Aceite' | 'Recusado';
   createdAt: string;
 }
 

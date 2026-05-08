@@ -60,7 +60,7 @@ exports.submitAlbumVersionRequest = async (req, res) => {
       eanCode: eanCode?.trim(),
       physicalSupport,
       designation: designation?.trim() || null,
-      status: 'em análise'
+      status: 'Em análise'
     });
 
     await newContribution.save();
@@ -109,7 +109,7 @@ exports.getMyRequests = async (req, res) => {
 
     const filter = { user: userId };
     if (status) {
-      const allowedStatuses = ['em análise', 'aceite', 'recusado'];
+      const allowedStatuses = ['Em análise', 'Aceite', 'Recusado'];
       if (!allowedStatuses.includes(status)) {
         return res.status(400).json({
           success: false,
@@ -157,7 +157,7 @@ exports.respondToRequest = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    const allowedStatuses = ['aceite', 'recusado'];
+    const allowedStatuses = ['Aceite', 'Recusado'];
     if (!allowedStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
@@ -175,7 +175,7 @@ exports.respondToRequest = async (req, res) => {
       });
     }
 
-    if (contribution.status !== 'em análise') {
+    if (contribution.status !== 'Em análise') {
       return res.status(409).json({
         success: false,
         message: 'Este pedido já foi respondido.'
@@ -186,7 +186,7 @@ exports.respondToRequest = async (req, res) => {
     await contribution.save();
 
     // Se aceite, criar a versão no álbum
-    if (status === 'aceite') {
+    if (status === 'Aceite') {
       const PhysicalSupport = require('../models/physicalSupportModel');
       const Version = require('../models/versionModel');
       const Album = require('../models/albumModel');

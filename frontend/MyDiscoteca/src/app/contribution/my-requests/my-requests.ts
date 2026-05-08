@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { ContributionService, AlbumVersionRequestResponse } from '../../services/contribution.service';
 
@@ -34,8 +35,8 @@ export class MyRequests implements OnInit {
 
   getStatusTextColor(status: string): string {
     switch (status) {
-      case 'aceite':   return 'green';
-      case 'recusado': return 'red';
+      case 'Aceite':   return 'green';
+      case 'Recusado': return 'red';
       default:         return 'orange';
     }
   }
@@ -69,4 +70,17 @@ export class MyRequests implements OnInit {
       ? this.requests.filter(r => r.status === this.selectedStatus)
       : [...this.requests];
   }
+
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
+    respondToRequest(id: string, status: 'Aceite' | 'Recusado'): void {
+      this.http.post(`/api/contributions/album-version/${id}/respond`, { status })
+        .subscribe({
+          next: () => {
+            this.loadRequests();
+            this.router.navigate(['/contributions/notifications']);
+          },
+          error: () => alert('Erro ao responder ao pedido.')
+        });
+    }
 }

@@ -91,6 +91,23 @@
             Submitted on: {{ request.createdAt | date:'dd/MM/yyyy HH:mm' }}
           </p-text>
 
+          @if (request.status.toLowerCase().includes('análise')) {
+            <div class="flex gap-2 mt-2">
+              <button
+                class="rounded border border-neutral-300 px-3 py-1"
+                type="button"
+                (click)="respondToRequest(request._id, 'Aceite')">
+                Aceitar
+              </button>
+              <button
+                class="rounded border border-neutral-300 px-3 py-1"
+                type="button"
+                (click)="respondToRequest(request._id, 'Recusado')">
+                Recusar
+              </button>
+            </div>
+          }
+
         </div>
       }
     </div>
