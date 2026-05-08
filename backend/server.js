@@ -75,7 +75,7 @@ app.use('/api/media', express.static(path.join(__dirname, 'public', 'media')));
 // O parâmetro 'req' do callback dá acesso aos dados do pedido,
 // enquanto o 'res' permite compor a resposta ao cliente.
 app.get('/home', (req, res) => {
-    const name = req.body.name;
+  const name = req.body.name;
   res.send(`Olá, ${name}. A API está a funcionar!`);
 });
 
@@ -103,6 +103,9 @@ const albumRoutes = require('./routes/albumRoutes');
 
 // As rotas sobre álbuns têm todas o prefixo /api/albums.
 app.use('/api/albums', albumRoutes);
+
+const contributionRoutes = require('./routes/contributionRoutes');
+app.use('/api/contributions', contributionRoutes);
 
 // Importar as rotas que a API expõe sobre a coleção de álbuns
 const albumCollectionRoutes = require('./routes/albumCollectionRoutes');

@@ -1,0 +1,37 @@
+<div class="grid-template">
+  <div class="col-wide">
+    <p-button-pure icon="arrow-left" [routerLink]="['/dashboard']">
+      Back to dashboard
+    </p-button-pure>
+  </div>
+
+  <div class="col-wide text-center">
+    <p-heading align="center" size="large">Notifications</p-heading>
+  </div>
+
+  @if (isLoading) {
+    <div class="col-narrow text-center">
+      <p-spinner></p-spinner>
+    </div>
+  }
+
+  @if (!isLoading && notifications.length === 0) {
+    <div class="col-narrow text-center">
+      <p-text color="contrast-medium">No notifications yet.</p-text>
+    </div>
+  }
+
+  @if (!isLoading && notifications.length > 0) {
+    <div class="col-narrow flex flex-col gap-4">
+      @for (n of notifications; track n._id) {
+        <p-inline-notification
+          headingTag="h3"
+          [state]="n.status === 'Aceite' ? 'success' : 'error'"
+          [heading]="'Request ' + n.status"
+          [description]="'Album: ' + (n.albumTitle ?? n.albumId) + (n.designation ? ' — ' + n.designation : '')"
+          [dismissButton]="false">
+        </p-inline-notification>
+      }
+    </div>
+  }
+</div>

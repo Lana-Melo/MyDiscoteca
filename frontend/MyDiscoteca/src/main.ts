@@ -5,13 +5,23 @@
 import {bootstrapApplication, provideProtractorTestingSupport} from '@angular/platform-browser';
 import {App} from './app/app';
 import {provideRouter} from '@angular/router';
-import {provideHttpClient} from '@angular/common/http';
+import {provideHttpClient, withInterceptors, HttpInterceptorFn } from '@angular/common/http';
 import routeConfig from './app/routes';
+
+const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    req = req.clone({
+      setHeaders: { Authorization: `Bearer ${token}` }
+    });
+  }
+  return next(req);
+};
 
 bootstrapApplication(App, {
   providers: [
     provideProtractorTestingSupport(),
     provideRouter(routeConfig),
-    provideHttpClient()
+    provideHttpClient(withInterceptors([authInterceptor]))
   ],
 }).catch((err) => console.error(err));
