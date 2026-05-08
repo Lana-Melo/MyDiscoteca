@@ -3,6 +3,9 @@ import { PorscheDesignSystemModule } from '@porsche-design-system/components-ang
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AlbumInfo } from '../../../models/album';
 import { AlbumService } from '../../../services/album.service';
+import { AlbumCollectionService } from '../../../services/album-collection.service';
+import { UserService } from '../../../services/user.service';
+import { AlbumCollection } from '../../../models/album-collection';
 
 @Component({
   selector: 'album-details',
@@ -22,18 +25,48 @@ import { AlbumService } from '../../../services/album.service';
 })
 export class AlbumDetails implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
-  route: ActivatedRoute = inject(ActivatedRoute);
-  albumService: AlbumService = inject(AlbumService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly albumService = inject(AlbumService);
+  private readonly albumCollectionService = inject(AlbumCollectionService);
+  public readonly userService = inject(UserService);
 
   album: AlbumInfo | undefined;
   detailsOpen = false;
   openAccordions: Record<string, boolean> = {};
+  
+  collection: AlbumCollection | undefined;
+  successMessage = '';
+  errorMessage = '';
+  backLink = '/search';
+  backLabel = 'Back to search';
 
   ngOnInit(): void {
+    const from = this.route.snapshot.queryParamMap.get('from');
+    if (from === 'collection') {
+      this.backLink = '/user/collection';
+      this.backLabel = 'Back to collection';
+    }
+
     const albumId = this.route.snapshot.params['id'];
     this.albumService.getAlbumById(albumId).subscribe((album) => {
       this.album = album;
       this.changeDetectorRef.markForCheck();
+    });
+
+    if (this.userService.isLoggedIn()) {
+      this.loadCollection();
+    }
+  }
+
+  loadCollection(): void {
+    this.albumCollectionService.getMyCollection().subscribe({
+      next: (collection) => {
+        this.collection = collection;
+        this.changeDetectorRef.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error loading collection:', err);
+      }
     });
   }
   
@@ -60,10 +93,29 @@ export class AlbumDetails implements OnInit {
   }
 
   addToCollection(versionId: string): void {
-    console.log('adicionou à colecao', versionId);
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    this.albumCollectionService.addVersion(versionId).subscribe({
+      next: (collection) => {
+        this.collection = collection;
+        this.successMessage = 'Version added to your collection successfully!';
+        this.changeDetectorRef.markForCheck();
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.message || 'Error adding version to collection.';
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+  }
+
+  isVersionInCollection(versionId: string): boolean {
+    if (!this.collection) return false;
+    return this.collection.versions.some(v => v.version._id === versionId);
   }
 
   requestNewVersion(): void {
     console.log('pediu para fazer request de nova version');
   }
 }
+

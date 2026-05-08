@@ -1,4 +1,7 @@
 <div class="grid-template">
+    <div class="col-wide">
+        <p-heading tag="h1">Explore Music</p-heading>
+    </div>
     <div class="col-basic grid grid-cols-subgrid">
         <div class="col-span-one-half">
             <p-radio-group
@@ -18,6 +21,7 @@
                 [label]="searchMode === 'artist' ? 'Search artists' : 'Search albums'"
                 [placeholder]="searchMode === 'artist' ? 'Ex.: Beatles' : 'Ex.: Thriller'"
                 name="search"
+                [value]="searchQuery"
                 [compact]="true"
                 [clear]="true"
                 [indicator]="true"

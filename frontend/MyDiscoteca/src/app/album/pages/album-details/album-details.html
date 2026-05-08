@@ -1,10 +1,25 @@
 <div class="grid-template">
     <div class="col-basic">
-        <p-button-pure icon="arrow-left" [routerLink]="['/search']">Back to search</p-button-pure>
+        <p-button-pure icon="arrow-left" [routerLink]="[backLink]">{{ backLabel }}</p-button-pure>
     </div>
+    @if (successMessage) {
+        <div class="col-basic">
+            <p-inline-notification state="success" [description]="successMessage" (dismiss)="successMessage = ''"></p-inline-notification>
+        </div>
+    }
+    @if (errorMessage) {
+        <div class="col-basic">
+            <p-inline-notification state="error" [description]="errorMessage" (dismiss)="errorMessage = ''"></p-inline-notification>
+        </div>
+    }
+    @if (!userService.isLoggedIn()) {
+        <div class="col-basic">
+            <p-inline-notification state="info" description="Sign in to add albums to your collection."></p-inline-notification>
+        </div>
+    }
     @if (album) {
         <div class="col-basic">
-            <p-heading align="center" size="large">{{ album.title }}</p-heading>
+            <p-heading align="center" size="large" tag="h1">{{ album.title }}</p-heading>
         </div>
         <div class="col-basic flex justify-center">
             <img
@@ -41,7 +56,7 @@
             <p-divider></p-divider>
         </div>
         <div class="col-basic">
-            <p-heading align="left" size="medium">Tracks</p-heading>
+            <p-heading align="left" size="medium" tag="h2">Tracks</p-heading>
         </div>
         @if (album.tracks && album.tracks.length > 0) {
             <div class="col-basic">
@@ -77,13 +92,13 @@
             <p-divider></p-divider>
         </div>
         <div class="col-basic">
-            <p-heading align="left" size="medium">Versions</p-heading>
+            <p-heading align="left" size="medium" tag="h2">Versions</p-heading>
         </div>
         @if (album.physicalSupports && album.physicalSupports.length > 0) {
             <div class="col-basic">
                 @for (support of album.physicalSupports; track support._id) {
                     <p-accordion
-                        [open]="openAccordions[support._id] ?? false"
+                        [open]="!!openAccordions[support._id]"
                         [heading]="support.type"
                         (update)="onAccordionUpdate(support._id, $event)">
                         @if (support.versions && support.versions.length > 0) {
@@ -97,12 +112,13 @@
                                     </div>
                                     <div class="flex justify-end">
                                         <p-button
-                                            icon="add"
-                                            variant="ghost"
+                                            [icon]="isVersionInCollection(version._id) ? 'check' : 'add'"
+                                            [variant]="isVersionInCollection(version._id) ? 'secondary' : 'ghost'"
                                             [compact]="true"
-                                            [aria]="{ 'aria-label': 'Add to my collection' }"
+                                            [disabled]="isVersionInCollection(version._id) || !userService.isLoggedIn()"
+                                            [aria]="{ 'aria-label': isVersionInCollection(version._id) ? 'Already in collection' : 'Add to my collection' }"
                                             (click)="addToCollection(version._id)">
-                                            Add to my collection
+                                            {{ isVersionInCollection(version._id) ? 'In my collection' : 'Add to my collection' }}
                                         </p-button>
                                     </div>
                                 </div>

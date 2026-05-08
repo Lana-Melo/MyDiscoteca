@@ -1,0 +1,59 @@
+<div class="grid-template">
+  <div class="col-wide">
+    <p-button-pure icon="arrow-left" [routerLink]="['/dashboard']">
+      Back to dashboard
+    </p-button-pure>
+  </div>
+
+  <div class="col-wide text-center">
+    <p-heading align="center" size="large" tag="h1">Notifications</p-heading>
+    <p-text color="contrast-medium">
+      Responses to your album version requests.
+    </p-text>
+  </div>
+
+  <!-- Estado de carregamento -->
+  @if (isLoading) {
+    <div class="col-narrow text-center">
+      <p-spinner></p-spinner>
+    </div>
+  }
+
+  <!-- Erro ao carregar -->
+  @if (showError) {
+    <div class="col-narrow">
+      <p-inline-notification
+        headingTag="h2"
+        state="error"
+        heading="Unable to load notifications"
+        description="An error occurred while fetching your notifications. Please try again."
+        [dismissButton]="false">
+      </p-inline-notification>
+    </div>
+  }
+
+  <!-- Sem notificações -->
+  @if (!isLoading && !showError && notifications.length === 0) {
+    <div class="col-narrow text-center">
+      <p-text color="contrast-medium">No notifications yet.</p-text>
+    </div>
+  }
+
+  <!-- Lista de notificações -->
+  @if (!isLoading && !showError && notifications.length > 0) {
+    <div class="col-narrow flex flex-col gap-4">
+      @for (n of notifications; track n._id) {
+        <p-inline-notification
+          headingTag="h3"
+          [state]="n.status === 'Aceite' ? 'success' : 'error'"
+          [heading]="'Request ' + n.status + ': ' + n.albumTitle"
+          [description]="
+            (n.designation ? 'Version: ' + n.designation + ' — ' : '') +
+            'Submitted on ' + (n.createdAt | date:'dd/MM/yyyy HH:mm')
+          "
+          [dismissButton]="false">
+        </p-inline-notification>
+      }
+    </div>
+  }
+</div>

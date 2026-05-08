@@ -52,7 +52,8 @@
               <p-button-pure
                 slot="button"
                 type="button"
-                icon="user">
+                icon="user"
+                [aria]="{'aria-label': 'User profile'}">
               </p-button-pure>
 
               <div class="flex flex-col items-start gap-static-sm">
@@ -80,6 +81,15 @@
         (dismiss)="closeNav()">
         <p-drilldown-link>
           <a [routerLink]="['/search']" (click)="closeNav()">Explore artists and albums</a>
+        </p-drilldown-link>
+        <p-drilldown-link>
+          <a [routerLink]="['/contributions/album-version/new']" (click)="closeNav()">Contributte with a new album version</a>
+        </p-drilldown-link>
+        <p-drilldown-link>
+          <a [routerLink]="['/contributions/album-version/my-requests']" (click)="closeNav()">My album version requests</a>
+        </p-drilldown-link>
+        <p-drilldown-link>
+          <a [routerLink]="['/contributions/notifications']" (click)="closeNav()">Notifications</a>
         </p-drilldown-link>
       </p-drilldown>
     </nav>

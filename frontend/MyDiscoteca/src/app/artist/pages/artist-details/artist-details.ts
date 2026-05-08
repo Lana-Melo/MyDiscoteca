@@ -17,7 +17,7 @@ import { ArtistService } from '../../../services/artist.service';
       </div>
       @if (artist) {
       <div class="col-wide">
-        <p-heading>{{artist.name}}</p-heading>
+        <p-heading tag="h1">{{artist.name}}</p-heading>
       </div>
       <div class="col-wide">
         <img
@@ -55,7 +55,7 @@ import { ArtistService } from '../../../services/artist.service';
       }
       @if (artist.members && artist.members.length > 0) {
       <div class="col-wide">
-        <p-heading size="medium">Members</p-heading>
+        <p-heading size="medium" tag="h2">Members</p-heading>
       </div>
       <div class="col-wide grid grid-cols-subgrid">
         @for (member of artist.members; track member._id) {
@@ -67,7 +67,7 @@ import { ArtistService } from '../../../services/artist.service';
       }
       @if (artist.albums && artist.albums.length > 0) {
       <div class="col-wide">
-        <p-heading size="medium">Albums</p-heading>
+        <p-heading size="medium" tag="h2">Albums</p-heading>
       </div>
       <div class="col-wide grid grid-cols-subgrid">
         @for (album of visibleAlbums; track album._id) {

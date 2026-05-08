@@ -1,6 +1,6 @@
 <div class="grid-template">
     <div class="col-wide">
-        <p-heading>Profile</p-heading>  
+        <p-heading tag="h1">Profile</p-heading>  
     </div>
     @if (successMessage) {
         <div class="col-wide">
@@ -76,8 +76,15 @@
           }
         </div>
         <div class="col-span-one-half">
-          <a [routerLink]="['/user/profile/edit']">
+          <a [routerLink]="['/user/collection']">
             <p-button>
+              See my albums
+            </p-button>
+          </a>
+        </div>
+        <div class="col-span-one-half">
+          <a [routerLink]="['/user/profile/edit']">
+            <p-button variant="secondary">
               Edit profile
             </p-button>
           </a>

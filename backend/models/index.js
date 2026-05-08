@@ -13,5 +13,7 @@ require('./trackModel');
 require('./physicalSupportModel');
 require('./versionModel');
 require('./userModel');
+require('./contributionModel');
+require('./albumCollectionModel');
 
 // -----

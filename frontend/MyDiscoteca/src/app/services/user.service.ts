@@ -65,7 +65,7 @@ export class UserService {
     localStorage.setItem('currentUserId', userId);
   }
 
-  private buildHttpOptions() {
+  buildHttpOptions() {
     let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const authToken = localStorage.getItem('authToken');
     const currentUserId = localStorage.getItem('currentUserId');

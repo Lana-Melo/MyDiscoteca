@@ -9,6 +9,10 @@ import { AlbumDetails } from './album/pages/album-details/album-details';
 import { ArtistAndAlbumSearch } from './search/artist-and-album-search/artist-and-album-search';
 import { authGuard } from './auth.guard';
 import { RegisterUser } from './user/pages/register-user/register-user';
+import { NewAlbumVersionRequest } from './contribution/new-album-request/new-album-request';
+import { MyRequests } from './contribution/my-requests/my-requests';
+import { MyNotifications } from './contribution/notification/notification';
+import { UserCollection } from './user/pages/user-collection/user-collection';
 
 const routeConfig: Routes = [
   {
@@ -39,6 +43,24 @@ const routeConfig: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'contributions/album-version/new',
+    component: NewAlbumVersionRequest,
+    title: 'Contributte with a New Album Version',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'contributions/album-version/my-requests',
+    component: MyRequests,
+    title: 'My Requests',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'contributions/notifications',
+    component: MyNotifications,
+    title: 'Notifications',
+    canActivate: [authGuard],
+  },
+  {
     path: 'user/profile',
     component: UserProfile,
     title: 'User Profile',
@@ -54,6 +76,12 @@ const routeConfig: Routes = [
     path: 'album/details/:id',
     component: AlbumDetails,
     title: 'Album Details',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'user/collection',
+    component: UserCollection,
+    title: 'My Album Collection',
     canActivate: [authGuard],
   },
   {
