@@ -32,7 +32,6 @@ function resolveAuthenticatedUserId(req) {
 
 // -----
 
-// No teu controller de contribuições
 exports.createContribution = async (req, res) => {
   try {
     const newContribution = new Contribution(req.body);
