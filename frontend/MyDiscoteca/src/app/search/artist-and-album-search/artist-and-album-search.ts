@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { ArtistCard } from '../../artist/components/artist-card/artist-card';
 import { AlbumCard } from '../../album/album-card/album-card';
@@ -11,7 +12,7 @@ import { SearchStateService, SearchMode } from '../../services/search-state.serv
 @Component({
   selector: 'app-artist-and-album-search',
   standalone: true,
-  imports: [PorscheDesignSystemModule, ArtistCard, AlbumCard],
+  imports: [RouterModule, PorscheDesignSystemModule, ArtistCard, AlbumCard],
   templateUrl: './artist-and-album-search.html',
   styles: ``,
 })

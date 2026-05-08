@@ -43,6 +43,20 @@
     -->
       @if (isLoggedIn) {
         <div class="flex items-center gap-static-sm">
+          <div class="relative inline-flex">
+            <p-button-pure
+              icon="bell"
+              type="button"
+              [aria]="{'aria-label': 'Notifications'}"
+              [routerLink]="['/contributions/notifications']">
+            </p-button-pure>
+            @if (unreadNotificationCount > 0) {
+              <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                {{ unreadNotificationCount > 9 ? '9+' : unreadNotificationCount }}
+              </span>
+            }
+          </div>
+          
           @if (currentUserFirstName) {
             <p-text size="small">{{ currentUserFirstName }}</p-text>
           }
@@ -86,10 +100,10 @@
           <a [routerLink]="['/contributions/album-version/new']" (click)="closeNav()">Contributte with a new album version</a>
         </p-drilldown-link>
         <p-drilldown-link>
-          <a [routerLink]="['/contributions/album-version/my-requests']" (click)="closeNav()">My album version requests</a>
+          <a [routerLink]="['/contributions/album-version/my-requests']" (click)="closeNav()">My contribution requests</a>
         </p-drilldown-link>
         <p-drilldown-link>
-          <a [routerLink]="['/contributions/notifications']" (click)="closeNav()">Notifications</a>
+          <a [routerLink]="['/user/collection']" (click)="closeNav()">See my albums</a>
         </p-drilldown-link>
       </p-drilldown>
     </nav>

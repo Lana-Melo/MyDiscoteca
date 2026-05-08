@@ -11,7 +11,7 @@ import { authGuard } from './auth.guard';
 import { RegisterUser } from './user/pages/register-user/register-user';
 import { NewAlbumVersionRequest } from './contribution/new-album-request/new-album-request';
 import { MyRequests } from './contribution/my-requests/my-requests';
-import { MyNotifications } from './contribution/notification/notification';
+import { MyNotifications } from './contribution/my-notifications/my-notifications';
 import { UserCollection } from './user/pages/user-collection/user-collection';
 
 const routeConfig: Routes = [

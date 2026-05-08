@@ -10,13 +10,13 @@ import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/a
   imports: [PorscheDesignSystemModule, RouterLink],
   template: `
     <div class="grid-template">
-      <div class="col-wide">
-        <a [routerLink]="['/user/profile']">
-          <p-button-pure icon="arrow-left">Back to profile</p-button-pure>
-        </a>
+      <div class="col-basic">
+          <p-button-pure icon="arrow-left" [routerLink]="['/dashboard']">
+          Back to dashboard
+          </p-button-pure>
       </div>
 
-      <div class="col-wide flex justify-between items-center">
+      <div class="col-basic flex justify-between items-center">
         <p-heading tag="h1">My Album Collection</p-heading>
         @if (collection && collection.versions.length > 0) {
           <div style="min-width: 200px;">
@@ -36,26 +36,26 @@ import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/a
       </div>
 
       @if (successMessage) {
-        <div class="col-wide">
+        <div class="col-basic">
           <p-inline-notification state="success" [description]="successMessage" (dismiss)="successMessage = ''"></p-inline-notification>
         </div>
       }
       @if (errorMessage) {
-        <div class="col-wide">
+        <div class="col-basic">
           <p-inline-notification state="error" [description]="errorMessage" (dismiss)="errorMessage = ''"></p-inline-notification>
         </div>
       }
 
       @if (isLoading) {
-        <div class="col-wide">
+        <div class="col-basic">
           <p-text>Loading collection...</p-text>
         </div>
       } @else if (errorMessage) {
-        <div class="col-wide">
+        <div class="col-basic">
           <p-text color="notification-error">{{ errorMessage }}</p-text>
         </div>
       } @else if (collection && collection.versions.length > 0) {
-        <div class="col-wide grid grid-cols-subgrid">
+        <div class="col-basic grid grid-cols-subgrid">
           @for (item of sortedVersions; track item.version._id) {
             <div class="col-span-one-half">
               <div class="version-card">
@@ -95,7 +95,7 @@ import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/a
           }
         </div>
       } @else {
-        <div class="col-wide">
+        <div class="col-basic">
           <p-text>You don't have any albums in your collection yet.</p-text>
           <a [routerLink]="['/search']">
             <p-button-pure icon="arrow-head-right">Browse artists to add albums</p-button-pure>

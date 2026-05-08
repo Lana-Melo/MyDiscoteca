@@ -1,9 +1,9 @@
 <div class="grid-template">
-    <div class="col-wide">
+    <div class="col-basic">
         <p-heading tag="h1">Profile</p-heading>  
     </div>
     @if (successMessage) {
-        <div class="col-wide">
+        <div class="col-basic">
             <p-inline-notification
                 headingTag="h2"
                 state="success"
@@ -47,15 +47,15 @@
     </div>
     -->
     @if (isLoading) {
-        <div class="col-wide">
+        <div class="col-basic">
           <p-text>Loading user profile...</p-text>
         </div>
       } @else if (errorMessage) {
-        <div class="col-wide">
+        <div class="col-basic">
           <p-text color="notification-error">{{ errorMessage }}</p-text>
         </div>
       } @else if (user) {
-        <div class="col-wide grid grid-cols-subgrid">
+        <div class="col-basic grid grid-cols-subgrid">
         <div class="col-span-one-half">
           <p-input-text label="Username" [value]="user.username" [disabled]="true"></p-input-text>
         </div>
@@ -74,13 +74,6 @@
               </p-button-pure>
             </a>
           }
-        </div>
-        <div class="col-span-one-half">
-          <a [routerLink]="['/user/collection']">
-            <p-button>
-              See my albums
-            </p-button>
-          </a>
         </div>
         <div class="col-span-one-half">
           <a [routerLink]="['/user/profile/edit']">

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { AlbumInfo } from '../../models/album';
 import { AlbumService } from '../../services/album.service';
@@ -40,6 +40,7 @@ export class NewAlbumVersionRequest {
   private readonly albumService = inject(AlbumService);
   private readonly contributionService = inject(ContributionService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly route = inject(ActivatedRoute);
 
   constructor() {
     this.loadAlbums();
@@ -74,7 +75,7 @@ export class NewAlbumVersionRequest {
     }).subscribe({
       next: (response) => {
         this.isSubmitting = false;
-        this.successMessage = 'Request submitted successfully. Status: Em análise.';
+        this.successMessage = 'Request submitted successfully. Status: Pending.';
         this.submittedRequestSummary = {
           albumTitle: selectedAlbum?.title ?? 'Unknown album',
           eanCode: response.eanCode,
@@ -109,6 +110,10 @@ export class NewAlbumVersionRequest {
           left.title.localeCompare(right.title)
         );
         this.isLoadingAlbums = false;
+        const preselected = this.route.snapshot.queryParamMap.get('albumId');
+        if (preselected) {
+          this.selectedAlbumId = preselected;
+        }
         this.changeDetectorRef.markForCheck();
       },
       error: () => {

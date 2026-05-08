@@ -10,22 +10,22 @@ import { ArtistService } from '../../../services/artist.service';
   imports: [PorscheDesignSystemModule, RouterLink],
   template: `
     <div class="grid-template">
-      <div class="col-wide">
+      <div class="col-basic">
         <p-button-pure icon="arrow-left" [routerLink]="['/artist/details', artist?.id ?? artist?._id]">
           Back to artist
         </p-button-pure>
       </div>
 
       @if (artist) {
-      <div class="col-wide">
+      <div class="col-basic">
         <p-heading tag="h1">{{ artist.name }} Albums</p-heading>
       </div>
-      <div class="col-wide">
+      <div class="col-basic">
         <p-text>Sorted by release year.</p-text>
       </div>
-      <div class="col-wide grid grid-cols-subgrid">
+      <div class="col-basic grid grid-cols-subgrid">
         @for (album of sortedAlbums; track album._id) {
-        <div class="col-span-one-half">
+        <div class="col-span-one-third">
           <div class="album-card">
             <img
               class="album-image"

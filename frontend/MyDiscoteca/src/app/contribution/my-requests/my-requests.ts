@@ -33,8 +33,8 @@ export class MyRequests implements OnInit {
 
   getStatusTextColor(status: string): string {
     switch (status) {
-      case 'Aceite':   return 'green';
-      case 'Recusado': return 'red';
+      case 'Accepted': return 'green';
+      case 'Rejected': return 'red';
       default:         return 'orange';
     }
   }

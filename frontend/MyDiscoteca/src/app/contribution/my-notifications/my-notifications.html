@@ -1,12 +1,12 @@
 <div class="grid-template">
-  <div class="col-wide">
+  <div class="col-basic">
     <p-button-pure icon="arrow-left" [routerLink]="['/dashboard']">
       Back to dashboard
     </p-button-pure>
   </div>
 
-  <div class="col-wide text-center">
-    <p-heading align="center" size="large" tag="h1">Notifications</p-heading>
+  <div class="col-basic text-center">
+    <p-heading tag="h1">Notifications</p-heading>
     <p-text color="contrast-medium">
       Responses to your album version requests.
     </p-text>
@@ -21,7 +21,7 @@
 
   <!-- Erro ao carregar -->
   @if (showError) {
-    <div class="col-narrow">
+    <div class="col-basic">
       <p-inline-notification
         headingTag="h2"
         state="error"
@@ -34,18 +34,18 @@
 
   <!-- Sem notificações -->
   @if (!isLoading && !showError && notifications.length === 0) {
-    <div class="col-narrow text-center">
+    <div class="col-basic text-center">
       <p-text color="contrast-medium">No notifications yet.</p-text>
     </div>
   }
 
   <!-- Lista de notificações -->
   @if (!isLoading && !showError && notifications.length > 0) {
-    <div class="col-narrow flex flex-col gap-4">
+    <div class="col-basic flex flex-col gap-4">
       @for (n of notifications; track n._id) {
         <p-inline-notification
           headingTag="h3"
-          [state]="n.status === 'Aceite' ? 'success' : 'error'"
+          [state]="n.status === 'Accepted' ? 'success' : 'error'"
           [heading]="'Request ' + n.status + ': ' + n.albumTitle"
           [description]="
             (n.designation ? 'Version: ' + n.designation + ' — ' : '') +

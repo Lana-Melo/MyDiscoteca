@@ -12,14 +12,14 @@ import { ArtistService } from '../../../services/artist.service';
   imports: [PorscheDesignSystemModule, RouterLink],
   template: `
     <div class="grid-template">
-      <div class="col-wide">
+      <div class="col-basic">
         <p-button-pure icon="arrow-left" [routerLink]="['/search']">Back to search</p-button-pure>
       </div>
       @if (artist) {
-      <div class="col-wide">
+      <div class="col-basic">
         <p-heading tag="h1">{{artist.name}}</p-heading>
       </div>
-      <div class="col-wide">
+      <div class="col-basic">
         <img
           class="artist-image"
           [src]="artist.imageUrl ?? '/api/media/placeholders/artist.svg'"
@@ -27,7 +27,7 @@ import { ArtistService } from '../../../services/artist.service';
           (error)="handleImageError($event, 'artist')"
         />
       </div>
-      <div class="col-wide grid grid-cols-subgrid">
+      <div class="col-basic grid grid-cols-subgrid">
         <div class="col-span-one-half">
           <p-input-text label="ISNI" [value]="artist.isni" [disabled]="true"></p-input-text>
         </div>
@@ -44,20 +44,20 @@ import { ArtistService } from '../../../services/artist.service';
         </div>
       </div>
       @if (favoriteMessage) {
-      <div class="col-wide">
+      <div class="col-basic">
         <p-text color="notification-success">{{ favoriteMessage }}</p-text>
       </div>
       }
       @if (favoriteError) {
-      <div class="col-wide">
+      <div class="col-basic">
         <p-text color="notification-error">{{ favoriteError }}</p-text>
       </div>
       }
       @if (artist.members && artist.members.length > 0) {
-      <div class="col-wide">
+      <div class="col-basic">
         <p-heading size="medium" tag="h2">Members</p-heading>
       </div>
-      <div class="col-wide grid grid-cols-subgrid">
+      <div class="col-basic grid grid-cols-subgrid">
         @for (member of artist.members; track member._id) {
         <div class="col-span-one-half">
           <p-input-text [label]="member.type" [value]="member.name" [disabled]="true"></p-input-text>
@@ -66,12 +66,12 @@ import { ArtistService } from '../../../services/artist.service';
       </div>
       }
       @if (artist.albums && artist.albums.length > 0) {
-      <div class="col-wide">
+      <div class="col-basic">
         <p-heading size="medium" tag="h2">Albums</p-heading>
       </div>
-      <div class="col-wide grid grid-cols-subgrid">
+      <div class="col-basic grid grid-cols-subgrid">
         @for (album of visibleAlbums; track album._id) {
-        <div class="col-span-one-half">
+        <div class="col-span-one-third">
           <div class="album-card">
             <img
               class="album-image"
@@ -84,7 +84,7 @@ import { ArtistService } from '../../../services/artist.service';
         </div>
         }
       </div>
-      <div class="col-wide albums-actions">
+      <div class="col-basic albums-actions">
         <a [routerLink]="['/artist/details', artist.id ?? artist._id, 'albums']">
           <p-button-pure icon="arrow-head-right">See all albums</p-button-pure>
         </a>

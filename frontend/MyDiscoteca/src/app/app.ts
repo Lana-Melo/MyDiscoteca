@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, RouterOutlet, RouterLink, Router } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { UserService } from './services/user.service';
+import { NotificationService } from './services/notification.service';
 import { filter } from 'rxjs';
 
 @Component({
@@ -15,22 +16,27 @@ export class App implements OnInit {
   isNavOpen = false;
   showProfilePopover = true;
   currentUsername = '';
+  unreadNotificationCount = 0;
 
   constructor(
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit() {
     this.loadCurrentUser();
+    this.loadUnreadCount();
 
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         if (this.isLoggedIn) {
           this.loadCurrentUser();
+          this.loadUnreadCount();
         } else {
           this.currentUsername = '';
+          this.unreadNotificationCount = 0;
         }
       });
   }
@@ -71,6 +77,14 @@ export class App implements OnInit {
     this.showProfilePopover = false;
     setTimeout(() => {
       this.showProfilePopover = true;
+    });
+  }
+
+  private loadUnreadCount(): void {
+    if (!this.isLoggedIn) return;
+    this.notificationService.getUnseenCount().subscribe({
+      next: (count) => { this.unreadNotificationCount = count; },
+      error: () => { this.unreadNotificationCount = 0; },
     });
   }
 

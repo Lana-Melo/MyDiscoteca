@@ -2,20 +2,15 @@
 // controllers/notificationController.js
 // -----
 
-// Para usar os modelos definidos em Mongoose.
 const Notification = require('../models/notificationModel');
-
-// Para validar JSON Web Tokens.
 const jwt = require('jsonwebtoken');
 
 // -----
 
-// Chave usada na validacao de JSON Web Tokens.
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 
 // -----
 
-// Resolve o id do utilizador autenticado a partir do bearer token.
 function resolveAuthenticatedUserId(req) {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith('Bearer ')) return null;
@@ -30,7 +25,7 @@ function resolveAuthenticatedUserId(req) {
 
 // -----
 
-// Listar as notificações do utilizador autenticado (US14).
+// List notifications for the authenticated user (US14).
 exports.getMyNotifications = async (req, res) => {
   try {
     const userId = resolveAuthenticatedUserId(req);
@@ -38,7 +33,7 @@ exports.getMyNotifications = async (req, res) => {
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: 'Utilizador não autenticado.'
+        message: 'User not authenticated.'
       });
     }
 
@@ -47,7 +42,7 @@ exports.getMyNotifications = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Notificações obtidas com sucesso.',
+      message: 'Notifications retrieved successfully.',
       notifications: notifications.map(n => ({
         _id: n._id,
         albumTitle: n.albumTitle,
@@ -62,14 +57,14 @@ exports.getMyNotifications = async (req, res) => {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: 'Erro do servidor ao obter as notificações.'
+      message: 'Server error while retrieving notifications.'
     });
   }
 };
 
 // -----
 
-// Marcar todas as notificações do utilizador autenticado como vistas (US14).
+// Mark all notifications for the authenticated user as seen (US14).
 exports.markAsSeen = async (req, res) => {
   try {
     const userId = resolveAuthenticatedUserId(req);
@@ -77,7 +72,7 @@ exports.markAsSeen = async (req, res) => {
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: 'Utilizador não autenticado.'
+        message: 'User not authenticated.'
       });
     }
 
@@ -88,14 +83,14 @@ exports.markAsSeen = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Notificações marcadas como vistas.'
+      message: 'Notifications marked as seen.'
     });
 
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: 'Erro do servidor ao atualizar as notificações.'
+      message: 'Server error while updating notifications.'
     });
   }
 };

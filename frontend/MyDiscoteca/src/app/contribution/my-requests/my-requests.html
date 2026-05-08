@@ -1,41 +1,41 @@
 <div class="grid-template">
-  <div class="col-wide">
+  <div class="col-basic">
     <p-button-pure icon="arrow-left" [routerLink]="['/dashboard']">
       Back to dashboard
     </p-button-pure>
   </div>
 
-  <div class="col-wide text-center">
-    <p-heading align="center" size="large" tag="h1">My Album Version Requests</p-heading>
+  <div class="col-basic text-center">
+    <p-heading tag="h1">My Contribution Requests</p-heading>
     <p-text color="contrast-medium">
       Track the status of your submitted album version requests.
     </p-text>
   </div>
 
   <!-- Filtro por estado -->
-  <div class="col-narrow">
+  <div class="col-basic">
     <p-select
       label="Filter by status"
       [(ngModel)]="selectedStatus"
       name="selectedStatus"
       (change)="onStatusFilterChange()">
       <p-select-option value="">All</p-select-option>
-      <p-select-option value="Em análise">Em análise</p-select-option>
-      <p-select-option value="Aceite">Aceite</p-select-option>
-      <p-select-option value="Recusado">Recusado</p-select-option>
+      <p-select-option value="Pending">Pending</p-select-option>
+      <p-select-option value="Accepted">Accepted</p-select-option>
+      <p-select-option value="Rejected">Rejected</p-select-option>
     </p-select>
   </div>
 
   <!-- Estado de carregamento -->
   @if (isLoading) {
-    <div class="col-narrow text-center">
+    <div class="col-basic text-center">
       <p-spinner></p-spinner>
     </div>
   }
 
   <!-- Erro ao carregar -->
   @if (showError) {
-    <div class="col-narrow">
+    <div class="col-basic">
       <p-inline-notification
         headingTag="h2"
         state="error"
@@ -48,7 +48,7 @@
 
   <!-- Sem pedidos -->
   @if (!isLoading && !showError && filteredRequests.length === 0) {
-    <div class="col-narrow text-center">
+    <div class="col-basic text-center">
       <p-text color="contrast-medium">
         {{ selectedStatus ? 'No requests found with the selected status.' : 'You have not submitted any requests yet.' }}
       </p-text>
@@ -57,7 +57,7 @@
 
   <!-- Lista de pedidos -->
   @if (!isLoading && filteredRequests.length > 0) {
-    <div class="col-narrow flex flex-col gap-4">
+    <div class="col-basic flex flex-col gap-4">
       @for (request of filteredRequests; track request._id) {
         <div class="rounded border border-neutral-200 p-4 flex flex-col gap-2">
 

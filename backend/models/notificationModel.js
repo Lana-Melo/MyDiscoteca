@@ -2,58 +2,50 @@
 // models/notificationModel.js
 // -----
 
-// Para interagir com a base de dados MongoDB.
 const mongoose = require('mongoose');
 
 // -----
 
-// Esquema que representa uma notificação enviada ao utilizador
-// após a resposta a um pedido de contribuição.
+// Schema representing a notification sent to the user
+// after a contribution request has been responded to.
 const notificationSchema = new mongoose.Schema({
-  // Utilizador a quem a notificação se destina.
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
 
-  // Pedido de contribuição ao qual a notificação se refere.
   contribution: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Contribution',
     required: true
   },
 
-  // Título do álbum, guardado diretamente para evitar populate desnecessário.
+  // Stored directly to avoid unnecessary populate calls.
   albumTitle: {
     type: String,
     required: true
   },
 
-  // Designação da versão pedida, caso exista.
   designation: {
     type: String,
     default: null
   },
 
-  // Resultado da resposta ao pedido.
   status: {
     type: String,
     enum: {
-      values: ['Aceite', 'Recusado'],
-      message: 'O estado deve ser "Aceite" ou "Recusado".'
+      values: ['Accepted', 'Rejected'],
+      message: 'Status must be "Accepted" or "Rejected".'
     },
     required: true
   },
 
-  // Indica se o utilizador já visualizou a notificação.
   seen: {
     type: Boolean,
     default: false
   }
 },
-
-// Adiciona campos createdAt e updatedAt ao esquema.
 { timestamps: true });
 
 module.exports = mongoose.model('Notification', notificationSchema);

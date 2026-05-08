@@ -2,22 +2,17 @@
 // controllers/contributionController.js
 // -----
 
-// Para usar os modelos definidos em Mongoose.
 const Contribution = require('../models/contributionModel');
 const Album = require('../models/albumModel');
 const Notification = require('../models/notificationModel');
-
-// Para validar JSON Web Tokens.
 const jwt = require('jsonwebtoken');
 
 // -----
 
-// Chave usada na validacao de JSON Web Tokens.
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 
 // -----
 
-// Resolve o id do utilizador autenticado a partir do bearer token.
 function resolveAuthenticatedUserId(req) {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith('Bearer ')) return null;
@@ -41,14 +36,14 @@ exports.createContribution = async (req, res) => {
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
-        message: 'O código EAN-13 já está em uso por outra submissão.'
+        message: 'The EAN-13 code is already in use by another submission.'
       });
     }
-    res.status(500).json({ success: false, message: 'Erro ao guardar.' });
+    res.status(500).json({ success: false, message: 'Error saving contribution.' });
   }
 };
 
-// Submeter um pedido de nova versão de álbum (US12).
+// Submit a new album version request (US12).
 exports.submitAlbumVersionRequest = async (req, res) => {
   try {
     const userId = resolveAuthenticatedUserId(req);
@@ -56,18 +51,17 @@ exports.submitAlbumVersionRequest = async (req, res) => {
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: 'Utilizador não autenticado.'
+        message: 'User not authenticated.'
       });
     }
 
     const { albumId, eanCode, physicalSupport, designation } = req.body;
 
-    // Verificar se o álbum existe.
     const album = await Album.findById(albumId);
     if (!album) {
       return res.status(404).json({
         success: false,
-        message: 'Álbum não encontrado.'
+        message: 'Album not found.'
       });
     }
 
@@ -77,7 +71,7 @@ exports.submitAlbumVersionRequest = async (req, res) => {
       eanCode: eanCode?.trim(),
       physicalSupport,
       designation: designation?.trim() || null,
-      status: 'Em análise'
+      status: 'Pending'
     });
 
     await newContribution.save();
@@ -102,14 +96,14 @@ exports.submitAlbumVersionRequest = async (req, res) => {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: 'Erro do servidor ao submeter o pedido de contribuição.'
+      message: 'Server error while submitting the contribution request.'
     });
   }
 };
 
 // -----
 
-// Listar os pedidos do utilizador autenticado (US13).
+// List contribution requests for the authenticated user (US13).
 exports.getMyRequests = async (req, res) => {
   try {
     const userId = resolveAuthenticatedUserId(req);
@@ -117,20 +111,20 @@ exports.getMyRequests = async (req, res) => {
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: 'Utilizador não autenticado.'
+        message: 'User not authenticated.'
       });
     }
 
-    // Filtro opcional por estado (?status=em+análise | aceite | recusado).
+    // Optional filter by status (?status=Pending | Accepted | Rejected).
     const { status } = req.query;
 
     const filter = { user: userId };
     if (status) {
-      const allowedStatuses = ['Em análise', 'Aceite', 'Recusado'];
+      const allowedStatuses = ['Pending', 'Accepted', 'Rejected'];
       if (!allowedStatuses.includes(status)) {
         return res.status(400).json({
           success: false,
-          message: 'Estado inválido. Os valores possíveis são: "em análise", "aceite", "recusado".'
+          message: 'Invalid status. Allowed values are: "Pending", "Accepted", "Rejected".'
         });
       }
       filter.status = status;
@@ -142,11 +136,11 @@ exports.getMyRequests = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Pedidos do utilizador obtidos com sucesso.',
+      message: 'User requests retrieved successfully.',
       contributions: contributions.map(c => ({
         _id: c._id,
         albumId: c.album?._id,
-        albumTitle: c.album?.title ?? 'Álbum desconhecido',
+        albumTitle: c.album?.title ?? 'Unknown album',
         eanCode: c.eanCode,
         physicalSupport: c.physicalSupport,
         designation: c.designation,
@@ -159,26 +153,26 @@ exports.getMyRequests = async (req, res) => {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: 'Erro do servidor ao obter os pedidos de contribuição.'
+      message: 'Server error while retrieving contribution requests.'
     });
   }
 };
 
 // -----
 
-// Simular resposta a um pedido (aceite/recusado) — nota de rodapé 12 do enunciado.
-// Rota: POST /api/contributions/album-version/:id/respond
-// Body: { "status": "Aceite" | "Recusado" }
+// Simulate a response to a request (accepted/rejected) — assignment footnote 12.
+// Route: POST /api/contributions/album-version/:id/respond
+// Body: { "status": "Accepted" | "Rejected" }
 exports.respondToRequest = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
 
-    const allowedStatuses = ['Aceite', 'Recusado'];
+    const allowedStatuses = ['Accepted', 'Rejected'];
     if (!allowedStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
-        message: 'Estado inválido. Os valores possíveis são: "Aceite" ou "Recusado".'
+        message: 'Invalid status. Allowed values are: "Accepted" or "Rejected".'
       });
     }
 
@@ -188,35 +182,34 @@ exports.respondToRequest = async (req, res) => {
     if (!contribution) {
       return res.status(404).json({
         success: false,
-        message: 'Pedido de contribuição não encontrado.'
+        message: 'Contribution request not found.'
       });
     }
 
-    if (contribution.status !== 'Em análise') {
+    if (contribution.status !== 'Pending') {
       return res.status(409).json({
         success: false,
-        message: 'Este pedido já foi respondido.'
+        message: 'This request has already been responded to.'
       });
     }
 
     contribution.status = status;
     await contribution.save();
 
-    // Criar notificação para o utilizador que submeteu o pedido (US14).
+    // Create notification for the user who submitted the request (US14).
     await Notification.create({
       user: contribution.user,
       contribution: contribution._id,
-      albumTitle: contribution.album?.title ?? 'Álbum desconhecido',
+      albumTitle: contribution.album?.title ?? 'Unknown album',
       designation: contribution.designation,
       status
     });
 
-    // Se aceite, criar a versão no álbum (US14c).
-    if (status === 'Aceite') {
+    // If accepted, create the version on the album (US14c).
+    if (status === 'Accepted') {
       const PhysicalSupport = require('../models/physicalSupportModel');
       const Version = require('../models/versionModel');
 
-      // Encontrar ou criar o suporte físico para este álbum.
       let physicalSupport = await PhysicalSupport.findOne({
         album: contribution.album._id,
         type: contribution.physicalSupport
@@ -229,14 +222,12 @@ exports.respondToRequest = async (req, res) => {
         });
         await physicalSupport.save();
 
-        // Adicionar o suporte físico ao álbum.
         await Album.findByIdAndUpdate(
           contribution.album._id,
           { $push: { physicalSupports: physicalSupport._id } }
         );
       }
 
-      // Criar a versão.
       const newVersion = new Version({
         eanCode: contribution.eanCode,
         designation: contribution.designation || 'Standard Edition',
@@ -244,7 +235,6 @@ exports.respondToRequest = async (req, res) => {
       });
       await newVersion.save();
 
-      // Adicionar a versão ao suporte físico.
       await PhysicalSupport.findByIdAndUpdate(
         physicalSupport._id,
         { $push: { versions: newVersion._id } }
@@ -253,7 +243,7 @@ exports.respondToRequest = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: `Pedido marcado como "${status}".`,
+      message: `Request marked as "${status}".`,
       contribution: {
         _id: contribution._id,
         status: contribution.status,
@@ -265,7 +255,7 @@ exports.respondToRequest = async (req, res) => {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: 'Erro do servidor ao responder ao pedido de contribuição.'
+      message: 'Server error while responding to the contribution request.'
     });
   }
 };

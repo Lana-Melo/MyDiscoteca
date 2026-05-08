@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlbumInfo } from '../../../models/album';
 import { AlbumService } from '../../../services/album.service';
 import { AlbumCollectionService } from '../../../services/album-collection.service';
@@ -26,6 +26,7 @@ import { AlbumCollection } from '../../../models/album-collection';
 export class AlbumDetails implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly albumService = inject(AlbumService);
   private readonly albumCollectionService = inject(AlbumCollectionService);
   public readonly userService = inject(UserService);
@@ -115,7 +116,10 @@ export class AlbumDetails implements OnInit {
   }
 
   requestNewVersion(): void {
-    console.log('pediu para fazer request de nova version');
+    const albumId = this.album?._id ?? this.album?.id;
+    this.router.navigate(['/contributions/album-version/new'], {
+      queryParams: { albumId },
+    });
   }
 }
 

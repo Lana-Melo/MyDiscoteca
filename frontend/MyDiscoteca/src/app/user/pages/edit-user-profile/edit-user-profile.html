@@ -1,26 +1,26 @@
 
 <div class="grid-template">
 
-    <div class="col-wide">
-        <p-heading>Edit Profile</p-heading>  
+    <div class="col-basic">
+        <p-heading tag="h1">Edit Profile</p-heading>  
     </div>
 
     @if (isLoading) {
-        <div class="col-wide">
+        <div class="col-basic">
             <p-text>Loading...</p-text>
         </div>
     } @else if (successMessage) {
-        <div class="col-wide">
+        <div class="col-basic">
             <p-text color="notification-success">{{ successMessage }}</p-text>
         </div>
     } @else {
         @if (errorMessage) {
-            <div class="col-wide">
+            <div class="col-basic">
                 <p-text color="notification-error">{{ errorMessage }}</p-text>
             </div>
         }
 
-        <div class="col-wide grid grid-cols-subgrid gap-y-3">
+        <div class="col-basic grid grid-cols-subgrid gap-y-3">
 
             <div class="col-span-one-half">
                 <p-input-text label="Name" [(ngModel)]="username" name="username"></p-input-text>
@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <div class="col-wide">
+        <div class="col-basic">
             <p-button type="button" [aria]="{'aria-haspopup': 'dialog'}" (click)="openConfirmModal()">
                 Save changes
             </p-button>
@@ -61,7 +61,7 @@
             </app-password-confirm-modal>
         </div>
 
-        <div class="col-wide">
+        <div class="col-basic">
             <a [routerLink]="['/user/profile']">
                 <p-button variant="ghost">Cancel</p-button>
             </a>
@@ -70,7 +70,7 @@
 
     <p-modal [open]="warningOpen" [aria]="{'aria-label': 'Profile warning'}" (dismiss)="closeWarning()">
         <p-heading slot="header" size="large" tag="h2">
-            Dados invalidos
+            Invalid data
         </p-heading>
 
         <p-text color="notification-warning">Corrige estes pontos antes de guardar:</p-text>

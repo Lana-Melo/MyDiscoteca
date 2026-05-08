@@ -8,7 +8,7 @@ import { AppNotification, NotificationService } from '../../services/notificatio
   selector: 'app-my-notifications',
   standalone: true,
   imports: [CommonModule, RouterLink, PorscheDesignSystemModule],
-  templateUrl: './notification.html',
+  templateUrl: './my-notifications.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyNotifications implements OnInit {

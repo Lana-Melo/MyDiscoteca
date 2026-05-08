@@ -6,7 +6,7 @@ export interface AppNotification {
   _id: string;
   albumTitle: string;
   designation: string | null;
-  status: 'Aceite' | 'Recusado';
+  status: 'Accepted' | 'Rejected';
   seen: boolean;
   createdAt: string;
 }
