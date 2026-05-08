@@ -30,7 +30,7 @@
         <div class="col-span-one-half">
           <p-input-text label="Favorite Artist" [value]="favoriteArtistName" [disabled]="true"></p-input-text>
           @if (favoriteArtistId) {
-            <a [routerLink]="['/artist/details', favoriteArtistId]">
+            <a [routerLink]="['/artist/details', favoriteArtistId]" [queryParams]="{ from: 'profile' }">
               <p-button-pure>
                 Go to artist profile
               </p-button-pure>
@@ -68,7 +68,7 @@
         <div class="col-span-one-half">
           <p-input-text label="Favorite Artist" [value]="favoriteArtistName" [disabled]="true"></p-input-text>
           @if (favoriteArtistId) {
-            <a [routerLink]="['/artist/details', favoriteArtistId]">
+            <a [routerLink]="['/artist/details', favoriteArtistId]" [queryParams]="{ from: 'profile' }">
               <p-button-pure>
                 Go to artist profile
               </p-button-pure>

@@ -14,6 +14,7 @@ export class ArtistCard {
   artistName = input<string>();
   artistSince = input<number>();
   artistImg = input('/api/media/placeholders/artist.svg');
+  from = input('search');
 
   handleImageError(event: Event): void {
     const img = event.target as HTMLImageElement | null;

@@ -1,4 +1,4 @@
-<a [routerLink]="['/artist/details', artistId()]">
+<a [routerLink]="['/artist/details', artistId()]" [queryParams]="{ from: from() }">
     <p-button-tile label="Go to artist profile" [description]="artistName() ?? ''">
         <img [src]="artistImg()" [alt]="artistName() ?? 'Artist image'" (error)="handleImageError($event)" />
         <p-text slot="footer" theme="dark">

@@ -34,9 +34,15 @@
                 heading="Details"
                 [open]="detailsOpen"
                 (update)="onDetailsUpdate($event)">
-                <div class="flex gap-2">
+                <div class="flex gap-2 items-center">
                     <p-text weight="semibold">Artist:</p-text>
-                    <p-text>{{ album.artist?.name ?? 'Unknown' }}</p-text>
+                    @if (album.artist) {
+                      <a [routerLink]="['/artist/details', album.artist._id]" [queryParams]="{ from: 'album', albumId: album._id ?? album.id }">
+                        <p-button-pure>{{ album.artist.name }}</p-button-pure>
+                      </a>
+                    } @else {
+                      <p-text>Unknown</p-text>
+                    }
                 </div>
                 <div class="flex gap-2">
                     <p-text weight="semibold">Release Year:</p-text>

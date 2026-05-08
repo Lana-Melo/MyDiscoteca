@@ -11,7 +11,7 @@ import { ArtistService } from '../../../services/artist.service';
   template: `
     <div class="grid-template">
       <div class="col-basic">
-        <p-button-pure icon="arrow-left" [routerLink]="['/artist/details', artist?.id ?? artist?._id]">
+        <p-button-pure icon="arrow-left" [routerLink]="['/artist/details', artist?.id ?? artist?._id]" [queryParams]="{ from: from }">
           Back to artist
         </p-button-pure>
       </div>
@@ -62,6 +62,7 @@ export class ArtistAlbums implements OnInit {
   private readonly artistService = inject(ArtistService);
 
   artist: ArtistInfo | undefined;
+  from: string | null = null;
 
   get sortedAlbums(): ArtistAlbum[] {
     return (this.artist?.albums ?? [])
@@ -70,6 +71,7 @@ export class ArtistAlbums implements OnInit {
   }
 
   ngOnInit(): void {
+    this.from = this.route.snapshot.queryParamMap.get('from');
     const artistId = this.route.snapshot.params['id'];
     this.artistService.getArtistById(artistId).subscribe((artist) => {
       this.artist = artist;

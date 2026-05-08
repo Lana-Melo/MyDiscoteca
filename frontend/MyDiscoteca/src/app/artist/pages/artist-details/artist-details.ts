@@ -13,7 +13,7 @@ import { ArtistService } from '../../../services/artist.service';
   template: `
     <div class="grid-template">
       <div class="col-basic">
-        <p-button-pure icon="arrow-left" [routerLink]="['/search']">Back to search</p-button-pure>
+        <p-button-pure icon="arrow-left" [routerLink]="[backLink]">{{ backLabel }}</p-button-pure>
       </div>
       @if (artist) {
       <div class="col-basic">
@@ -85,7 +85,7 @@ import { ArtistService } from '../../../services/artist.service';
         }
       </div>
       <div class="col-basic albums-actions">
-        <a [routerLink]="['/artist/details', artist.id ?? artist._id, 'albums']">
+        <a [routerLink]="['/artist/details', artist.id ?? artist._id, 'albums']" [queryParams]="{ from: from }">
           <p-button-pure icon="arrow-head-right">See all albums</p-button-pure>
         </a>
       </div>
@@ -149,6 +149,9 @@ export class ArtistDetails implements OnInit {
   favoriteError = '';
   overwriteFavoriteOpen = false;
   pendingFavoriteArtistId: string | null = null;
+  backLink = '/search';
+  backLabel = 'Back to search';
+  from: string | null = null;
 
   get visibleAlbums(): ArtistAlbum[] {
     return (this.artist?.albums ?? [])
@@ -158,6 +161,19 @@ export class ArtistDetails implements OnInit {
   }
 
   ngOnInit(): void {
+    this.from = this.route.snapshot.queryParamMap.get('from');
+    if (this.from === 'profile') {
+      this.backLink = '/user/profile';
+      this.backLabel = 'Back to profile';
+    } else if (this.from === 'dashboard') {
+      this.backLink = '/dashboard';
+      this.backLabel = 'Back to dashboard';
+    } else if (this.from === 'album') {
+      const albumId = this.route.snapshot.queryParamMap.get('albumId');
+      this.backLink = `/album/details/${albumId}`;
+      this.backLabel = 'Back to album';
+    }
+
     const artistId = this.route.snapshot.params['id'];
     this.artistService.getArtistById(artistId).subscribe((artist) => {
       this.artist = artist;

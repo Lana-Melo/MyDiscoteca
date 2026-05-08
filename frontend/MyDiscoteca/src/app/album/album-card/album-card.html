@@ -1,4 +1,4 @@
-<a [routerLink]="['/album/details', albumId()]">
+<a [routerLink]="['/album/details', albumId()]" [queryParams]="{ from: 'search' }">
     <p-button-tile label="See more" [description]="albumTitle() ?? ''">
         <img [src]="albumImg()" [alt]="albumTitle() ?? 'Album cover'" (error)="handleImageError($event)" />
         <p-text slot="footer" theme="dark">
