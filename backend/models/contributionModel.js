@@ -28,6 +28,7 @@ const contributionSchema = new mongoose.Schema({
     type: String,
     required: [true, 'EAN-13 é obrigatório.'],
     trim: true,
+    unique: true,
     minlength: [13, 'EAN-13 deve ter exatamente 13 dígitos.'],
     maxlength: [13, 'EAN-13 deve ter exatamente 13 dígitos.'],
     match: [/^\d{13}$/, 'EAN-13 deve conter exatamente 13 dígitos numéricos.']

@@ -88,9 +88,13 @@ export class NewAlbumVersionRequest {
       error: (err) => {
         this.isSubmitting = false;
         this.showError = true;
-        this.errorMessages = [
-          err?.error?.message ?? 'An error occurred while submitting the request. Please try again.'
-        ];
+        if (err.status === 400 && err.error?.message?.includes('eanCode')) {
+          this.errorMessages = ['This EAN-13 code is already registered for another album version.'];
+        } else {
+          this.errorMessages = [
+            err?.error?.message ?? 'An error occurred while submitting the request.'
+          ];
+        }
         this.successMessage = '';
         this.submittedRequestSummary = null;
         this.changeDetectorRef.markForCheck();

@@ -2,24 +2,33 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 
+export interface AppNotification {
+  _id: string;
+  albumTitle: string;
+  designation: string | null;
+  status: 'Aceite' | 'Recusado';
+  seen: boolean;
+  createdAt: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private readonly http = inject(HttpClient);
-  private readonly storageKey = 'notificationsSeenAt';
+  private readonly baseUrl = '/api/notifications';
 
-  getNotifications(): Observable<any[]> {
-    return this.http.get<any>('/api/contributions/album-version/my-requests').pipe(
-      map(response => {
-        const all = Array.isArray(response) ? response : response.contributions ?? [];
-        const seenAt = localStorage.getItem(this.storageKey);
-        return all.filter((r: any) =>
-          r.status === 'Aceite' || r.status === 'Recusado'
-        );
-      })
-    );
+  getNotifications(): Observable<AppNotification[]> {
+    return this.http
+      .get<{ success: boolean; notifications: AppNotification[] }>(this.baseUrl)
+      .pipe(map(r => r.notifications));
   }
 
   markAsSeen(): void {
-    localStorage.setItem(this.storageKey, new Date().toISOString());
+    this.http.patch(`${this.baseUrl}/seen`, {}).subscribe();
+  }
+
+  getUnseenCount(): Observable<number> {
+    return this.getNotifications().pipe(
+      map(list => list.filter(n => !n.seen).length)
+    );
   }
 }

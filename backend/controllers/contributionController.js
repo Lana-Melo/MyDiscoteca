@@ -5,6 +5,7 @@
 // Para usar os modelos definidos em Mongoose.
 const Contribution = require('../models/contributionModel');
 const Album = require('../models/albumModel');
+const Notification = require('../models/notificationModel');
 
 // Para validar JSON Web Tokens.
 const jwt = require('jsonwebtoken');
@@ -30,6 +31,23 @@ function resolveAuthenticatedUserId(req) {
 }
 
 // -----
+
+// No teu controller de contribuições
+exports.createContribution = async (req, res) => {
+  try {
+    const newContribution = new Contribution(req.body);
+    await newContribution.save();
+    res.status(201).json({ success: true, contribution: newContribution });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: 'O código EAN-13 já está em uso por outra submissão.'
+      });
+    }
+    res.status(500).json({ success: false, message: 'Erro ao guardar.' });
+  }
+};
 
 // Submeter um pedido de nova versão de álbum (US12).
 exports.submitAlbumVersionRequest = async (req, res) => {
@@ -151,7 +169,7 @@ exports.getMyRequests = async (req, res) => {
 
 // Simular resposta a um pedido (aceite/recusado) — nota de rodapé 12 do enunciado.
 // Rota: POST /api/contributions/album-version/:id/respond
-// Body: { "status": "aceite" | "recusado" }
+// Body: { "status": "Aceite" | "Recusado" }
 exports.respondToRequest = async (req, res) => {
   try {
     const { id } = req.params;
@@ -161,7 +179,7 @@ exports.respondToRequest = async (req, res) => {
     if (!allowedStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
-        message: 'Estado inválido. Os valores possíveis são: "aceite" ou "recusado".'
+        message: 'Estado inválido. Os valores possíveis são: "Aceite" ou "Recusado".'
       });
     }
 
@@ -185,13 +203,21 @@ exports.respondToRequest = async (req, res) => {
     contribution.status = status;
     await contribution.save();
 
-    // Se aceite, criar a versão no álbum
+    // Criar notificação para o utilizador que submeteu o pedido (US14).
+    await Notification.create({
+      user: contribution.user,
+      contribution: contribution._id,
+      albumTitle: contribution.album?.title ?? 'Álbum desconhecido',
+      designation: contribution.designation,
+      status
+    });
+
+    // Se aceite, criar a versão no álbum (US14c).
     if (status === 'Aceite') {
       const PhysicalSupport = require('../models/physicalSupportModel');
       const Version = require('../models/versionModel');
-      const Album = require('../models/albumModel');
 
-      // Encontrar ou criar o suporte físico para este álbum
+      // Encontrar ou criar o suporte físico para este álbum.
       let physicalSupport = await PhysicalSupport.findOne({
         album: contribution.album._id,
         type: contribution.physicalSupport
@@ -204,14 +230,14 @@ exports.respondToRequest = async (req, res) => {
         });
         await physicalSupport.save();
 
-        // Adicionar ao álbum
+        // Adicionar o suporte físico ao álbum.
         await Album.findByIdAndUpdate(
           contribution.album._id,
           { $push: { physicalSupports: physicalSupport._id } }
         );
       }
 
-      // Criar a versão
+      // Criar a versão.
       const newVersion = new Version({
         eanCode: contribution.eanCode,
         designation: contribution.designation || 'Standard Edition',
@@ -219,7 +245,7 @@ exports.respondToRequest = async (req, res) => {
       });
       await newVersion.save();
 
-      // Adicionar versão ao suporte físico
+      // Adicionar a versão ao suporte físico.
       await PhysicalSupport.findByIdAndUpdate(
         physicalSupport._id,
         { $push: { versions: newVersion._id } }

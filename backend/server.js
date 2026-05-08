@@ -105,7 +105,12 @@ const albumRoutes = require('./routes/albumRoutes');
 app.use('/api/albums', albumRoutes);
 
 const contributionRoutes = require('./routes/contributionRoutes');
+
 app.use('/api/contributions', contributionRoutes);
+
+const notificationRoutes = require('./routes/notificationRoutes');
+
+app.use('/api/notifications', notificationRoutes);
 
 // -----
 
