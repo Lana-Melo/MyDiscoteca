@@ -35,6 +35,17 @@ import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/a
         }
       </div>
 
+      @if (successMessage) {
+        <div class="col-wide">
+          <p-inline-notification state="success" [description]="successMessage" (dismiss)="successMessage = ''"></p-inline-notification>
+        </div>
+      }
+      @if (errorMessage) {
+        <div class="col-wide">
+          <p-inline-notification state="error" [description]="errorMessage" (dismiss)="errorMessage = ''"></p-inline-notification>
+        </div>
+      }
+
       @if (isLoading) {
         <div class="col-wide">
           <p-text>Loading collection...</p-text>
@@ -92,6 +103,21 @@ import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/a
         </div>
       }
     </div>
+
+    <p-modal [open]="deleteModalOpen" [aria]="{'aria-label': 'Remove version'}" (dismiss)="closeDeleteModal()">
+      <p-heading slot="header" size="large" tag="h2">
+        Remove Version
+      </p-heading>
+
+      <p-text>
+        Are you sure you want to remove this version from your collection?
+      </p-text>
+
+      <p-button-group slot="footer">
+        <p-button type="button" (click)="confirmDelete()">yes, remove</p-button>
+        <p-button type="button" variant="secondary" (click)="closeDeleteModal()">no, cancel</p-button>
+      </p-button-group>
+    </p-modal>
   `,
   styles: `
     .version-card {
@@ -136,7 +162,10 @@ export class UserCollection implements OnInit {
   isLoading = true;
   isRemoving = false;
   errorMessage = '';
+  successMessage = '';
   sortBy = 'addedAt_desc';
+  deleteModalOpen = false;
+  versionToDelete: string | null = null;
 
   ngOnInit(): void {
     this.loadCollection();
@@ -186,20 +215,44 @@ export class UserCollection implements OnInit {
     this.changeDetectorRef.markForCheck();
   }
 
+  openDeleteModal(versionId: string): void {
+    this.versionToDelete = versionId;
+    this.deleteModalOpen = true;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  closeDeleteModal(): void {
+    this.deleteModalOpen = false;
+    this.versionToDelete = null;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  confirmDelete(): void {
+    if (!this.versionToDelete) return;
+
+    const versionId = this.versionToDelete;
+    this.closeDeleteModal();
+    
+    this.isRemoving = true;
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    this.collectionService.removeVersion(versionId).subscribe({
+      next: () => {
+        this.isRemoving = false;
+        this.successMessage = 'Version removed from your collection successfully!';
+        this.loadCollection();
+      },
+      error: (err) => {
+        this.isRemoving = false;
+        this.errorMessage = err.error?.message || 'Could not remove the version.';
+        this.changeDetectorRef.markForCheck();
+      },
+    });
+  }
+
   removeVersion(versionId: string): void {
-    if (confirm('Are you sure you want to remove this version from your collection?')) {
-      this.isRemoving = true;
-      this.collectionService.removeVersion(versionId).subscribe({
-        next: () => {
-          this.isRemoving = false;
-          this.loadCollection();
-        },
-        error: () => {
-          this.isRemoving = false;
-          alert('Could not remove the version.');
-        },
-      });
-    }
+    this.openDeleteModal(versionId);
   }
 
   getAlbum(item: AlbumCollectionItem): any {
