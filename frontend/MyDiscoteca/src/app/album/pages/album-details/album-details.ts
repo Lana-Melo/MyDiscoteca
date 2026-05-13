@@ -21,6 +21,7 @@ import { AlbumCollection } from '../../../models/album-collection';
       border-radius: 1rem;
       display: block;
     }
+
   `,
 })
 export class AlbumDetails implements OnInit {
@@ -36,10 +37,12 @@ export class AlbumDetails implements OnInit {
   openAccordions: Record<string, boolean> = {};
   
   collection: AlbumCollection | undefined;
-  successMessage = '';
   errorMessage = '';
   backLink = '/search';
   backLabel = 'Back to search';
+  addModalOpen = false;
+  addModalMessage = '';
+  private addModalTimeout?: ReturnType<typeof setTimeout>;
 
   ngOnInit(): void {
     const from = this.route.snapshot.queryParamMap.get('from');
@@ -106,13 +109,20 @@ export class AlbumDetails implements OnInit {
   }
 
   addToCollection(versionId: string): void {
-    this.successMessage = '';
     this.errorMessage = '';
+    if (this.addModalTimeout) {
+      clearTimeout(this.addModalTimeout);
+      this.addModalTimeout = undefined;
+    }
 
     this.albumCollectionService.addVersion(versionId).subscribe({
       next: (collection) => {
         this.collection = collection;
-        this.successMessage = 'Version added to your collection successfully!';
+        this.addModalMessage = 'Version added to your collection successfully!';
+        this.addModalOpen = true;
+        this.addModalTimeout = window.setTimeout(() => {
+          this.closeAddModal();
+        }, 1000);
         this.changeDetectorRef.markForCheck();
       },
       error: (err) => {
@@ -120,6 +130,16 @@ export class AlbumDetails implements OnInit {
         this.changeDetectorRef.markForCheck();
       }
     });
+  }
+
+  closeAddModal(): void {
+    this.addModalOpen = false;
+    this.addModalMessage = '';
+    if (this.addModalTimeout) {
+      clearTimeout(this.addModalTimeout);
+      this.addModalTimeout = undefined;
+    }
+    this.changeDetectorRef.markForCheck();
   }
 
   isVersionInCollection(versionId: string): boolean {

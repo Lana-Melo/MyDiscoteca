@@ -2,16 +2,20 @@
     <div class="col-basic">
         <p-button-pure icon="arrow-left" [routerLink]="[backLink]">{{ backLabel }}</p-button-pure>
     </div>
-    @if (successMessage) {
-        <div class="col-basic">
-            <p-inline-notification state="success" [description]="successMessage" (dismiss)="successMessage = ''"></p-inline-notification>
-        </div>
-    }
     @if (errorMessage) {
         <div class="col-basic">
             <p-inline-notification state="error" [description]="errorMessage" (dismiss)="errorMessage = ''"></p-inline-notification>
         </div>
     }
+
+    <p-modal [open]="addModalOpen" [aria]="{'aria-label': 'Added to collection'}" (dismiss)="closeAddModal()">
+      <p-heading slot="header" size="large" tag="h2">
+        Added to collection
+      </p-heading>
+      <p-text>
+        {{ addModalMessage }}
+      </p-text>
+    </p-modal>
     @if (!userService.isLoggedIn()) {
         <div class="col-basic">
             <p-inline-notification state="info" description="Sign in to add albums to your collection."></p-inline-notification>
