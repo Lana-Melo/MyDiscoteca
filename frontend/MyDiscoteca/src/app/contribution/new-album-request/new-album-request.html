@@ -68,8 +68,11 @@
       label="EAN-13"
       name="eanCode"
       maxlength="13"
+      inputmode="numeric"
       [disabled]="isSubmitting"
-      [(ngModel)]="eanCode">
+      [(ngModel)]="eanCode"
+      (input)="onEanInput($event)"
+      (keydown)="onEanKeydown($event)">
     </p-input-text>
     <p-text color="contrast-medium">Use exactly 13 numeric digits.</p-text>
   </div>

@@ -43,16 +43,20 @@
   @if (!isLoading && !showError && notifications.length > 0) {
     <div class="col-basic flex flex-col gap-4">
       @for (n of notifications; track n._id) {
-        <p-inline-notification
-          headingTag="h3"
-          [state]="n.status === 'Accepted' ? 'success' : 'error'"
-          [heading]="'Request ' + n.status + ': ' + n.albumTitle"
-          [description]="
-            (n.designation ? 'Version: ' + n.designation + ' — ' : '') +
-            'Submitted on ' + (n.createdAt | date:'dd/MM/yyyy HH:mm')
-          " [dismissButton]="false">
-    </p-inline-notification>
-    }
-  </div>
+        <a
+          [routerLink]="['/album/details', n.albumId]"
+          class="no-underline hover:opacity-80 transition-opacity">
+          <p-inline-notification
+            headingTag="h3"
+            [state]="n.status === 'Accepted' ? 'success' : 'error'"
+            [heading]="'Request ' + n.status + ': ' + n.albumTitle"
+            [description]="
+              (n.designation ? 'Version: ' + n.designation + ' — ' : '') +
+              'Submitted on ' + (n.createdAt | date:'dd/MM/yyyy HH:mm')
+            " [dismissButton]="false">
+          </p-inline-notification>
+        </a>
+      }
+    </div>
   }
 </div>

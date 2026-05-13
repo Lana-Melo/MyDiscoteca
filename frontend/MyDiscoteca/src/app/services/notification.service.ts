@@ -4,6 +4,7 @@ import { Observable, map } from 'rxjs';
 
 export interface AppNotification {
   _id: string;
+  albumId: string;
   albumTitle: string;
   designation: string | null;
   status: 'Accepted' | 'Rejected';

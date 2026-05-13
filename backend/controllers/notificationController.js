@@ -38,6 +38,7 @@ exports.getMyNotifications = async (req, res) => {
     }
 
     const notifications = await Notification.find({ user: userId })
+      .populate('contribution', 'album')
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -46,6 +47,7 @@ exports.getMyNotifications = async (req, res) => {
       message: 'Notifications retrieved successfully.',
       notifications: notifications.map(n => ({
         _id: n._id,
+        albumId: n.contribution?.album,
         albumTitle: n.albumTitle,
         designation: n.designation,
         status: n.status,

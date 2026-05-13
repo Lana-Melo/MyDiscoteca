@@ -21,6 +21,31 @@ export class NewAlbumVersionRequest {
   physicalSupport: PhysicalSupportOption | '' = '';
   designation = '';
 
+  onEanKeydown(event: KeyboardEvent): void {
+    // Allow only numeric keys (0-9), backspace, delete, tab, escape, and arrow keys
+    const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
+    const isNumericKey = /^[0-9]$/.test(event.key);
+    const isAllowedKey = allowedKeys.includes(event.key);
+    const isCtrlOrCmd = event.ctrlKey || event.metaKey;
+
+    // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X for copy/paste/select
+    if (isCtrlOrCmd && ['a', 'c', 'v', 'x'].includes(event.key.toLowerCase())) {
+      return;
+    }
+
+    if (!isNumericKey && !isAllowedKey) {
+      event.preventDefault();
+    }
+  }
+
+  onEanInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target) {
+      target.value = target.value.replace(/\D/g, '');
+      this.eanCode = target.value;
+    }
+  }
+
   albums: AlbumInfo[] = [];
   isLoadingAlbums = true;
   isSubmitting = false;
