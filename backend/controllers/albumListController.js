@@ -30,6 +30,61 @@ function resolveAuthenticatedUserId(req) {
 
 // -----
 
+function buildAlbumListResponse(albumList) {
+  const albums = albumList.albums || [];
+  const firstAlbum = albums[0]?.album;
+  const coverImageUrl =
+    firstAlbum && typeof firstAlbum === 'object'
+      ? firstAlbum.imageUrl
+      : '/api/media/placeholders/album.svg';
+
+  return {
+    id: albumList.id,
+    _id: albumList._id,
+    name: albumList.name,
+    user: albumList.user,
+    albums,
+    albumCount: albums.length,
+    coverImageUrl: coverImageUrl || '/api/media/placeholders/album.svg',
+    createdAt: albumList.createdAt,
+    updatedAt: albumList.updatedAt
+  };
+}
+
+// -----
+
+// Obter as listas personalizadas do utilizador autenticado.
+exports.getMyLists = async (req, res) => {
+  try {
+    const userId = resolveAuthenticatedUserId(req);
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Could not identify the authenticated user.'
+      });
+    }
+
+    const albumLists = await AlbumList.find({ user: userId })
+      .populate('albums.album', 'mbdi title releaseYear type imageUrl artist')
+      .sort({ updatedAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      message: 'Album lists retrieved successfully.',
+      albumLists: albumLists.map(buildAlbumListResponse)
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching the album lists.'
+    });
+  }
+};
+
+// -----
+
 // Criar uma lista personalizada de álbuns para o utilizador autenticado.
 exports.create = async (req, res) => {
   try {
@@ -94,7 +149,7 @@ exports.create = async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Album list created successfully.',
-      albumList
+      albumList: buildAlbumListResponse(albumList)
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -115,6 +170,51 @@ exports.create = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Server error while creating the album list.'
+    });
+  }
+};
+
+// -----
+
+// Remover uma lista personalizada do utilizador autenticado.
+exports.delete = async (req, res) => {
+  try {
+    const userId = resolveAuthenticatedUserId(req);
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Could not identify the authenticated user.'
+      });
+    }
+
+    const { listId } = req.params;
+    const deletedList = await AlbumList.findOneAndDelete({
+      _id: listId,
+      user: userId
+    });
+
+    if (!deletedList) {
+      return res.status(404).json({
+        success: false,
+        message: 'Album list not found.'
+      });
+    }
+
+    await User.updateOne(
+      { _id: userId },
+      { $pull: { albumLists: deletedList._id } }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Album list removed successfully.'
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while removing the album list.'
     });
   }
 };
@@ -186,7 +286,7 @@ exports.addAlbum = async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Album added to the list successfully.',
-      albumList
+      albumList: buildAlbumListResponse(albumList)
     });
   } catch (error) {
     console.error(error);

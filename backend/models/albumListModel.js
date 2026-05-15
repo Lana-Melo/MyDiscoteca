@@ -18,20 +18,23 @@ const albumListSchema = new mongoose.Schema({
         required: true
     },
 
-    albums: 
-    [{
-        album:
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Album',
-            required: true
-        },
-        addedAt:
-        {
-            type: Date,
-            default: Date.now
-        }
-    }]
+    albums:
+    {
+        type: [{
+            album:
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Album',
+                required: true
+            },
+            addedAt:
+            {
+                type: Date,
+                default: Date.now
+            }
+        }],
+        default: []
+    }
 },
 
 {timestamps: true});
