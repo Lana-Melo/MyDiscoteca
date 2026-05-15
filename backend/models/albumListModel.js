@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 
+// -----
+
 const albumListSchema = new mongoose.Schema({
     name: 
     {
         type: String,
-        required: true,
+        required: [true, 'List name is required.'],
         trim: true,
-        maxLength: 100
+        maxlength: [100, 'List name must have at most 100 characters.']
     },
 
     user:
@@ -35,3 +37,5 @@ const albumListSchema = new mongoose.Schema({
 {timestamps: true});
 
 albumListSchema.index({ user:1, name:1}, {unique: true});
+
+module.exports = mongoose.model('AlbumList', albumListSchema);

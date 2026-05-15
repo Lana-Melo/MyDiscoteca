@@ -15,5 +15,6 @@ require('./versionModel');
 require('./userModel');
 require('./contributionModel');
 require('./albumCollectionModel');
+require('./albumListModel');
 
 // -----
