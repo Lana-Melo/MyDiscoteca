@@ -17,6 +17,9 @@ const router = express.Router();
 // Rota para criar uma lista personalizada do utilizador autenticado.
 router.post('/', albumListController.create);
 
+// Rota para adicionar um álbum a uma lista personalizada do utilizador autenticado.
+router.post('/:listId/albums', albumListController.addAlbum);
+
 module.exports = router;
 
 // -----
