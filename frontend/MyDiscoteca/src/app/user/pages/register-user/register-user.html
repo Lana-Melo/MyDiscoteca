@@ -25,27 +25,62 @@
     }
   </div>
   }
+
   <div class="col-narrow">
-    <p-input-text [required]="true" [compact]="true" label="Username" [(ngModel)]="username" name="username">
+    <p-input-text 
+      [required]="true" 
+      [compact]="true" 
+      [(ngModel)]="username" 
+      name="username"
+      label="Username" 
+      [message]="usernameError()"
+      [state]="usernameError() ? 'error' : 'none'">
     </p-input-text>
     <p-text color="contrast-medium">Use only letters and numbers.</p-text>
   </div>
+
   <div class="col-narrow">
-    <p-input-email [required]="true" [compact]="true" label="Email" [(ngModel)]="email" name="email">
+    <p-input-email 
+      [required]="true" 
+      [compact]="true" 
+      [(ngModel)]="email" 
+      [indicator]="true"
+      label="Email" 
+      name="email"
+      [message]="emailError()"
+      [state]="emailError() ? 'error' : 'none'">
     </p-input-email>
   </div>
+
   <div class="col-narrow">
-    <p-input-password [required]="true" [compact]="true" label="Password" name="password" [(ngModel)]="password"
-      [toggle]="true">
+    <p-input-password 
+      [required]="true" 
+      [compact]="true" 
+      [(ngModel)]="password"
+      [toggle]="true"
+      label="Password" 
+      name="password"
+      [message]="passError()"
+      [state]="passError() ? 'error' : 'none'">
     </p-input-password>
     <p-text color="contrast-medium">Use at least 8 characters. At least one uppercase,
-      one lowercase, and a number.</p-text>
+      one lowercase, and a number.
+    </p-text>
   </div>
+
   <div class="col-narrow">
-    <p-input-date [required]="true" [compact]="true" label="Birth Date" [(ngModel)]="birthDate" name="birthDate">
+    <p-input-date 
+      [required]="true" 
+      [compact]="true" 
+      [(ngModel)]="birthDate" 
+      label="Birth Date" 
+      name="birthDate"
+      [message]="birthDateError()"
+      [state]="birthDateError() ? 'error' : 'none'">
     </p-input-date>
     <p-text color="contrast-medium">User must be at least 13 years old.</p-text>
   </div>
+
   <!-- comentando pq nao faz sentido ele escolher isto aqui
         <div class="col-span-one-half">
           <p-input-text

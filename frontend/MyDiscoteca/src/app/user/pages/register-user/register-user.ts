@@ -16,10 +16,16 @@ export class RegisterUser {
   email = '';
   password = '';
   birthDate: string | Date | null = '';
-  favoriteArtist = '';
+  //favoriteArtist = '';
   showError = signal(false);
   errorMessage = signal('');
   errorMessages = signal<string[]>([]);
+
+  // signals para exibir erro direto nos campos
+  usernameError = signal(''); // quando mudar o valor, template eh avisado
+  emailError = signal('');
+  passError = signal('');
+  birthDateError = signal('');
 
   cd = inject(ChangeDetectorRef);
   router = inject(Router);
@@ -31,16 +37,21 @@ export class RegisterUser {
     const password = this.password;
     const birthDate = this.normalizeBirthDate(this.birthDate);
 
-    const validationMessages = this.validateRegistrationFields(
+    // limpar os campos com os erros de validacao
+    this.usernameError.set('');
+    this.emailError.set('');
+    this.passError.set('');
+    this.birthDateError.set('');
+
+    const isFormValid = this.validateRegistrationFields(
       username,
       email,
       password,
       birthDate
     );
 
-    if (validationMessages.length > 0) {
+    if (!isFormValid) {
       this.errorMessage.set('Please fix the invalid account data.');
-      this.errorMessages.set(validationMessages);
       this.showError.set(true);
       this.cd.markForCheck();
       return;
@@ -55,7 +66,7 @@ export class RegisterUser {
       email,
       password,
       birthDate,
-      favoriteArtist: this.favoriteArtist || null,
+      //favoriteArtist: this.favoriteArtist || null,
     };
 
     this.userService.registerUser(payload).subscribe({
@@ -64,11 +75,11 @@ export class RegisterUser {
           state: { successMessage: 'User registered successfully!' }
         });
       },
-      error: (err) => {
+      error: (err) => { // erro no retorno do backend
         const errorMessages = this.extractErrorMessages(err);
         this.errorMessage.set(
           errorMessages.length > 0
-            ? 'Please fix the invalid account data.'
+            ? 'Please fix the invalid fields'
             : err.error?.message || 'Unable to register user.'
         );
         this.errorMessages.set(errorMessages);
@@ -90,39 +101,48 @@ export class RegisterUser {
     return value.toISOString().slice(0, 10);
   }
 
+  // validação no frontend
   private validateRegistrationFields(
     username: string,
     email: string,
     password: string,
     birthDate: string
-  ): string[] {
-    const messages: string[] = [];
+  ): boolean {
+    let valid = true;
 
     if (!username) {
-      messages.push('Username is required.');
+      this.usernameError.set('Username is required');
+      valid = false;
     } else if (!/^[A-Za-z0-9]+$/.test(username)) {
-      messages.push('Username can only contain letters and numbers.');
+      this.usernameError.set('Username can only contain letters and numbers.');
+      valid = false;
     }
 
     if (!email) {
-      messages.push('Email is required.');
+      this.emailError.set('Email is required.');
+      valid = false;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      messages.push('Email must be in a valid format (email@example.something).');
+      this.emailError.set('Email must be in a valid format (email@example.something).');
+      valid = false;
     }
 
     if (!password) {
-      messages.push('Password is required.');
+      this.passError.set('Password is required.');
+      valid = false;
     } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password)) {
-      messages.push('Password must have at least 8 characters, including uppercase, lowercase, and a number.');
+      this.passError.set('Password must have at least 8 characters, including uppercase, lowercase, and a number.');
+      valid = false;
     }
 
     if (!birthDate) {
-      messages.push('Birth date is required.');
+      this.birthDateError.set('Birth date is required.');
+      valid = false;
     } else if (!this.isAtLeast13YearsOld(birthDate)) {
-      messages.push('User must be at least 13 years old.');
+      this.birthDateError.set('User must be at least 13 years old.');
+      valid = false;
     }
 
-    return messages;
+    return valid;
   }
 
   private isAtLeast13YearsOld(birthDateValue: string): boolean {

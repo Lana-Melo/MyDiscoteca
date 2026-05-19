@@ -13,6 +13,7 @@ import {
 @Injectable({
   providedIn: 'root',
 })
+
 export class UserService {
   private readonly url = '/api/users';
   private readonly authUrl = '/api/auth';

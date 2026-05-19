@@ -38,10 +38,10 @@ function buildUserResponse(userDocument) {
 
 // Converte alguns erros comuns de validacao/duplicacao em respostas mais uteis.
 function handleUserError(error, res, defaultMessage) {
-  if (error.code === 11000) {
+  if (error.code === 11000) { 
     const duplicatedField = Object.keys(error.keyPattern)[0];
 
-    return res.status(409).json({
+    return res.status(409).json({ // violacao de chave unica
       success: false,
       message: `The '${duplicatedField}' field is already being used by another user.`
     });
@@ -105,8 +105,8 @@ exports.create = async (req, res) => {
       email,
       password,
       birthDate,
-      favoriteArtist,
-      albumLists
+      //favoriteArtist,
+      //albumLists
     } = req.body;
 
     const normalizedUsername =
@@ -120,13 +120,14 @@ exports.create = async (req, res) => {
       birthDate
     });
 
+    /*  duplicado, nao precisamos pq ja chamamos velidateUserRequirements
     if (!username || !email || !password || !birthDate) {
       return res.status(400).json({
         success: false,
         message: 'Username, email, password, and birthDate are required.',
         errors: validationMessages
       });
-    }
+    }*/
 
     if (validationMessages.length > 0) {
       return res.status(400).json({
@@ -136,6 +137,10 @@ exports.create = async (req, res) => {
       });
     }
 
+    /* nao precisamos disto porque estamos a adicionar 
+    uma chamada extra à bd. a verificacao de unicidade já
+    é feita pelo mongoDB quando tentamos guarda-lo na bd.
+    
     const existingUser = await User.findOne({
       $or: [{ username: normalizedUsername }, { email: normalizedEmail }]
     });
@@ -150,8 +155,10 @@ exports.create = async (req, res) => {
           ? 'This email is already being used by another user.'
           : 'This username is already being used by another user.'
       });
-    }
+    }*/
 
+    /*  
+    favorit artist nao eh mais passado no POST
     const favoriteArtistDocument = await validateFavoriteArtist(favoriteArtist);
 
     if (favoriteArtistDocument === false) {
@@ -160,7 +167,7 @@ exports.create = async (req, res) => {
         message: 'The selected favorite artist does not exist.'
       });
     }
-
+    */
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
     const newUser = new User({
@@ -168,8 +175,6 @@ exports.create = async (req, res) => {
       email: normalizedEmail,
       passwordHash,
       birthDate,
-      favoriteArtist: favoriteArtist || null,
-      albumLists: albumLists || []
     });
 
     await newUser.save();
