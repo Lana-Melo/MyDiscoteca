@@ -83,6 +83,48 @@ exports.getMyLists = async (req, res) => {
   }
 };
 
+// Obter uma lista personalizada pelo id (com os álbuns populados).
+exports.getById = async (req, res) => {
+  try {
+    const userId = resolveAuthenticatedUserId(req);
+ 
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Could not identify the authenticated user.'
+      });
+    }
+ 
+    const { listId } = req.params;
+ 
+    const albumList = await AlbumList.findOne({ _id: listId, user: userId })
+      .populate({
+        path: 'albums.album',
+        select: 'mbdi title releaseYear type imageUrl artist',
+        populate: { path: 'artist', select: 'name' }
+      });
+ 
+    if (!albumList) {
+      return res.status(404).json({
+        success: false,
+        message: 'Album list not found.'
+      });
+    }
+ 
+    res.status(200).json({
+      success: true,
+      message: 'Album list retrieved successfully.',
+      albumList: buildAlbumListResponse(albumList)
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching the album list.'
+    });
+  }
+};
+
 // -----
 
 // Criar uma lista personalizada de álbuns para o utilizador autenticado.
@@ -293,6 +335,58 @@ exports.addAlbum = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Server error while adding the album to the list.'
+    });
+  }
+};
+
+// Remover um álbum de uma lista personalizada do utilizador autenticado.
+exports.removeAlbum = async (req, res) => {
+  try {
+    const userId = resolveAuthenticatedUserId(req);
+ 
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Could not identify the authenticated user.'
+      });
+    }
+ 
+    const { listId, albumId } = req.params;
+ 
+    const albumList = await AlbumList.findOne({ _id: listId, user: userId });
+ 
+    if (!albumList) {
+      return res.status(404).json({
+        success: false,
+        message: 'Album list not found.'
+      });
+    }
+ 
+    const albumIndex = albumList.albums.findIndex(
+      (item) => item.album.toString() === albumId
+    );
+ 
+    if (albumIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: 'Album not found in this list.'
+      });
+    }
+ 
+    albumList.albums.splice(albumIndex, 1);
+    await albumList.save();
+    await albumList.populate('albums.album', 'mbdi title releaseYear type imageUrl artist');
+ 
+    res.status(200).json({
+      success: true,
+      message: 'Album removed from the list successfully.',
+      albumList: buildAlbumListResponse(albumList)
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while removing the album from the list.'
     });
   }
 };

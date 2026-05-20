@@ -22,6 +22,12 @@ export class AlbumListService {
       .pipe(map((response) => response.albumLists));
   }
 
+  getListById(listId: string): Observable<AlbumList> {
+    return this.http
+      .get<AlbumListApiResponse>(`${this.apiUrl}/${listId}`, this.userService.buildHttpOptions())
+      .pipe(map((response) => response.albumList));
+  }
+
   createList(name: string): Observable<AlbumList> {
     return this.http
       .post<AlbumListApiResponse>(this.apiUrl, { name }, this.userService.buildHttpOptions())
@@ -37,6 +43,15 @@ export class AlbumListService {
       .post<AlbumListApiResponse>(
         `${this.apiUrl}/${listId}/albums`,
         { albumId },
+        this.userService.buildHttpOptions()
+      )
+      .pipe(map((response) => response.albumList));
+  }
+
+  removeAlbum(listId: string, albumId: string): Observable<AlbumList> {
+    return this.http
+      .delete<AlbumListApiResponse>(
+        `${this.apiUrl}/${listId}/albums/${albumId}`,
         this.userService.buildHttpOptions()
       )
       .pipe(map((response) => response.albumList));

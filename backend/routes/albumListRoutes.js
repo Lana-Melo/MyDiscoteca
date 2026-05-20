@@ -26,6 +26,9 @@ router.delete('/:listId', albumListController.delete);
 // Rota para adicionar um álbum a uma lista personalizada do utilizador autenticado.
 router.post('/:listId/albums', albumListController.addAlbum);
 
+// Rota para remover um álbum de uma lista personalizada do utilizador autenticado.
+router.delete('/:listId/albums/:albumId', albumListController.removeAlbum);
+
 module.exports = router;
 
 // -----
