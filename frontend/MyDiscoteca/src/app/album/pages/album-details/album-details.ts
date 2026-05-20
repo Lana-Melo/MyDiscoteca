@@ -4,8 +4,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlbumInfo } from '../../../models/album';
 import { AlbumService } from '../../../services/album.service';
 import { AlbumCollectionService } from '../../../services/album-collection.service';
+import { AlbumListService } from '../../../services/album-list.service';
 import { UserService } from '../../../services/user.service';
 import { AlbumCollection } from '../../../models/album-collection';
+import { AlbumList } from '../../../models/album-list';
 
 @Component({
   selector: 'album-details',
@@ -30,6 +32,7 @@ export class AlbumDetails implements OnInit {
   private readonly router = inject(Router);
   private readonly albumService = inject(AlbumService);
   private readonly albumCollectionService = inject(AlbumCollectionService);
+  private readonly albumListService = inject(AlbumListService);
   public readonly userService = inject(UserService);
 
   album: AlbumInfo | undefined;
@@ -43,6 +46,13 @@ export class AlbumDetails implements OnInit {
   addModalOpen = false;
   addModalMessage = '';
   private addModalTimeout?: ReturnType<typeof setTimeout>;
+
+  // Album list properties
+  listModalOpen = false;
+  userLists: AlbumList[] = [];
+  isAddingToList = false;
+  listSuccessMessage = '';
+  listErrorMessage = '';
 
   ngOnInit(): void {
     const from = this.route.snapshot.queryParamMap.get('from');
@@ -151,6 +161,59 @@ export class AlbumDetails implements OnInit {
     const albumId = this.album?._id ?? this.album?.id;
     this.router.navigate(['/contributions/album-version/new'], {
       queryParams: { albumId },
+    });
+  }
+
+  openAddToListModal(): void {
+    this.listErrorMessage = '';
+    this.listSuccessMessage = '';
+    this.listModalOpen = true;
+    this.changeDetectorRef.markForCheck();
+    this.albumListService.getMyLists().subscribe({
+      next: (lists) => {
+        this.userLists = lists;
+        this.changeDetectorRef.markForCheck();
+      },
+      error: (err) => {
+        this.listErrorMessage = err.error?.message || 'Error loading your lists.';
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+  }
+
+  closeListModal(): void {
+    this.listModalOpen = false;
+    this.changeDetectorRef.markForCheck();
+  }
+
+
+  addAlbumToList(listId: string): void {
+    const albumId = this.album?._id ?? this.album?.id;
+    if (!albumId) return;
+    this.listErrorMessage = '';
+    this.listSuccessMessage = '';
+    this.isAddingToList = true;
+    this.albumListService.addAlbum(listId, albumId).subscribe({
+      next: (updatedList) => {
+        this.userLists = this.userLists.map(l => l._id === listId ? updatedList : l);
+        this.isAddingToList = false;
+        this.listSuccessMessage = `Album added to ${updatedList.name} successfully!`;
+        this.changeDetectorRef.markForCheck();
+      },
+      error: (err) => {
+        this.listErrorMessage = err.error?.message || 'Error adding album to list.';
+        this.isAddingToList = false;
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+  }
+
+  isAlbumInList(list: AlbumList): boolean {
+    const albumId = this.album?._id ?? this.album?.id;
+    if (!albumId) return false;
+    return list.albums.some(item => {
+      const id = typeof item.album === 'string' ? item.album : (item.album?._id ?? item.album?.id);
+      return id === albumId;
     });
   }
 }

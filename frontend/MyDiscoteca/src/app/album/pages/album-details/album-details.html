@@ -16,6 +16,45 @@
         {{ addModalMessage }}
       </p-text>
     </p-modal>
+
+    <p-modal [open]="listModalOpen" [aria]="{'aria-label': 'Add to album list'}" (dismiss)="closeListModal()">
+      <p-heading slot="header" size="large" tag="h2">
+        Add to album list
+      </p-heading>
+      
+      @if (listSuccessMessage) {
+        <p-inline-notification state="success" [description]="listSuccessMessage" (dismiss)="listSuccessMessage = ''"></p-inline-notification>
+      }
+      @if (listErrorMessage) {
+        <p-inline-notification state="error" [description]="listErrorMessage" (dismiss)="listErrorMessage = ''"></p-inline-notification>
+      }
+
+      <div class="flex flex-col gap-4 mt-4">
+        @if (userLists.length > 0) {
+          <p-text weight="semibold">Your Lists:</p-text>
+          <div class="flex flex-col gap-2 max-h-60 overflow-y-auto">
+            @for (list of userLists; track list._id) {
+              <div class="flex justify-between items-center gap-4 py-2 border-b border-contrast-low">
+                <p-text>{{ list.name }}</p-text>
+                <p-button
+                  [icon]="isAlbumInList(list) ? 'check' : 'add'"
+                  [variant]="isAlbumInList(list) ? 'secondary' : 'ghost'"
+                  [compact]="true"
+                  [disabled]="isAlbumInList(list) || isAddingToList"
+                  [aria]="{ 'aria-label': isAlbumInList(list) ? 'Already in list' : 'Add to this list' }"
+                  (click)="addAlbumToList(list._id)">
+                  {{ isAlbumInList(list) ? 'In list' : 'Add' }}
+                </p-button>
+              </div>
+            }
+          </div>
+        } @else {
+          <p-text color="contrast-medium">You don't have any album lists yet.</p-text>
+        }
+
+      </div>
+
+    </p-modal>
     @if (!userService.isLoggedIn()) {
         <div class="col-basic">
             <p-inline-notification state="info" description="Sign in to add albums to your collection."></p-inline-notification>
@@ -25,13 +64,23 @@
         <div class="col-basic">
             <p-heading align="center" size="large" tag="h1">{{ album.title }}</p-heading>
         </div>
-        <div class="col-basic flex justify-center">
+        <div class="col-basic flex flex-col items-center gap-4">
             <img
                 class="album-image"
                 [src]="album.imageUrl ?? '/api/media/placeholders/album.svg'"
                 [alt]="album.title"
                 (error)="handleImageError($event)"
             />
+            @if (userService.isLoggedIn()) {
+                <p-button
+                    icon="add"
+                    variant="ghost"
+                    [compact]="true"
+                    [aria]="{ 'aria-label': 'Add to list' }"
+                    (click)="openAddToListModal()">
+                    Add to list
+                </p-button>
+            }
         </div>
         <div class="col-basic">
             <p-accordion
