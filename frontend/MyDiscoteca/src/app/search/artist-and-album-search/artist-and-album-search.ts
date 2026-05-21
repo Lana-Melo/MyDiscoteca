@@ -8,11 +8,12 @@ import { AlbumInfo } from '../../models/album';
 import { ArtistService } from '../../services/artist.service';
 import { AlbumService } from '../../services/album.service';
 import { SearchStateService, SearchMode } from '../../services/search-state.service';
+import { Breadcrumb } from '../../shared/breadcrumb/breadcrumb';
 
 @Component({
   selector: 'app-artist-and-album-search',
   standalone: true,
-  imports: [RouterModule, PorscheDesignSystemModule, ArtistCard, AlbumCard],
+  imports: [RouterModule, PorscheDesignSystemModule, ArtistCard, AlbumCard, Breadcrumb],
   templateUrl: './artist-and-album-search.html',
   styles: ``,
 })

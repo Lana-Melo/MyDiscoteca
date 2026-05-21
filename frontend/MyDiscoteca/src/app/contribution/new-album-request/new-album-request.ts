@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { AlbumInfo } from '../../models/album';
 import { AlbumService } from '../../services/album.service';
@@ -20,6 +20,10 @@ export class NewAlbumVersionRequest {
   eanCode = '';
   physicalSupport: PhysicalSupportOption | '' = '';
   designation = '';
+
+  albumError = signal('');
+  eanCodeError = signal('');
+  physicalSupportError = signal('');
 
   onEanKeydown(event: KeyboardEvent): void {
     // Allow only numeric keys (0-9), backspace, delete, tab, escape, and arrow keys
@@ -50,46 +54,27 @@ export class NewAlbumVersionRequest {
   isLoadingAlbums = true;
   isSubmitting = false;
 
-  showError = false;
-  errorMessages: string[] = [];
-
-  successMessage = '';
-  submittedRequestSummary: {
-    albumTitle: string;
-    eanCode: string;
-    physicalSupport: PhysicalSupportOption;
-    designation: string;
-    status: string;
-  } | null = null;
+  errorMessage = '';
+  successModalOpen = false;
 
   private readonly albumService = inject(AlbumService);
   private readonly contributionService = inject(ContributionService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   constructor() {
     this.loadAlbums();
   }
 
   submitRequest(): void {
-    const validationMessages = this.validateForm();
-
-    if (validationMessages.length > 0) {
-      this.showError = true;
-      this.errorMessages = validationMessages;
-      this.successMessage = '';
-      this.submittedRequestSummary = null;
+    if (!this.validateForm()) {
       this.changeDetectorRef.markForCheck();
       return;
     }
 
-    const selectedAlbum = this.albums.find(
-      (album) => (album._id ?? album.id) === this.selectedAlbumId
-    );
-
     this.isSubmitting = true;
-    this.showError = false;
-    this.errorMessages = [];
+    this.errorMessage = '';
     this.changeDetectorRef.markForCheck();
 
     this.contributionService.submitAlbumVersionRequest({
@@ -98,34 +83,27 @@ export class NewAlbumVersionRequest {
       physicalSupport: this.physicalSupport as PhysicalSupportOption,
       designation: this.designation.trim() || undefined,
     }).subscribe({
-      next: (response) => {
+      next: () => {
         this.isSubmitting = false;
-        this.successMessage = 'Request submitted successfully. Status: Pending.';
-        this.submittedRequestSummary = {
-          albumTitle: selectedAlbum?.title ?? 'Unknown album',
-          eanCode: response.eanCode,
-          physicalSupport: response.physicalSupport,
-          designation: response.designation ?? '',
-          status: response.status,
-        };
         this.resetForm();
+        this.successModalOpen = true;
         this.changeDetectorRef.markForCheck();
       },
       error: (err) => {
         this.isSubmitting = false;
-        this.showError = true;
         if (err.status === 400 && err.error?.message?.includes('eanCode')) {
-          this.errorMessages = ['This EAN-13 code is already registered for another album version.'];
+          this.errorMessage = 'This EAN-13 code is already registered for another album version.';
         } else {
-          this.errorMessages = [
-            err?.error?.message ?? 'An error occurred while submitting the request.'
-          ];
+          this.errorMessage = err?.error?.message ?? 'An error occurred while submitting the request.';
         }
-        this.successMessage = '';
-        this.submittedRequestSummary = null;
         this.changeDetectorRef.markForCheck();
       }
     });
+  }
+
+  closeSuccessModal(): void {
+    this.successModalOpen = false;
+    this.router.navigate(['/contributions/album-version/my-requests']);
   }
 
   private loadAlbums(): void {
@@ -144,29 +122,35 @@ export class NewAlbumVersionRequest {
       error: () => {
         this.albums = [];
         this.isLoadingAlbums = false;
-        this.showError = true;
-        this.errorMessages = ['Unable to load albums for selection.'];
+        this.errorMessage = 'Unable to load albums for selection.';
         this.changeDetectorRef.markForCheck();
       }
     });
   }
 
-  private validateForm(): string[] {
-    const messages: string[] = [];
+  private validateForm(): boolean {
+    this.albumError.set('');
+    this.eanCodeError.set('');
+    this.physicalSupportError.set('');
+
+    let valid = true;
 
     if (!this.selectedAlbumId) {
-      messages.push('Please select the album for which you are proposing a new version.');
+      this.albumError.set('Please select the album for which you are proposing a new version.');
+      valid = false;
     }
 
     if (!/^\d{13}$/.test(this.eanCode.trim())) {
-      messages.push('EAN-13 must contain exactly 13 digits.');
+      this.eanCodeError.set('EAN-13 must contain exactly 13 digits.');
+      valid = false;
     }
 
     if (!this.physicalSupport) {
-      messages.push('Please select the physical support.');
+      this.physicalSupportError.set('Please select the physical support.');
+      valid = false;
     }
 
-    return messages;
+    return valid;
   }
 
   private resetForm(): void {

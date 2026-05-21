@@ -5,15 +5,16 @@ import { ArtistAlbum, ArtistInfo } from '../../../models/artist';
 import { UserService } from '../../../services/user.service';
 import { UserInfo } from '../../../models/user';
 import { ArtistService } from '../../../services/artist.service';
+import { Breadcrumb, BreadcrumbItem } from '../../../shared/breadcrumb/breadcrumb';
 
 @Component({
   selector: 'artist-details',
   standalone: true,
-  imports: [PorscheDesignSystemModule, RouterLink],
+  imports: [PorscheDesignSystemModule, RouterLink, Breadcrumb],
   template: `
     <div class="grid-template">
       <div class="col-basic">
-        <p-button-pure icon="arrow-left" [routerLink]="[backLink]">{{ backLabel }}</p-button-pure>
+        <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
       </div>
       @if (artist) {
       <div class="col-basic">
@@ -73,7 +74,7 @@ import { ArtistService } from '../../../services/artist.service';
         @for (album of visibleAlbums; track album._id) {
         <div class="col-span-one-third">
           <div class="album-card">
-            <a [routerLink]="['/album/details', album._id]" [queryParams]="{ from: 'artist', artistId: artist.id ?? artist._id }" style="display: block;">
+            <a [routerLink]="['/album/details', album._id]" [queryParams]="{ from: 'artist', artistId: artist.id ?? artist._id, artistName: artist.name }" style="display: block;">
               <img
                 class="album-image"
                 [src]="album.imageUrl ?? '/api/media/placeholders/album.svg'"
@@ -81,7 +82,7 @@ import { ArtistService } from '../../../services/artist.service';
                 (error)="handleImageError($event, 'album')"
               />
             </a>
-            <a [routerLink]="['/album/details', album._id]" [queryParams]="{ from: 'artist', artistId: artist.id ?? artist._id }" style="text-decoration: none; display: block;">
+            <a [routerLink]="['/album/details', album._id]" [queryParams]="{ from: 'artist', artistId: artist.id ?? artist._id, artistName: artist.name }" style="text-decoration: none; display: block;">
               <p-input-text [label]="album.releaseYear.toString()" [value]="album.title" [disabled]="true" style="pointer-events: none;"></p-input-text>
             </a>
           </div>
@@ -153,8 +154,7 @@ export class ArtistDetails implements OnInit {
   favoriteError = '';
   overwriteFavoriteOpen = false;
   pendingFavoriteArtistId: string | null = null;
-  backLink = '/search';
-  backLabel = 'Back to search';
+  breadcrumbItems: BreadcrumbItem[] = [];
   from: string | null = null;
 
   get visibleAlbums(): ArtistAlbum[] {
@@ -166,21 +166,11 @@ export class ArtistDetails implements OnInit {
 
   ngOnInit(): void {
     this.from = this.route.snapshot.queryParamMap.get('from');
-    if (this.from === 'profile') {
-      this.backLink = '/user/profile';
-      this.backLabel = 'Back to profile';
-    } else if (this.from === 'dashboard') {
-      this.backLink = '/dashboard';
-      this.backLabel = 'Back to dashboard';
-    } else if (this.from === 'album') {
-      const albumId = this.route.snapshot.queryParamMap.get('albumId');
-      this.backLink = `/album/details/${albumId}`;
-      this.backLabel = 'Back to album';
-    }
 
     const artistId = this.route.snapshot.params['id'];
     this.artistService.getArtistById(artistId).subscribe((artist) => {
       this.artist = artist;
+      this.buildBreadcrumbItems();
       this.updateFavoriteState();
       this.changeDetectorRef.markForCheck();
     });
@@ -196,6 +186,38 @@ export class ArtistDetails implements OnInit {
         this.changeDetectorRef.markForCheck();
       }
     });
+  }
+
+  buildBreadcrumbItems(): void {
+    const artistName = this.artist?.name ?? '';
+
+    if (this.from === 'profile') {
+      this.breadcrumbItems = [
+        { label: 'Dashboard', link: '/dashboard' },
+        { label: 'Profile', link: '/user/profile' },
+        { label: artistName },
+      ];
+    } else if (this.from === 'dashboard') {
+      this.breadcrumbItems = [
+        { label: 'Dashboard', link: '/dashboard' },
+        { label: artistName },
+      ];
+    } else if (this.from === 'album') {
+      const albumId = this.route.snapshot.queryParamMap.get('albumId');
+      const albumTitle = this.route.snapshot.queryParamMap.get('albumTitle') ?? 'Album';
+      this.breadcrumbItems = [
+        { label: 'Dashboard', link: '/dashboard' },
+        { label: 'Search', link: '/search' },
+        { label: albumTitle, link: albumId ? `/album/details/${albumId}` : undefined },
+        { label: artistName },
+      ];
+    } else {
+      this.breadcrumbItems = [
+        { label: 'Dashboard', link: '/dashboard' },
+        { label: 'Search', link: '/search' },
+        { label: artistName },
+      ];
+    }
   }
 
   toggleFavorite() {

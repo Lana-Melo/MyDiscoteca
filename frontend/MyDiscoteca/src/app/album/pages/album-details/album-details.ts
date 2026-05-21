@@ -8,11 +8,12 @@ import { AlbumListService } from '../../../services/album-list.service';
 import { UserService } from '../../../services/user.service';
 import { AlbumCollection } from '../../../models/album-collection';
 import { AlbumList } from '../../../models/album-list';
+import { Breadcrumb, BreadcrumbItem } from '../../../shared/breadcrumb/breadcrumb';
 
 @Component({
   selector: 'album-details',
   standalone: true,
-  imports: [PorscheDesignSystemModule, RouterLink],
+  imports: [PorscheDesignSystemModule, RouterLink, Breadcrumb],
   templateUrl: './album-details.html',
   styles: `
     .album-image {
@@ -38,11 +39,10 @@ export class AlbumDetails implements OnInit {
   album: AlbumInfo | undefined;
   detailsOpen = false;
   openAccordions: Record<string, boolean> = {};
-  
+
   collection: AlbumCollection | undefined;
   errorMessage = '';
-  backLink = '/search';
-  backLabel = 'Back to search';
+  breadcrumbItems: BreadcrumbItem[] = [];
   addModalOpen = false;
   addModalMessage = '';
   private addModalTimeout?: ReturnType<typeof setTimeout>;
@@ -55,32 +55,73 @@ export class AlbumDetails implements OnInit {
   listErrorMessage = '';
 
   ngOnInit(): void {
-    const from = this.route.snapshot.queryParamMap.get('from');
-    if (from === 'collection') {
-      this.backLink = '/user/collection';
-      this.backLabel = 'Back to collection';
-    } else if (from === 'artist') {
-      const artistId = this.route.snapshot.queryParamMap.get('artistId');
-      if (artistId) {
-        this.backLink = `/artist/details/${artistId}`;
-        this.backLabel = 'Back to artist';
-      }
-    } else if (from === 'artist-albums') {
-      const artistId = this.route.snapshot.queryParamMap.get('artistId');
-      if (artistId) {
-        this.backLink = `/artist/details/${artistId}/albums`;
-        this.backLabel = 'Back to artist albums';
-      }
-    }
-
     const albumId = this.route.snapshot.params['id'];
     this.albumService.getAlbumById(albumId).subscribe((album) => {
       this.album = album;
+      this.buildBreadcrumbItems();
       this.changeDetectorRef.markForCheck();
     });
 
     if (this.userService.isLoggedIn()) {
       this.loadCollection();
+    }
+  }
+
+  private buildBreadcrumbItems(): void {
+    const albumTitle = this.album?.title ?? '';
+    const from = this.route.snapshot.queryParamMap.get('from');
+    const artistId = this.route.snapshot.queryParamMap.get('artistId');
+    const artistName = this.route.snapshot.queryParamMap.get('artistName') ?? 'Artist';
+
+    switch (from) {
+      case 'collection':
+        this.breadcrumbItems = [
+          { label: 'Dashboard', link: '/dashboard' },
+          { label: 'My Collection', link: '/user/collection' },
+          { label: albumTitle },
+        ];
+        break;
+      case 'artist':
+        this.breadcrumbItems = [
+          { label: 'Dashboard', link: '/dashboard' },
+          { label: 'Search', link: '/search' },
+          { label: artistName, link: artistId ? `/artist/details/${artistId}` : undefined },
+          { label: albumTitle },
+        ];
+        break;
+      case 'artist-albums':
+        this.breadcrumbItems = [
+          { label: 'Dashboard', link: '/dashboard' },
+          { label: 'Search', link: '/search' },
+          { label: artistName, link: artistId ? `/artist/details/${artistId}` : undefined },
+          { label: 'Albums', link: artistId ? `/artist/details/${artistId}/albums` : undefined },
+          { label: albumTitle },
+        ];
+        break;
+      case 'notifications':
+        this.breadcrumbItems = [
+          { label: 'Dashboard', link: '/dashboard' },
+          { label: 'Notifications', link: '/contributions/notifications' },
+          { label: albumTitle },
+        ];
+        break;
+      case 'album-list': {
+        const listId = this.route.snapshot.queryParamMap.get('listId');
+        const listName = this.route.snapshot.queryParamMap.get('listName') ?? 'List';
+        this.breadcrumbItems = [
+          { label: 'Dashboard', link: '/dashboard' },
+          { label: 'My Album Lists', link: '/album-lists' },
+          { label: listName, link: listId ? `/album-lists/${listId}` : undefined },
+          { label: albumTitle },
+        ];
+        break;
+      }
+      default:
+        this.breadcrumbItems = [
+          { label: 'Dashboard', link: '/dashboard' },
+          { label: 'Search', link: '/search' },
+          { label: albumTitle },
+        ];
     }
   }
 

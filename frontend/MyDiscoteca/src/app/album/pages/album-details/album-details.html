@@ -1,6 +1,6 @@
 <div class="grid-template">
     <div class="col-basic">
-        <p-button-pure icon="arrow-left" [routerLink]="[backLink]">{{ backLabel }}</p-button-pure>
+        <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
     </div>
     @if (errorMessage) {
         <div class="col-basic">
@@ -90,7 +90,7 @@
                 <div class="flex gap-2 items-center">
                     <p-text weight="semibold">Artist:</p-text>
                     @if (album.artist) {
-                      <a [routerLink]="['/artist/details', album.artist._id]" [queryParams]="{ from: 'album', albumId: album._id ?? album.id }">
+                      <a [routerLink]="['/artist/details', album.artist._id]" [queryParams]="{ from: 'album', albumId: album._id ?? album.id, albumTitle: album.title }">
                         <p-button-pure>{{ album.artist.name }}</p-button-pure>
                       </a>
                     } @else {

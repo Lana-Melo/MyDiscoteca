@@ -1,0 +1,10 @@
+<nav aria-label="Breadcrumb" class="flex items-center gap-2 flex-wrap">
+  @for (item of items; track item.label; let last = $last) {
+    @if (!last) {
+      <p-link-pure icon="none" [routerLink]="item.link">{{ item.label }}</p-link-pure>
+      <p-text color="contrast-medium">/</p-text>
+    } @else {
+      <p-text>{{ item.label }}</p-text>
+    }
+  }
+</nav>

@@ -22,22 +22,34 @@
         <div class="col-basic grid grid-cols-subgrid gap-y-3">
 
         <div class="col-span-one-half">
-            <p-input-text label="Name" [(ngModel)]="username" name="username"></p-input-text>
+            <p-input-text label="Name" [(ngModel)]="username" name="username"
+                [message]="usernameError()"
+                [state]="usernameError() ? 'error' : 'none'">
+            </p-input-text>
             <p-text color="contrast-medium">Use only letters and numbers.</p-text>
         </div>
 
         <div class="col-span-one-half">
-            <p-input-date label="Birth Date" [(ngModel)]="birthDate" name="birthDate"></p-input-date>
+            <p-input-date label="Birth Date" [(ngModel)]="birthDate" name="birthDate"
+                [message]="birthDateError()"
+                [state]="birthDateError() ? 'error' : 'none'">
+            </p-input-date>
             <p-text color="contrast-medium">User must be at least 13 years old.</p-text>
         </div>
 
         <div class="col-span-one-half">
-            <p-input-email label="Email" [(ngModel)]="email" name="email"></p-input-email>
+            <p-input-email label="Email" [(ngModel)]="email" name="email"
+                [message]="emailError()"
+                [state]="emailError() ? 'error' : 'none'">
+            </p-input-email>
         </div>
 
         <div class="col-span-one-half">
             <p-input-password label="New Password (optional)" name="newPassword" [(ngModel)]="newPassword"
-                [toggle]="true"></p-input-password>
+                [toggle]="true"
+                [message]="newPasswordError()"
+                [state]="newPasswordError() ? 'error' : 'none'">
+            </p-input-password>
             <p-text color="contrast-medium">Use at least 8 characters. At least one uppercase,
                 one lowercase, and a number.</p-text>
         </div>
@@ -64,25 +76,4 @@
             </a>
         </div>
     }
-
-    <p-modal [open]="warningOpen" [aria]="{'aria-label': 'Profile warning'}" (dismiss)="closeWarning()">
-        <p-heading slot="header" size="large" tag="h2">
-            Invalid data
-            Invalid data
-        </p-heading>
-
-        <p-text color="notification-warning">Fix these points before saving:</p-text>
-
-        <ul>
-            @for (message of warningMessages; track message) {
-            <li>
-                <p-text>{{ message }}</p-text>
-            </li>
-            }
-        </ul>
-
-        <p-button-group slot="footer">
-            <p-button type="button" (click)="closeWarning()">OK</p-button>
-        </p-button-group>
-    </p-modal>
 </div>

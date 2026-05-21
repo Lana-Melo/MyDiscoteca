@@ -82,6 +82,7 @@
           <a
             *ngIf="getAlbumId(item); else albumWithoutLink"
             [routerLink]="['/album/details', getAlbumId(item)]"
+            [queryParams]="{ from: 'album-list', listId: albumList?._id, listName: albumList?.name }"
             style="text-decoration: none; color: inherit;">
             <h2 style="margin: 0 0 0.25rem 0; font-size: 1.1rem;">{{ getAlbumTitle(item) }}</h2>
           </a>

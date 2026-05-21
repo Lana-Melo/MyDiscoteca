@@ -1,47 +1,29 @@
 <div class="grid-template">
   <div class="col-basic">
-    <p-button-pure icon="arrow-left" [routerLink]="['/dashboard']">
-      Back to dashboard
-    </p-button-pure>
-  </div>
-
-  <div class="col-basic">
     <p-heading tag="h1">Contribute with a New Version</p-heading>
     <p-text color="contrast-medium">
       Select an existing album and submit the details of the physical version you want to add.
     </p-text>
   </div>
 
-  @if (showError && errorMessages.length > 0) {
+  @if (errorMessage) {
     <div class="col-basic">
       <p-inline-notification
         headingTag="h2"
         state="error"
         heading="Unable to submit request"
-        description="Please review the form data."
+        [description]="errorMessage"
         [dismissButton]="false">
       </p-inline-notification>
-      <ul class="mt-2 list-disc pl-5">
-        @for (message of errorMessages; track message) {
-          <li>
-            <p-text>{{ message }}</p-text>
-          </li>
-        }
-      </ul>
     </div>
   }
 
-  @if (successMessage) {
-    <div class="col-basic">
-      <p-inline-notification
-        headingTag="h2"
-        state="success"
-        heading="Request submitted"
-        [description]="successMessage"
-        [dismissButton]="false">
-      </p-inline-notification>
-    </div>
-  }
+  <p-modal
+    [open]="successModalOpen"
+    heading="Request submitted"
+    (dismiss)="closeSuccessModal()">
+    <p-text>Your album version request has been submitted successfully.</p-text>
+  </p-modal>
 
   <div class="col-basic">
     <p-select
@@ -49,6 +31,8 @@
       [required]="true"
       [(ngModel)]="selectedAlbumId"
       name="selectedAlbumId"
+      [message]="albumError()"
+      [state]="albumError() ? 'error' : 'none'"
       [disabled]="isLoadingAlbums || isSubmitting">
       <p-select-option value="">
         {{ isLoadingAlbums ? 'Loading albums...' : 'Select an album' }}
@@ -71,6 +55,8 @@
       inputmode="numeric"
       [disabled]="isSubmitting"
       [(ngModel)]="eanCode"
+      [message]="eanCodeError()"
+      [state]="eanCodeError() ? 'error' : 'none'"
       (input)="onEanInput($event)"
       (keydown)="onEanKeydown($event)">
     </p-input-text>
@@ -85,7 +71,9 @@
       direction="column"
       [value]="physicalSupport"
       [disabled]="isSubmitting"
-      [(ngModel)]="physicalSupport">
+      [(ngModel)]="physicalSupport"
+      [message]="physicalSupportError()"
+      [state]="physicalSupportError() ? 'error' : 'none'">
       <p-radio-group-option value="CD" label="CD"></p-radio-group-option>
       <p-radio-group-option value="Vinyl" label="Vinyl"></p-radio-group-option>
       <p-radio-group-option value="Cassette" label="Cassette"></p-radio-group-option>
@@ -112,17 +100,4 @@
     </p-button>
   </div>
 
-  @if (submittedRequestSummary) {
-    <div class="col-basic rounded border border-neutral-200 p-4">
-      <p-heading size="small">Last submitted request</p-heading>
-      <p-text>Album: {{ submittedRequestSummary.albumTitle }}</p-text><br />
-      <p-text>EAN-13: {{ submittedRequestSummary.eanCode }}</p-text><br />
-      <p-text>Physical support: {{ submittedRequestSummary.physicalSupport }}</p-text><br />
-      <p-text>
-        Designation:
-        {{ submittedRequestSummary.designation || 'No designation provided' }}
-      </p-text><br />
-      <p-text>Status: {{ submittedRequestSummary.status }}</p-text>
-    </div>
-  }
 </div>

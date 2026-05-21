@@ -10,12 +10,6 @@ import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/a
   imports: [PorscheDesignSystemModule, RouterLink],
   template: `
     <div class="grid-template">
-      <div class="col-basic">
-          <p-button-pure icon="arrow-left" [routerLink]="['/dashboard']">
-          Back to dashboard
-          </p-button-pure>
-      </div>
-
       <div class="col-basic flex justify-between items-center">
         <p-heading tag="h1">My Album Collection</p-heading>
         @if (collection && collection.versions.length > 0) {

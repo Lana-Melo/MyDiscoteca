@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { Router, RouterLink } from '@angular/router';
 import { PasswordConfirmModal } from '../../components/password-confirm-modal/password-confirm-modal';
@@ -24,6 +24,11 @@ export class EditUserProfile implements OnInit {
   successMessage = '';
   warningOpen = false;
   warningMessages: string[] = [];
+
+  usernameError = signal('');
+  emailError = signal('');
+  birthDateError = signal('');
+  newPasswordError = signal('');
   
   router = inject(Router);
   userService = inject(UserService);
@@ -60,10 +65,14 @@ export class EditUserProfile implements OnInit {
   }
 
   openConfirmModal() {
-    const validationMessages = this.validateProfileFields();
+    this.usernameError.set('');
+    this.emailError.set('');
+    this.birthDateError.set('');
+    this.newPasswordError.set('');
 
-    if (validationMessages.length > 0) {
-      this.showWarning(validationMessages);
+    const isValid = this.validateProfileFields();
+
+    if (!isValid) {
       return;
     }
 
@@ -119,30 +128,41 @@ export class EditUserProfile implements OnInit {
     });
   }
 
-  private validateProfileFields(): string[] {
-    const messages: string[] = [];
+  private validateProfileFields(): boolean {
+    let valid = true;
     const username = this.username.trim();
     const email = this.email.trim();
 
     if (!username) {
-      messages.push('Username is required.');
+      this.usernameError.set('Username is required.');
+      valid = false;
     } else if (!/^[A-Za-z0-9]+$/.test(username)) {
-      messages.push('Username can only contain letters and numbers.');
+      this.usernameError.set('Username can only contain letters and numbers.');
+      valid = false;
     }
 
     if (!email) {
-      messages.push('Email is required.');
+      this.emailError.set('Email is required.');
+      valid = false;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      messages.push('Email must be in a valid format.');
+      this.emailError.set('Email must be in a valid format.');
+      valid = false;
     }
 
     if (!this.birthDate) {
-      messages.push('Birth date is required.');
+      this.birthDateError.set('Birth date is required.');
+      valid = false;
     } else if (!this.isAtLeast13YearsOld(this.birthDate)) {
-      messages.push('User must be at least 13 years old.');
+      this.birthDateError.set('User must be at least 13 years old.');
+      valid = false;
     }
 
-    return messages;
+    if (this.newPassword.trim() && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(this.newPassword.trim())) {
+      this.newPasswordError.set('Password must have at least 8 characters, including uppercase, lowercase, and a number.');
+      valid = false;
+    }
+
+    return valid;
   }
 
   private isAtLeast13YearsOld(birthDateValue: string): boolean {

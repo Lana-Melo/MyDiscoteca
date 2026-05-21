@@ -45,6 +45,7 @@
       @for (n of notifications; track n._id) {
         <a
           [routerLink]="['/album/details', n.albumId]"
+          [queryParams]="{ from: 'notifications' }"
           class="no-underline hover:opacity-80 transition-opacity">
           <p-inline-notification
             headingTag="h3"
