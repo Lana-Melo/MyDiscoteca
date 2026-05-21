@@ -14,6 +14,7 @@ import { MyRequests } from './contribution/my-requests/my-requests';
 import { MyNotifications } from './contribution/my-notifications/my-notifications';
 import { UserCollection } from './user/pages/user-collection/user-collection';
 import { MyAlbumLists } from './album-list/pages/my-album-lists/my-album-lists';
+import { AlbumListDetail } from './album-list/pages/album-list-details/album-list-details'
 
 const routeConfig: Routes = [
   {
@@ -89,6 +90,12 @@ const routeConfig: Routes = [
     path: 'album-lists',
     component: MyAlbumLists,
     title: 'My Album Lists',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'album-lists/:listId',
+    component: AlbumListDetail,
+    title: 'Album List',
     canActivate: [authGuard],
   },
   {

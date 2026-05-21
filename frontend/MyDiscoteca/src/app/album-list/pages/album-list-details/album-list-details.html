@@ -1,0 +1,121 @@
+<div class="grid-template">
+  <div class="col-basic">
+    <p-button-pure icon="arrow-left" [routerLink]="['/album-lists']">
+      Back to my lists
+    </p-button-pure>
+  </div>
+
+  <div class="col-basic" *ngIf="successMessage">
+    <p-inline-notification
+      headingTag="h2"
+      state="success"
+      heading="Success"
+      [description]="successMessage"
+      (dismiss)="successMessage = ''">
+    </p-inline-notification>
+  </div>
+
+  <div class="col-basic" *ngIf="errorMessage">
+    <p-inline-notification
+      headingTag="h2"
+      state="error"
+      heading="Something went wrong"
+      [description]="errorMessage"
+      (dismiss)="errorMessage = ''">
+    </p-inline-notification>
+  </div>
+
+  <div class="col-basic" *ngIf="isLoading">
+    <h1 style="margin: 0 0 1rem 0;">Loading list...</h1>
+    <p-spinner></p-spinner>
+  </div>
+
+  <ng-container *ngIf="!isLoading && albumList as list">
+    <div class="col-basic">
+      <h1 style="margin: 0;">{{ list.name }}</h1>
+      <p style="margin: 0.5rem 0 0 0; color: #666;">
+        {{ list.albumCount }} {{ list.albumCount === 1 ? 'album' : 'albums' }}
+      </p>
+    </div>
+
+    <div class="col-basic" *ngIf="hasAlbums" style="max-width: 220px;">
+      <p-select
+        label="Sort by"
+        [value]="sortBy"
+        (change)="onSortChange($event)">
+        <p-select-option value="addedAt_desc">Date added (Newest)</p-select-option>
+        <p-select-option value="addedAt_asc">Date added (Oldest)</p-select-option>
+        <p-select-option value="title_asc">Title (A-Z)</p-select-option>
+        <p-select-option value="title_desc">Title (Z-A)</p-select-option>
+      </p-select>
+    </div>
+
+    <div class="col-basic" *ngIf="!hasAlbums">
+      <p style="color: #666;">This list does not have any albums yet.</p>
+    </div>
+
+    <div class="col-basic" *ngIf="hasAlbums">
+      <div
+        *ngFor="let item of sortedAlbums; trackBy: trackAlbum"
+        style="
+          display: grid;
+          grid-template-columns: 72px 1fr auto;
+          gap: 1rem;
+          align-items: center;
+          padding: 1rem;
+          margin-bottom: 1rem;
+          border: 1px solid #ddd;
+          border-radius: 12px;
+        ">
+        <img
+          [src]="getAlbumImageUrl(item)"
+          [alt]="getAlbumTitle(item)"
+          style="
+            width: 72px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #f5f5f5;
+          ">
+
+        <div style="min-width: 0;">
+          <a
+            *ngIf="getAlbumId(item); else albumWithoutLink"
+            [routerLink]="['/album/details', getAlbumId(item)]"
+            style="text-decoration: none; color: inherit;">
+            <h2 style="margin: 0 0 0.25rem 0; font-size: 1.1rem;">{{ getAlbumTitle(item) }}</h2>
+          </a>
+
+          <ng-template #albumWithoutLink>
+            <h2 style="margin: 0 0 0.25rem 0; font-size: 1.1rem;">{{ getAlbumTitle(item) }}</h2>
+          </ng-template>
+
+          <p style="margin: 0 0 0.25rem 0; color: #666;">{{ getAlbumArtistName(item) }}</p>
+          <p style="margin: 0; color: #666;">Added on {{ formatDate(item.addedAt) }}</p>
+        </div>
+
+        <p-button-pure
+          icon="delete"
+          color="notification-error"
+          type="button"
+          [disabled]="!!albumToRemove"
+          (click)="openRemoveModal(item)">
+          Remove
+        </p-button-pure>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="col-basic" *ngIf="!isLoading && hasLoaded && !albumList && !errorMessage">
+    <p style="color: #666;">Album list not found.</p>
+  </div>
+</div>
+
+<p-modal [open]="!!albumToRemove" [aria]="{'aria-label': 'Remove album from list'}" (dismiss)="closeRemoveModal()">
+  <p-heading slot="header" size="large" tag="h2">Remove Album</p-heading>
+  <p-text>Are you sure you want to remove "{{ albumToRemove ? getAlbumTitle(albumToRemove) : '' }}"?</p-text>
+  <p-button-group slot="footer">
+    <p-button type="button" [loading]="isRemoving" (click)="confirmRemove()">Yes, remove</p-button>
+    <p-button type="button" variant="secondary" [disabled]="isRemoving" (click)="closeRemoveModal()">No, cancel</p-button>
+  </p-button-group>
+</p-modal>

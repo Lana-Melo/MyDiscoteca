@@ -17,6 +17,9 @@ const router = express.Router();
 // Rota para obter as listas personalizadas do utilizador autenticado.
 router.get('/me', albumListController.getMyLists);
 
+// Rota para obter uma lista personalizada pelo id.
+router.get('/:listId', albumListController.getById);
+
 // Rota para criar uma lista personalizada do utilizador autenticado.
 router.post('/', albumListController.create);
 

@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { AlbumList, AlbumListItem } from '../../../models/album-list';
 import { AlbumInfo } from '../../../models/album';
@@ -15,6 +15,7 @@ import { AlbumListService } from '../../../services/album-list.service';
 export class MyAlbumLists implements OnInit {
   private readonly albumListService = inject(AlbumListService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
 
   albumLists: AlbumList[] = [];
   newListName = '';
@@ -24,7 +25,6 @@ export class MyAlbumLists implements OnInit {
   isDeleting = false;
   successMessage = '';
   errorMessage = '';
-  removingAlbumId = '';
   detailsModalOpen = false;
   deleteModalOpen = false;
   selectedList: AlbumList | null = null;
@@ -112,9 +112,7 @@ export class MyAlbumLists implements OnInit {
   }
 
   openList(albumList: AlbumList): void {
-    this.selectedList = albumList;
-    this.detailsModalOpen = true;
-    this.changeDetectorRef.markForCheck();
+    this.router.navigate(['/album-lists', albumList._id]);
   }
 
   closeDetailsModal(): void {
@@ -154,34 +152,6 @@ export class MyAlbumLists implements OnInit {
         this.errorMessage = err.error?.message || 'Could not remove the album list.';
         this.isDeleting = false;
         this.closeDeleteModal();
-      },
-    });
-  }
-
-  removeAlbumFromList(item: AlbumListItem): void {
-    if (!this.selectedList || this.removingAlbumId) return;
-
-    const albumId = this.getAlbumId(item);
-    if (!albumId) return;
-
-    this.removingAlbumId = albumId;
-    this.successMessage = '';
-    this.errorMessage = '';
-
-    this.albumListService.removeAlbum(this.selectedList._id, albumId).subscribe({
-      next: (updatedList) => {
-        this.albumLists = this.albumLists.map((l) =>
-          l._id === updatedList._id ? updatedList : l
-        );
-        this.selectedList = updatedList;
-        this.removingAlbumId = '';
-        this.successMessage = `"${this.getAlbumTitle(item)}" removed from the list.`;
-        this.changeDetectorRef.markForCheck();
-      },
-      error: (err) => {
-        this.errorMessage = err.error?.message || 'Could not remove the album from the list.';
-        this.removingAlbumId = '';
-        this.changeDetectorRef.markForCheck();
       },
     });
   }

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import {
@@ -17,14 +17,16 @@ export class AlbumListService {
   private readonly apiUrl = '/api/album-lists';
 
   getMyLists(): Observable<AlbumList[]> {
+    const options = this.buildNoCacheHttpOptions();
     return this.http
-      .get<AlbumListsApiResponse>(`${this.apiUrl}/me`, this.userService.buildHttpOptions())
+      .get<AlbumListsApiResponse>(`${this.apiUrl}/me`, options)
       .pipe(map((response) => response.albumLists));
   }
 
   getListById(listId: string): Observable<AlbumList> {
+    const options = this.buildNoCacheHttpOptions();
     return this.http
-      .get<AlbumListApiResponse>(`${this.apiUrl}/${listId}`, this.userService.buildHttpOptions())
+      .get<AlbumListApiResponse>(`${this.apiUrl}/${listId}`, options)
       .pipe(map((response) => response.albumList));
   }
 
@@ -55,5 +57,20 @@ export class AlbumListService {
         this.userService.buildHttpOptions()
       )
       .pipe(map((response) => response.albumList));
+  }
+
+  private buildNoCacheHttpOptions() {
+    const baseOptions = this.userService.buildHttpOptions();
+    const headers = (baseOptions.headers || new HttpHeaders())
+      .set('Cache-Control', 'no-cache, no-store, max-age=0')
+      .set('Pragma', 'no-cache')
+      .set('Expires', '0');
+    const params = new HttpParams().set('_t', Date.now().toString());
+
+    return {
+      ...baseOptions,
+      headers,
+      params,
+    };
   }
 }

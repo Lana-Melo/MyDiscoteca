@@ -125,48 +125,6 @@
     }
 </div>
 
-<p-modal [open]="detailsModalOpen" [aria]="{'aria-label': 'Album list details'}" (dismiss)="closeDetailsModal()">
-    <p-heading slot="header" size="large" tag="h2">
-    {{ selectedList?.name }}
-    </p-heading>
-
-    @if (selectedList && selectedList.albums.length > 0) {
-    <div class="flex flex-col gap-static-sm">
-        @for (item of selectedList.albums; track getAlbumId(item)) {
-            <div class="flex justify-between items-center">
-                <div class="flex flex-col">
-                <a [routerLink]="['/album/details', getAlbumId(item)]" (click)="closeDetailsModal()">
-                    <p-button-pure icon="arrow-head-right">
-                    {{ getAlbumTitle(item) }}
-                    </p-button-pure>
-                </a>
-                <p-text size="x-small" color="contrast-medium">
-                    Added {{ formatDate(item.addedAt) }}
-                </p-text>
-                </div>
-                <p-button-pure
-                icon="delete"
-                color="notification-error"
-                type="button"
-                [loading]="removingAlbumId === getAlbumId(item)"
-                [disabled]="!!removingAlbumId"
-                (click)="removeAlbumFromList(item)">
-                Remove
-                </p-button-pure>
-            </div>
-        }
-    </div>
-    } @else {
-    <p-text color="contrast-medium">
-        This list does not have any albums yet.
-    </p-text>
-    }
-
-    <p-button-group slot="footer">
-    <p-button type="button" variant="secondary" (click)="closeDetailsModal()">close</p-button>
-    </p-button-group>
-</p-modal>
-
 <p-modal [open]="deleteModalOpen" [aria]="{'aria-label': 'Remove album list'}" (dismiss)="closeDeleteModal()">
     <p-heading slot="header" size="large" tag="h2">
     Remove List
