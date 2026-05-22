@@ -13,7 +13,7 @@
 
 ## Overview
 
-**MyDiscoteca** is a web application developed for the **PSI (Projecto de Sistemas de Informação)** course at [Faculdade de Ciências da Universidade de Lisboa](https://ciencias.ulisboa.pt/). The project follows a Scrum-based development process, split into three two-week sprints. This repository covers **Sprint 1** and **Sprint 2**.
+**MyDiscoteca** is a web application developed for the **PSI (Projecto de Sistemas de Informação)** course at [Faculdade de Ciências da Universidade de Lisboa](https://ciencias.ulisboa.pt/). The project follows a Scrum-based development process, split into three two-week sprints. This repository covers **Sprint 1**, **Sprint 2**, and **Sprint 3**.
 
 ---
 
@@ -57,6 +57,16 @@ Albums are identified by their **MBID** (MusicBrainz Identifier), artists by the
 | US13 | View Requests | List all submitted version requests with their status (pending, accepted, rejected), filterable by status. |
 | US14 | Request Notifications | Receive notifications when a request is accepted or rejected, accessible from the dashboard. |
 
+### Sprint 3 — v3
+
+| # | User Story | Description |
+|---|-----------|-------------|
+| US15 | Create Personalised List | Create a custom album list with a name (unique per user, max 100 characters). |
+| US16 | View Personalised Lists | Browse all personal lists showing name, album count and last modified date. Sort by any field. Remove lists. |
+| US17 | Add Album to List | Add any album to a personalised list directly from the album page. Each album can only appear once per list. |
+| US18 | View List Contents | See all albums in a list with their titles and date added. Sort by any field, navigate to album pages, and remove albums from the list. |
+| US19 | Dashboard | Centralised hub giving access to the album collection, personalised lists, artist/album search, and version request management. |
+
 ---
 
 ## Technical Information
@@ -82,15 +92,18 @@ Albums are identified by their **MBID** (MusicBrainz Identifier), artists by the
 
 ### Database Structure Diagram
 
-The entity-relationship diagram of the MongoDB collections is available at [`mydiscotecadb-sprint2.png`](./mydiscotecadb-sprint2.png).
+The entity-relationship diagrams of the MongoDB collections are available at:
+- Sprint 1: [`mydiscotecadb-sprint1.png`](./mydiscotecadb-sprint1.png)
+- Sprint 2: [`mydiscotecadb-sprint2.png`](./mydiscotecadb-sprint2.png)
+- Sprint 3: [`mydiscotecadb-sprint3.png`](./mydiscotecadb-sprint3.png)
 
 ### Project Structure
 
 ```
 PSI-Project/
 ├── backend/
-│   ├── controllers/        # Request handlers (album, artist, auth, user)
-│   ├── models/             # Mongoose schemas (album, artist, song, track, version, physicalSupport, user)
+│   ├── controllers/        # Request handlers (album, artist, auth, user, albumCollection, albumList, contribution, notification)
+│   ├── models/             # Mongoose schemas (album, artist, song, track, version, physicalSupport, user, albumCollection, albumList, contribution, notification)
 │   ├── routes/             # Express route definitions
 │   ├── public/media/       # Served album cover images
 │   ├── seed.js             # Database seed script
@@ -98,13 +111,16 @@ PSI-Project/
 ├── frontend/
 │   └── MyDiscoteca/
 │       └── src/app/
-│           ├── album/      # Album card component + album details page
-│           ├── artist/     # Artist card component + artist details + artist albums pages
-│           ├── dashboard/  # Dashboard page
-│           ├── search/     # Combined artist & album search component
-│           ├── user/       # Login, register, profile, edit profile pages + password modal
-│           ├── models/     # TypeScript interfaces (album, artist, user)
-│           └── services/   # HTTP services (album, artist, user)
+│           ├── album/          # Album card component + album details page
+│           ├── album-list/     # My lists page + list contents page (US15–US18)
+│           ├── artist/         # Artist card component + artist details + artist albums pages
+│           ├── contribution/   # New version request, my requests, and notifications pages (US12–US14)
+│           ├── dashboard/      # Dashboard page (US19)
+│           ├── search/         # Combined artist & album search component
+│           ├── shared/         # Shared components
+│           ├── user/           # Login, register, profile, edit profile, collection pages
+│           ├── models/         # TypeScript interfaces (album, artist, user, albumList, contribution, notification)
+│           └── services/       # HTTP services (album, artist, user, albumCollection, albumList, contribution, notification, searchState)
 ├── docker-compose.yml
 ```
 
