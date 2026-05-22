@@ -1,135 +1,130 @@
 <div class="grid-template">
-    <div class="col-basic">
+  <div class="col-basic">
     <p-heading tag="h1">My Album Lists</p-heading>
-    </div>
+  </div>
 
-    @if (successMessage) {
+  @if (errorMessage) {
     <div class="col-basic">
-        <p-inline-notification
-        headingTag="h2"
-        state="success"
-        heading="Success"
-        [description]="successMessage"
-        (dismiss)="successMessage = ''">
-        </p-inline-notification>
-    </div>
-    }
-
-    @if (errorMessage) {
-    <div class="col-basic">
-        <p-inline-notification
+      <p-inline-notification
         headingTag="h2"
         state="error"
         heading="Something went wrong"
         [description]="errorMessage"
         (dismiss)="errorMessage = ''">
-        </p-inline-notification>
+      </p-inline-notification>
     </div>
-    }
+  }
 
-    <div class="col-basic grid grid-cols-subgrid gap-y-4">
+  <div class="col-basic grid grid-cols-subgrid">
     <div class="col-span-one-half">
-        <p-input-text
-        [required]="true"
-        [compact]="true"
-        label="New list name"
-        name="newListName"
-        maxlength="100"
-        [disabled]="isCreating"
-        [(ngModel)]="newListName">
-        </p-input-text>
-        <p-text color="contrast-medium">Use at most 100 characters.</p-text>
+      <p-select
+        label="Sort by"
+        [value]="sortBy"
+        (change)="onSortChange($event)">
+        <p-select-option value="updatedAt_desc">Last modified (Newest)</p-select-option>
+        <p-select-option value="updatedAt_asc">Last modified (Oldest)</p-select-option>
+        <p-select-option value="name_asc">Name (A-Z)</p-select-option>
+        <p-select-option value="name_desc">Name (Z-A)</p-select-option>
+        <p-select-option value="albumCount_desc">Albums (Most)</p-select-option>
+        <p-select-option value="albumCount_asc">Albums (Fewest)</p-select-option>
+      </p-select>
     </div>
 
     <div class="col-span-one-half flex items-end">
-        <p-button
-        type="button"
-        [loading]="isCreating"
-        [disabled]="isCreating"
-        (click)="createList()">
-        Create list
-        </p-button>
+      <p-button icon="add" (click)="openCreateModal()">Create new</p-button>
     </div>
-    </div>
+  </div>
 
-    <div class="col-basic flex justify-between items-center">
-    <p-heading size="medium" tag="h2">Lists</p-heading>
-    @if (albumLists.length > 0) {
-        <div style="min-width: 220px;">
-        <p-select
-            label="Sort by"
-            [value]="sortBy"
-            (change)="onSortChange($event)">
-            <p-select-option value="updatedAt_desc">Last modified (Newest)</p-select-option>
-            <p-select-option value="updatedAt_asc">Last modified (Oldest)</p-select-option>
-            <p-select-option value="name_asc">Name (A-Z)</p-select-option>
-            <p-select-option value="name_desc">Name (Z-A)</p-select-option>
-            <p-select-option value="albumCount_desc">Albums (Most)</p-select-option>
-            <p-select-option value="albumCount_asc">Albums (Fewest)</p-select-option>
-        </p-select>
-        </div>
-    }
-    </div>
-
-    @if (isLoading) {
+  @if (isLoading) {
     <div class="col-basic text-center">
-        <p-spinner></p-spinner>
+      <p-spinner></p-spinner>
     </div>
-    } @else if (albumLists.length === 0) {
+  } @else if (albumLists.length === 0) {
     <div class="col-basic text-center">
-        <p-text color="contrast-medium">
+      <p-text color="contrast-medium">
         You don't have any album lists yet.
-        </p-text>
+      </p-text>
     </div>
-    } @else {
-    <div class="col-basic grid grid-cols-subgrid gap-y-4">
-        @for (list of sortedLists; track list._id) {
-        <div class="col-span-one-third">
-            <div
+  } @else {
+    <div class="col-basic flex flex-col gap-4">
+      @for (list of sortedLists; track list._id) {
+        <div style="display: grid; grid-template-columns: 72px 1fr auto; gap: 1rem; align-items: center; padding: 1rem; border: 1px solid #e3e4e5; border-radius: 12px;">
+          <img
+            [src]="getCoverImageUrl(list)"
+            [alt]="list.name"
+            style="width: 72px; height: 72px; object-fit: cover; border-radius: 8px; background: #f5f5f5;"
+            (error)="handleImageError($event)"
+          />
+
+          <div
             role="button"
             tabindex="0"
             class="cursor-pointer"
+            style="min-width: 0;"
             (click)="openList(list)"
             (keydown.enter)="openList(list)">
-            <p-button-tile label="Open list" [description]="list.name">
-                <img
-                [src]="getCoverImageUrl(list)"
-                [alt]="list.name"
-                (error)="handleImageError($event)"
-                />
-                <p-text slot="footer" theme="dark">
-                {{ list.albumCount }} {{ list.albumCount === 1 ? 'album' : 'albums' }} · Updated {{ formatDate(list.updatedAt) }}
-                </p-text>
-            </p-button-tile>
-            </div>
+            <p-heading size="small" tag="h2">{{ list.name }}</p-heading>
+            <p-text color="contrast-medium">{{ list.albumCount }} {{ list.albumCount === 1 ? 'album' : 'albums' }}</p-text>
+            <p-text color="contrast-medium" size="x-small">Last modified {{ formatDate(list.updatedAt) }}</p-text>
+          </div>
 
-            <div class="flex justify-end mt-static-sm">
-            <p-button-pure
-                icon="delete"
-                color="notification-error"
-                type="button"
-                [disabled]="isDeleting"
-                (click)="openDeleteModal(list)">
-                Remove
-            </p-button-pure>
-            </div>
+          <p-button-pure
+            icon="delete"
+            color="notification-error"
+            type="button"
+            [disabled]="isDeleting"
+            (click)="openDeleteModal(list)">
+            Remove
+          </p-button-pure>
         </div>
-        }
+      }
     </div>
-    }
+  }
 </div>
 
+<p-modal [open]="createModalOpen" [aria]="{'aria-label': 'Create album list'}" (dismiss)="closeCreateModal()">
+  <p-heading slot="header" size="large" tag="h2">Create new list</p-heading>
+
+  @if (createError) {
+    <p-inline-notification
+      headingTag="h3"
+      state="error"
+      heading="Error"
+      [description]="createError"
+      [dismissButton]="false">
+    </p-inline-notification>
+  }
+
+  <p-input-text
+    label="List name"
+    [state]="createNameError ? 'error' : 'none'"
+    [message]="createNameError"
+    name="newListName"
+    maxlength="100"
+    [disabled]="isCreating"
+    [(ngModel)]="newListName"
+    (input)="createNameError = ''">
+  </p-input-text>
+  <p-text color="contrast-medium">Use at most 100 characters.</p-text>
+
+  <p-button-group slot="footer">
+    <p-button type="button" [loading]="isCreating" (click)="createList()">Confirm</p-button>
+    <p-button type="button" variant="secondary" [disabled]="isCreating" (click)="closeCreateModal()">Cancel</p-button>
+  </p-button-group>
+</p-modal>
+
+<p-modal [open]="successModalOpen" [aria]="{'aria-label': 'Success'}" (dismiss)="closeSuccessModal()">
+  <p-heading slot="header" size="large" tag="h2">Success</p-heading>
+  <p-text>{{ successModalMessage }}</p-text>
+</p-modal>
+
 <p-modal [open]="deleteModalOpen" [aria]="{'aria-label': 'Remove album list'}" (dismiss)="closeDeleteModal()">
-    <p-heading slot="header" size="large" tag="h2">
-    Remove List
-    </p-heading>
-
-    <p-text>
+  <p-heading slot="header" size="large" tag="h2">Remove List</p-heading>
+  <p-text>
     Are you sure you want to remove "{{ listToDelete?.name }}"?
-    </p-text>
-
-    <p-button-group slot="footer">
+  </p-text>
+  <p-button-group slot="footer">
     <p-button type="button" [loading]="isDeleting" (click)="confirmDelete()">Yes, remove</p-button>
     <p-button type="button" variant="secondary" (click)="closeDeleteModal()">No, cancel</p-button>
-    </p-button-group>
+  </p-button-group>
 </p-modal>

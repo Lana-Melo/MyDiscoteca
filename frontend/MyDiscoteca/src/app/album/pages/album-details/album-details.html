@@ -17,14 +17,11 @@
       </p-text>
     </p-modal>
 
-    <p-modal [open]="listModalOpen" [aria]="{'aria-label': 'Add to album list'}" (dismiss)="closeListModal()">
+    <p-modal [open]="listModalOpen" [aria]="{'aria-label': 'Add to a list'}" (dismiss)="closeListModal()">
       <p-heading slot="header" size="large" tag="h2">
-        Add to album list
+        Add {{ album?.title }} to a list
       </p-heading>
       
-      @if (listSuccessMessage) {
-        <p-inline-notification state="success" [description]="listSuccessMessage" (dismiss)="listSuccessMessage = ''"></p-inline-notification>
-      }
       @if (listErrorMessage) {
         <p-inline-notification state="error" [description]="listErrorMessage" (dismiss)="listErrorMessage = ''"></p-inline-notification>
       }
@@ -61,37 +58,32 @@
         </div>
     }
     @if (album) {
-        <div class="col-basic">
-            <p-heading align="center" size="large" tag="h1">{{ album.title }}</p-heading>
+        <div class="col-basic flex justify-between items-center">
+            <p-heading tag="h1">{{ album.title }}</p-heading>
+            @if (userService.isLoggedIn()) {
+                <p-button-pure
+                    icon="add"
+                    [aria]="{ 'aria-label': 'Add to a list' }"
+                    (click)="openAddToListModal()"
+                    (keydown.enter)="openAddToListModal()">
+                    Add to a list
+                </p-button-pure>
+            }
         </div>
-        <div class="col-basic flex flex-col items-center gap-4">
+        <div class="col-basic flex gap-8 items-start">
             <img
                 class="album-image"
                 [src]="album.imageUrl ?? '/api/media/placeholders/album.svg'"
                 [alt]="album.title"
                 (error)="handleImageError($event)"
             />
-            @if (userService.isLoggedIn()) {
-                <p-button
-                    icon="add"
-                    variant="ghost"
-                    [compact]="true"
-                    [aria]="{ 'aria-label': 'Add to list' }"
-                    (click)="openAddToListModal()">
-                    Add to list
-                </p-button>
-            }
-        </div>
-        <div class="col-basic">
-            <p-accordion
-                heading="Details"
-                [open]="detailsOpen"
-                (update)="onDetailsUpdate($event)">
+            <div class="flex flex-col gap-3">
+                <p-heading size="medium" tag="h2">Details</p-heading>
                 <div class="flex gap-2 items-center">
                     <p-text weight="semibold">Artist:</p-text>
                     @if (album.artist) {
                       <a [routerLink]="['/artist/details', album.artist._id]" [queryParams]="{ from: 'album', albumId: album._id ?? album.id, albumTitle: album.title }">
-                        <p-button-pure>{{ album.artist.name }}</p-button-pure>
+                        <p-button-pure icon="none">{{ album.artist.name }}</p-button-pure>
                       </a>
                     } @else {
                       <p-text>Unknown</p-text>
@@ -109,7 +101,7 @@
                     <p-text weight="semibold">MBID:</p-text>
                     <p-text>{{ album.mbdi }}</p-text>
                 </div>
-            </p-accordion>
+            </div>
         </div>
         <div class="col-basic">
             <p-divider></p-divider>
@@ -150,8 +142,16 @@
         <div class="col-basic">
             <p-divider></p-divider>
         </div>
-        <div class="col-basic">
+        <div class="col-basic flex justify-between items-center">
             <p-heading align="left" size="medium" tag="h2">Versions</p-heading>
+            @if (userService.isLoggedIn()) {
+                <p-button-pure
+                    icon="add"
+                    [aria]="{ 'aria-label': 'Contribute with a new album version' }"
+                    (click)="requestNewVersion()">
+                    Contribute with a new version
+                </p-button-pure>
+            }
         </div>
         @if (album.physicalSupports && album.physicalSupports.length > 0) {
             <div class="col-basic">
@@ -190,15 +190,6 @@
                         }
                     </p-accordion>
                 }
-            </div>
-            <div class="col-basic">
-                <p-button
-                    icon="add"
-                    variant="secondary"
-                    [aria]="{ 'aria-label': 'Contribute with a new album version' }"
-                    (click)="requestNewVersion()">
-                    Contribute with a new album version
-                </p-button>
             </div>
         } @else {
             <div class="col-basic" align="center">

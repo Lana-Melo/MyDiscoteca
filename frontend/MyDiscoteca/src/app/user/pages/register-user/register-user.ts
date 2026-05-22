@@ -75,15 +75,18 @@ export class RegisterUser {
           state: { successMessage: 'User registered successfully!' }
         });
       },
-      error: (err) => { // erro no retorno do backend
-        const errorMessages = this.extractErrorMessages(err);
-        this.errorMessage.set(
-          errorMessages.length > 0
-            ? 'Please fix the invalid fields'
-            : err.error?.message || 'Unable to register user.'
-        );
-        this.errorMessages.set(errorMessages);
-        this.showError.set(true);
+      error: (err) => {
+        const message: string = err.error?.message ?? '';
+
+        if (message.toLowerCase().includes('username')) {
+          this.usernameError.set(message);
+        } else if (message.toLowerCase().includes('email')) {
+          this.emailError.set(message);
+        } else {
+          this.errorMessage.set(message || 'Unable to register user.');
+          this.showError.set(true);
+        }
+
         this.cd.markForCheck();
       }
     });
@@ -160,13 +163,5 @@ export class RegisterUser {
     );
 
     return birthDate <= minimumBirthDate;
-  }
-
-  private extractErrorMessages(err: any): string[] {
-    if (Array.isArray(err.error?.errors) && err.error.errors.length > 0) {
-      return err.error.errors;
-    }
-
-    return err.error?.message ? [err.error.message] : [];
   }
 }

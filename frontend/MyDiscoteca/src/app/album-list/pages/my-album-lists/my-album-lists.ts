@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { AlbumList, AlbumListItem } from '../../../models/album-list';
 import { AlbumInfo } from '../../../models/album';
@@ -9,7 +9,7 @@ import { AlbumListService } from '../../../services/album-list.service';
 @Component({
   selector: 'app-my-album-lists',
   standalone: true,
-  imports: [FormsModule, RouterLink, PorscheDesignSystemModule],
+  imports: [FormsModule, PorscheDesignSystemModule],
   templateUrl: './my-album-lists.html'
 })
 export class MyAlbumLists implements OnInit {
@@ -23,11 +23,13 @@ export class MyAlbumLists implements OnInit {
   isLoading = true;
   isCreating = false;
   isDeleting = false;
-  successMessage = '';
   errorMessage = '';
-  detailsModalOpen = false;
+  createModalOpen = false;
+  createError = '';
+  createNameError = '';
+  successModalOpen = false;
+  successModalMessage = '';
   deleteModalOpen = false;
-  selectedList: AlbumList | null = null;
   listToDelete: AlbumList | null = null;
 
   ngOnInit(): void {
@@ -70,18 +72,34 @@ export class MyAlbumLists implements OnInit {
     });
   }
 
+  openCreateModal(): void {
+    this.newListName = '';
+    this.createError = '';
+    this.createNameError = '';
+    this.createModalOpen = true;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  closeCreateModal(): void {
+    this.createModalOpen = false;
+    this.newListName = '';
+    this.createError = '';
+    this.createNameError = '';
+    this.changeDetectorRef.markForCheck();
+  }
+
   createList(): void {
     const name = this.newListName.trim();
-    this.successMessage = '';
-    this.errorMessage = '';
+    this.createNameError = '';
+    this.createError = '';
 
     if (!name) {
-      this.errorMessage = 'List name is required.';
+      this.createNameError = 'List name is required.';
       return;
     }
 
     if (name.length > 100) {
-      this.errorMessage = 'List name must have at most 100 characters.';
+      this.createNameError = 'List name must have at most 100 characters.';
       return;
     }
 
@@ -89,17 +107,25 @@ export class MyAlbumLists implements OnInit {
     this.albumListService.createList(name).subscribe({
       next: (albumList) => {
         this.albumLists = [albumList, ...this.albumLists];
-        this.newListName = '';
         this.isCreating = false;
-        this.successMessage = 'Album list created successfully.';
+        this.createModalOpen = false;
+        this.newListName = '';
+        this.successModalMessage = 'Album list created successfully.';
+        this.successModalOpen = true;
         this.changeDetectorRef.markForCheck();
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Could not create the album list.';
+        this.createError = err.error?.message || 'Could not create the album list.';
         this.isCreating = false;
         this.changeDetectorRef.markForCheck();
       },
     });
+  }
+
+  closeSuccessModal(): void {
+    this.successModalOpen = false;
+    this.successModalMessage = '';
+    this.changeDetectorRef.markForCheck();
   }
 
   onSortChange(event: Event): void {
@@ -113,12 +139,6 @@ export class MyAlbumLists implements OnInit {
 
   openList(albumList: AlbumList): void {
     this.router.navigate(['/album-lists', albumList._id]);
-  }
-
-  closeDetailsModal(): void {
-    this.detailsModalOpen = false;
-    this.selectedList = null;
-    this.changeDetectorRef.markForCheck();
   }
 
   openDeleteModal(albumList: AlbumList): void {
@@ -138,20 +158,22 @@ export class MyAlbumLists implements OnInit {
 
     const listId = this.listToDelete._id;
     this.isDeleting = true;
-    this.successMessage = '';
     this.errorMessage = '';
 
     this.albumListService.deleteList(listId).subscribe({
       next: () => {
         this.albumLists = this.albumLists.filter((list) => list._id !== listId);
         this.isDeleting = false;
-        this.successMessage = 'Album list removed successfully.';
         this.closeDeleteModal();
+        this.successModalMessage = 'Album list removed successfully.';
+        this.successModalOpen = true;
+        this.changeDetectorRef.markForCheck();
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Could not remove the album list.';
         this.isDeleting = false;
         this.closeDeleteModal();
+        this.changeDetectorRef.markForCheck();
       },
     });
   }

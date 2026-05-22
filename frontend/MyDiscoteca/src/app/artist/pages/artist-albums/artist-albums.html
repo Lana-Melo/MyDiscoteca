@@ -1,0 +1,28 @@
+<div class="grid-template">
+  <div class="col-basic">
+    <p-button-pure icon="arrow-left" [routerLink]="['/artist/details', artist?.id ?? artist?._id]" [queryParams]="{ from: from }" (keydown.enter)="null">
+      Back to artist
+    </p-button-pure>
+  </div>
+  @if (artist) {
+    <div class="col-basic">
+      <p-heading tag="h1">{{ artist.name }} Albums</p-heading>
+    </div>
+    <div class="col-basic">
+      <p-text>Sorted by release year.</p-text>
+    </div>
+    <div class="col-basic grid grid-cols-subgrid gap-y-4">
+      @for (album of sortedAlbums; track album._id) {
+        <div class="col-span-one-third">
+          <app-album-card
+            [albumId]="album._id ?? ''"
+            [albumTitle]="album.title"
+            [albumImg]="album.imageUrl ?? '/api/media/placeholders/album.svg'"
+            [albumYear]="album.releaseYear"
+            [artistName]="artist.name">
+          </app-album-card>
+        </div>
+      }
+    </div>
+  }
+</div>

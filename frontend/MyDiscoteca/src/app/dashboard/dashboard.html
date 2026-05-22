@@ -1,29 +1,67 @@
 <div class="grid-template">
   <div class="col-wide">
-    <p-heading tag="h1">Dashboard</p-heading>
+    <p-heading tag="h1">Hello, {{ username }}</p-heading>
   </div>
+
   @if (isLoading) {
-    <div class="col-wide">
-      <p-text>Loading dashboard...</p-text>
+    <div class="col-wide" style="text-align: center;">
+      <p-spinner></p-spinner>
     </div>
   } @else if (errorMessage) {
     <div class="col-wide">
       <p-text color="notification-error">{{ errorMessage }}</p-text>
     </div>
-  } @else if (favoriteArtistId && favoriteArtistName) {
-    <div class="col-narrow">
-      <p-heading size="medium" align="center" tag="h2">Your favorite artist 👑</p-heading>
-      <app-artist-card
-        [artistId]="favoriteArtistId"
-        [artistName]="favoriteArtistName"
-        [artistSince]="favoriteArtist?.yearStarted"
-        [artistImg]="favoriteArtist?.imageUrl ?? '/api/media/placeholders/artist.svg'"
-        from="dashboard">
-      </app-artist-card>
-    </div>
   } @else {
-    <div class="col-wide">
-      <p-text>No favorite artist.</p-text>
+    <div class="col-wide dashboard-grid">
+
+      <a
+        [routerLink]="favoriteArtistId ? ['/artist/details', favoriteArtistId] : null"
+        class="dashboard-card">
+        <div class="card-circle artist-circle">
+          <img [src]="favoriteArtistImage" [alt]="favoriteArtistName || 'Favorite Artist'" />
+        </div>
+        <div class="card-label">
+          <p-text><strong>{{ favoriteArtistName || 'No favorite artist' }}</strong></p-text>
+          <p-text size="x-small" color="contrast-medium">Favorite Artist</p-text>
+        </div>
+      </a>
+
+      <a routerLink="/user/collection" class="dashboard-card">
+        <div class="card-circle icon-circle">
+          <p-icon name="play" aria-hidden="true"></p-icon>
+        </div>
+        <div class="card-label">
+          <p-text><strong>My Albums</strong></p-text>
+        </div>
+      </a>
+
+      <a routerLink="/album-lists" class="dashboard-card">
+        <div class="card-circle icon-circle">
+          <p-icon name="list" aria-hidden="true"></p-icon>
+        </div>
+        <div class="card-label">
+          <p-text><strong>My Lists</strong></p-text>
+        </div>
+      </a>
+
+      <a routerLink="/search" class="dashboard-card">
+        <div class="card-circle icon-circle">
+          <p-icon name="search" aria-hidden="true"></p-icon>
+        </div>
+        <div class="card-label">
+          <p-text><strong>Explore</strong></p-text>
+        </div>
+      </a>
+
+      <a routerLink="/contributions/album-version/my-requests" class="dashboard-card">
+        <div class="card-circle icon-circle">
+          <p-icon name="send" aria-hidden="true"></p-icon>
+        </div>
+        <div class="card-label">
+          <p-text><strong>My Album Requests</strong></p-text>
+        </div>
+      </a>
+
     </div>
   }
 </div>

@@ -55,7 +55,7 @@
           <p-text color="notification-error">{{ errorMessage }}</p-text>
         </div>
       } @else if (user) {
-        <div class="col-basic grid grid-cols-subgrid">
+        <div class="col-basic grid grid-cols-subgrid gap-y-3">
         <div class="col-span-one-half">
           <p-input-text label="Username" [value]="user.username" [disabled]="true"></p-input-text>
         </div>
@@ -77,7 +77,7 @@
         </div>
         <div class="col-span-one-half">
           <a [routerLink]="['/user/profile/edit']">
-            <p-button variant="secondary">
+            <p-button>
               Edit profile
             </p-button>
           </a>

@@ -30,18 +30,18 @@
         </div>
 
         <div class="col-span-one-half">
+            <p-input-email label="Email" [(ngModel)]="email" name="email"
+                [message]="emailError()"
+                [state]="emailError() ? 'error' : 'none'">
+            </p-input-email>
+        </div>
+
+        <div class="col-span-one-half">
             <p-input-date label="Birth Date" [(ngModel)]="birthDate" name="birthDate"
                 [message]="birthDateError()"
                 [state]="birthDateError() ? 'error' : 'none'">
             </p-input-date>
             <p-text color="contrast-medium">User must be at least 13 years old.</p-text>
-        </div>
-
-        <div class="col-span-one-half">
-            <p-input-email label="Email" [(ngModel)]="email" name="email"
-                [message]="emailError()"
-                [state]="emailError() ? 'error' : 'none'">
-            </p-input-email>
         </div>
 
         <div class="col-span-one-half">
@@ -55,25 +55,15 @@
         </div>
     </div>
 
-        <div class="col-basic">
-            <p-button type="button" [aria]="{'aria-haspopup': 'dialog'}" (click)="openConfirmModal()">
-                Save changes
-            </p-button>
-            <!-- 
-            Modal de confirmação de password
-
-            [open] → recebe do componente pai (abre/fecha modal)
-            (close) → evento emitido pelo filho para fechar
-            (confirm) → evento emitido quando o user confirma (guardar)
-            -->
+    <div class="col-basic flex gap-4 items-center">
+        <p-button type="button" [aria]="{'aria-haspopup': 'dialog'}" (click)="openConfirmModal()">
+            Save changes
+        </p-button>
+        <a [routerLink]="['/user/profile']">
+            <p-button variant="ghost">Cancel</p-button>
+        </a>
         <app-password-confirm-modal [open]="modalOpen" (close)="closeModal()" (confirm)="saveConfirmed($event)">
         </app-password-confirm-modal>
     </div>
-
-        <div class="col-basic">
-            <a [routerLink]="['/user/profile']">
-                <p-button variant="ghost">Cancel</p-button>
-            </a>
-        </div>
     }
 </div>

@@ -1,0 +1,97 @@
+<div class="grid-template">
+  <div class="col-basic">
+    <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+  </div>
+  @if (artist) {
+    <div class="col-basic flex justify-between items-center">
+      <p-heading tag="h1">{{ artist.name }}</p-heading>
+      <p-button-pure [icon]="isFavorite ? 'star-filled' : 'star'" [active]="isFavorite" [disabled]="isSavingFavorite" (click)="toggleFavorite()" (keydown.enter)="toggleFavorite()">
+        {{ isFavorite ? 'Remove from favorites' : 'Add as favorite' }}
+      </p-button-pure>
+    </div>
+    <div class="col-basic flex gap-8 items-start">
+      <img
+        class="artist-image"
+        [src]="artist.imageUrl ?? '/api/media/placeholders/artist.svg'"
+        [alt]="artist.name"
+        (error)="handleImageError($event, 'artist')"
+      />
+      <div class="flex flex-col gap-3">
+        <p-heading size="medium" tag="h2">Details</p-heading>
+        <div class="flex gap-2">
+          <p-text weight="semibold">ISNI:</p-text>
+          <p-text>{{ artist.isni }}</p-text>
+        </div>
+        <div class="flex gap-2">
+          <p-text weight="semibold">Active Since:</p-text>
+          <p-text>{{ artist.yearStarted }}</p-text>
+        </div>
+        <div class="flex gap-2">
+          <p-text weight="semibold">Type:</p-text>
+          <p-text>{{ artist.type }}</p-text>
+        </div>
+      </div>
+    </div>
+    @if (favoriteMessage) {
+      <p-modal [open]="true" [aria]="{'aria-label': 'Favorite artist updated'}" (dismiss)="favoriteMessage = ''">
+        <p-heading slot="header" size="large" tag="h2">Favorite artist</p-heading>
+        <p-text>{{ favoriteMessage }}</p-text>
+      </p-modal>
+    }
+    @if (favoriteError) {
+      <div class="col-basic">
+        <p-text color="notification-error">{{ favoriteError }}</p-text>
+      </div>
+    }
+    @if (artist.members && artist.members.length > 0) {
+      <div class="col-basic">
+        <p-heading size="medium" tag="h2">Members</p-heading>
+      </div>
+      <div class="col-basic grid grid-cols-subgrid">
+        @for (member of artist.members; track member._id) {
+          <div class="col-span-one-half">
+            <p-input-text [label]="member.type" [value]="member.name" [disabled]="true"></p-input-text>
+          </div>
+        }
+      </div>
+    }
+    @if (artist.albums && artist.albums.length > 0) {
+      <div class="col-basic">
+        <p-divider></p-divider>
+      </div>
+      <div class="col-basic">
+        <p-heading size="medium" tag="h2">Albums</p-heading>
+      </div>
+      <div class="col-basic grid grid-cols-subgrid gap-y-4">
+        @for (album of visibleAlbums; track album._id) {
+          <div class="col-span-one-third">
+            <app-album-card
+              [albumId]="album._id ?? ''"
+              [albumTitle]="album.title"
+              [albumImg]="album.imageUrl ?? '/api/media/placeholders/album.svg'"
+              [albumYear]="album.releaseYear"
+              [artistName]="artist.name">
+            </app-album-card>
+          </div>
+        }
+      </div>
+      <div class="col-basic albums-actions">
+        <a [routerLink]="['/artist/details', artist.id ?? artist._id, 'albums']" [queryParams]="{ from: from }">
+          <p-button-pure icon="arrow-head-right">See all albums</p-button-pure>
+        </a>
+      </div>
+    }
+  }
+  <p-modal [open]="overwriteFavoriteOpen" [aria]="{'aria-label': 'Overwrite favorite artist'}" (dismiss)="cancelOverwriteFavorite()">
+    <p-heading slot="header" size="large" tag="h2">
+      Favorite artist
+    </p-heading>
+    <p-text>
+      You already have {{ currentFavoriteArtistName }} as your favorite artist, do you want to overwrite?
+    </p-text>
+    <p-button-group slot="footer">
+      <p-button type="button" (click)="confirmOverwriteFavorite()">yes, overwrite</p-button>
+      <p-button type="button" variant="secondary" (click)="cancelOverwriteFavorite()">no, cancel</p-button>
+    </p-button-group>
+  </p-modal>
+</div>

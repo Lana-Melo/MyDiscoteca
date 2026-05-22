@@ -11,7 +11,7 @@ import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/a
   template: `
     <div class="grid-template">
       <div class="col-basic flex justify-between items-center">
-        <p-heading tag="h1">My Album Collection</p-heading>
+        <p-heading tag="h1">My Albums</p-heading>
         @if (collection && collection.versions.length > 0) {
           <div style="min-width: 200px;">
             <p-select
@@ -49,42 +49,36 @@ import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/a
           <p-text color="notification-error">{{ errorMessage }}</p-text>
         </div>
       } @else if (collection && collection.versions.length > 0) {
-        <div class="col-basic grid grid-cols-subgrid">
+        <div class="col-basic flex flex-col gap-4">
           @for (item of sortedVersions; track item.version._id) {
-            <div class="col-span-one-half">
-              <div class="version-card">
-                <a [routerLink]="['/album/details', getAlbumId(item)]" [queryParams]="{ from: 'collection' }">
-                  <img
-                    class="album-image"
-                    [src]="getAlbumImageUrl(item)"
-                    [alt]="getAlbumTitle(item)"
-                    (error)="handleImageError($event)"
-                  />
+            <div style="display: grid; grid-template-columns: 72px 1fr auto; gap: 1rem; align-items: center; padding: 1rem; border: 1px solid #e3e4e5; border-radius: 12px;">
+              <a [routerLink]="['/album/details', getAlbumId(item)]" [queryParams]="{ from: 'collection' }">
+                <img
+                  [src]="getAlbumImageUrl(item)"
+                  [alt]="getAlbumTitle(item)"
+                  style="width: 72px; height: 72px; object-fit: cover; border-radius: 8px; background: #f5f5f5;"
+                  (error)="handleImageError($event)"
+                />
+              </a>
+
+              <div style="min-width: 0;">
+                <a [routerLink]="['/album/details', getAlbumId(item)]" [queryParams]="{ from: 'collection' }" class="album-link">
+                  <p-heading size="small" tag="h2">{{ getAlbumTitle(item) }}</p-heading>
                 </a>
-                <div class="version-info">
-                  <a [routerLink]="['/album/details', getAlbumId(item)]" [queryParams]="{ from: 'collection' }" class="album-link">
-                    <p-heading size="small">{{ getAlbumTitle(item) }}</p-heading>
-                  </a>
-                  <p-text size="small">{{ getArtistName(item) }}</p-text>
-                  <p-text size="x-small" color="contrast-medium">
-                    {{ getSupportType(item) }} - {{ item.version.designation }}
-                  </p-text>
-                  <p-text size="x-small" color="contrast-medium">
-                    EAN: {{ item.version.eanCode }}
-                  </p-text>
-                  <p-text size="x-small" color="contrast-medium">
-                    Added on: {{ formatDate(item.addedAt) }}
-                  </p-text>
-                  <p-button-pure 
-                    icon="delete" 
-                    color="notification-error" 
-                    (click)="removeVersion(item.version._id)"
-                    [disabled]="isRemoving"
-                  >
-                    Remove
-                  </p-button-pure>
-                </div>
+                <p-text color="contrast-medium">{{ getArtistName(item) }}</p-text>
+                <p-text color="contrast-medium" size="x-small">{{ getSupportType(item) }} - {{ item.version.designation }}</p-text>
+                <p-text color="contrast-medium" size="x-small">EAN: {{ item.version.eanCode }}</p-text>
+                <p-text color="contrast-medium" size="x-small">Added on: {{ formatDate(item.addedAt) }}</p-text>
               </div>
+
+              <p-button-pure
+                icon="delete"
+                color="notification-error"
+                type="button"
+                [disabled]="isRemoving"
+                (click)="removeVersion(item.version._id)">
+                Remove
+              </p-button-pure>
             </div>
           }
         </div>
@@ -114,29 +108,6 @@ import { AlbumCollection, AlbumCollectionItem, Version } from '../../../models/a
     </p-modal>
   `,
   styles: `
-    .version-card {
-      display: grid;
-      grid-template-columns: 100px 1fr;
-      gap: 1rem;
-      padding: 1rem;
-      border: 1px solid var(--p-color-contrast-low);
-      border-radius: 0.5rem;
-      background: var(--p-color-background-surface);
-    }
-
-    .album-image {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 0.25rem;
-    }
-
-    .version-info {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
     .album-link {
       text-decoration: none;
       color: inherit;

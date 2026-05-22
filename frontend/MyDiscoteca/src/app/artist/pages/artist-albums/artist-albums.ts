@@ -3,62 +3,14 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PorscheDesignSystemModule } from '@porsche-design-system/components-angular';
 import { ArtistAlbum, ArtistInfo } from '../../../models/artist';
 import { ArtistService } from '../../../services/artist.service';
+import { AlbumCard } from '../../../album/album-card/album-card';
 
 @Component({
   selector: 'artist-albums',
   standalone: true,
-  imports: [PorscheDesignSystemModule, RouterLink],
-  template: `
-    <div class="grid-template">
-      <div class="col-basic">
-        <p-button-pure icon="arrow-left" [routerLink]="['/artist/details', artist?.id ?? artist?._id]" [queryParams]="{ from: from }">
-          Back to artist
-        </p-button-pure>
-      </div>
-
-      @if (artist) {
-      <div class="col-basic">
-        <p-heading tag="h1">{{ artist.name }} Albums</p-heading>
-      </div>
-      <div class="col-basic">
-        <p-text>Sorted by release year.</p-text>
-      </div>
-      <div class="col-basic grid grid-cols-subgrid">
-        @for (album of sortedAlbums; track album._id) {
-        <div class="col-span-one-third">
-          <div class="album-card">
-            <a [routerLink]="['/album/details', album._id]" [queryParams]="{ from: 'artist-albums', artistId: artist?.id ?? artist?._id, artistName: artist?.name }" style="display: block;">
-              <img
-                class="album-image"
-                [src]="album.imageUrl ?? '/api/media/placeholders/album.svg'"
-                [alt]="album.title"
-                (error)="handleImageError($event)"
-              />
-            </a>
-            <a [routerLink]="['/album/details', album._id]" [queryParams]="{ from: 'artist-albums', artistId: artist?.id ?? artist?._id, artistName: artist?.name }" style="text-decoration: none; display: block;">
-              <p-input-text [label]="album.releaseYear.toString()" [value]="album.title" [disabled]="true" style="pointer-events: none;"></p-input-text>
-            </a>
-          </div>
-        </div>
-        }
-      </div>
-      }
-    </div>
-  `,
-  styles: `
-    .album-card {
-      display: grid;
-      gap: 0.75rem;
-    }
-
-    .album-image {
-      width: 100%;
-      aspect-ratio: 1;
-      object-fit: cover;
-      border-radius: 0.75rem;
-      display: block;
-    }
-  `,
+  imports: [PorscheDesignSystemModule, RouterLink, AlbumCard],
+  templateUrl: './artist-albums.html',
+  styles: ``,
 })
 export class ArtistAlbums implements OnInit {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
@@ -83,13 +35,4 @@ export class ArtistAlbums implements OnInit {
     });
   }
 
-  handleImageError(event: Event): void {
-    const img = event.target as HTMLImageElement | null;
-
-    if (!img) {
-      return;
-    }
-
-    img.src = '/api/media/placeholders/album.svg';
-  }
 }

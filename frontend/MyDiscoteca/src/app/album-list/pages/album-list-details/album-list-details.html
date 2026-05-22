@@ -1,19 +1,8 @@
 <div class="grid-template">
   <div class="col-basic">
-    <p-button-pure icon="arrow-left" [routerLink]="['/album-lists']">
-      Back to my lists
-    </p-button-pure>
+    <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
   </div>
 
-  <div class="col-basic" *ngIf="successMessage">
-    <p-inline-notification
-      headingTag="h2"
-      state="success"
-      heading="Success"
-      [description]="successMessage"
-      (dismiss)="successMessage = ''">
-    </p-inline-notification>
-  </div>
 
   <div class="col-basic" *ngIf="errorMessage">
     <p-inline-notification
@@ -32,10 +21,12 @@
 
   <ng-container *ngIf="!isLoading && albumList as list">
     <div class="col-basic">
-      <h1 style="margin: 0;">{{ list.name }}</h1>
-      <p style="margin: 0.5rem 0 0 0; color: #666;">
-        {{ list.albumCount }} {{ list.albumCount === 1 ? 'album' : 'albums' }}
-      </p>
+      <p-heading tag="h1">{{ list.name }}</p-heading>
+      <div class="flex items-center gap-2">
+        <p-text color="contrast-medium">{{ list.albumCount }} {{ list.albumCount === 1 ? 'album' : 'albums' }}</p-text>
+        <p-text color="contrast-medium">|</p-text>
+        <p-button-pure icon="search" [routerLink]="['/search']">Explore more albums</p-button-pure>
+      </div>
     </div>
 
     <div class="col-basic" *ngIf="hasAlbums" style="max-width: 220px;">
@@ -70,6 +61,7 @@
         <img
           [src]="getAlbumImageUrl(item)"
           [alt]="getAlbumTitle(item)"
+          (error)="handleImageError($event)"
           style="
             width: 72px;
             height: 72px;
@@ -111,6 +103,11 @@
     <p style="color: #666;">Album list not found.</p>
   </div>
 </div>
+
+<p-modal [open]="successModalOpen" [aria]="{'aria-label': 'Success'}" (dismiss)="closeSuccessModal()">
+  <p-heading slot="header" size="large" tag="h2">Success</p-heading>
+  <p-text>{{ successModalMessage }}</p-text>
+</p-modal>
 
 <p-modal [open]="!!albumToRemove" [aria]="{'aria-label': 'Remove album from list'}" (dismiss)="closeRemoveModal()">
   <p-heading slot="header" size="large" tag="h2">Remove Album</p-heading>

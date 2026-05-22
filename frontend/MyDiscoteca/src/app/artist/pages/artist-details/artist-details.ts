@@ -6,112 +6,13 @@ import { UserService } from '../../../services/user.service';
 import { UserInfo } from '../../../models/user';
 import { ArtistService } from '../../../services/artist.service';
 import { Breadcrumb, BreadcrumbItem } from '../../../shared/breadcrumb/breadcrumb';
+import { AlbumCard } from '../../../album/album-card/album-card';
 
 @Component({
   selector: 'artist-details',
   standalone: true,
-  imports: [PorscheDesignSystemModule, RouterLink, Breadcrumb],
-  template: `
-    <div class="grid-template">
-      <div class="col-basic">
-        <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
-      </div>
-      @if (artist) {
-      <div class="col-basic">
-        <p-heading tag="h1">{{artist.name}}</p-heading>
-      </div>
-      <div class="col-basic">
-        <img
-          class="artist-image"
-          [src]="artist.imageUrl ?? '/api/media/placeholders/artist.svg'"
-          [alt]="artist.name"
-          (error)="handleImageError($event, 'artist')"
-        />
-      </div>
-      <div class="col-basic grid grid-cols-subgrid">
-        <div class="col-span-one-half">
-          <p-input-text label="ISNI" [value]="artist.isni" [disabled]="true"></p-input-text>
-        </div>
-        <div class="col-span-one-half">
-          <p-input-text label="Active Since" [value]="artist.yearStarted.toString()" [disabled]="true"></p-input-text>
-        </div>
-        <div class="col-span-one-half">
-          <p-input-text label="Type" [value]="artist.type" [disabled]="true"></p-input-text>
-        </div>
-        <div class="col-span-one-half">
-          <p-button-pure [active]="isFavorite" [disabled]="isSavingFavorite" (click)="toggleFavorite()">
-            {{ isFavorite ? 'Remove from favorites' : 'Add as favorite' }}
-          </p-button-pure>
-        </div>
-      </div>
-      @if (favoriteMessage) {
-      <div class="col-basic">
-        <p-text color="notification-success">{{ favoriteMessage }}</p-text>
-      </div>
-      }
-      @if (favoriteError) {
-      <div class="col-basic">
-        <p-text color="notification-error">{{ favoriteError }}</p-text>
-      </div>
-      }
-      @if (artist.members && artist.members.length > 0) {
-      <div class="col-basic">
-        <p-heading size="medium" tag="h2">Members</p-heading>
-      </div>
-      <div class="col-basic grid grid-cols-subgrid">
-        @for (member of artist.members; track member._id) {
-        <div class="col-span-one-half">
-          <p-input-text [label]="member.type" [value]="member.name" [disabled]="true"></p-input-text>
-        </div>
-        }
-      </div>
-      }
-      @if (artist.albums && artist.albums.length > 0) {
-      <div class="col-basic">
-        <p-heading size="medium" tag="h2">Albums</p-heading>
-      </div>
-      <div class="col-basic grid grid-cols-subgrid">
-        @for (album of visibleAlbums; track album._id) {
-        <div class="col-span-one-third">
-          <div class="album-card">
-            <a [routerLink]="['/album/details', album._id]" [queryParams]="{ from: 'artist', artistId: artist.id ?? artist._id, artistName: artist.name }" style="display: block;">
-              <img
-                class="album-image"
-                [src]="album.imageUrl ?? '/api/media/placeholders/album.svg'"
-                [alt]="album.title"
-                (error)="handleImageError($event, 'album')"
-              />
-            </a>
-            <a [routerLink]="['/album/details', album._id]" [queryParams]="{ from: 'artist', artistId: artist.id ?? artist._id, artistName: artist.name }" style="text-decoration: none; display: block;">
-              <p-input-text [label]="album.releaseYear.toString()" [value]="album.title" [disabled]="true" style="pointer-events: none;"></p-input-text>
-            </a>
-          </div>
-        </div>
-        }
-      </div>
-      <div class="col-basic albums-actions">
-        <a [routerLink]="['/artist/details', artist.id ?? artist._id, 'albums']" [queryParams]="{ from: from }">
-          <p-button-pure icon="arrow-head-right">See all albums</p-button-pure>
-        </a>
-      </div>
-      }
-      }
-      <p-modal [open]="overwriteFavoriteOpen" [aria]="{'aria-label': 'Overwrite favorite artist'}" (dismiss)="cancelOverwriteFavorite()">
-        <p-heading slot="header" size="large" tag="h2">
-          Favorite artist
-        </p-heading>
-
-        <p-text>
-          You already have {{ currentFavoriteArtistName }} as your favorite artist, do you want to overwrite?
-        </p-text>
-
-        <p-button-group slot="footer">
-          <p-button type="button" (click)="confirmOverwriteFavorite()">yes, overwrite</p-button>
-          <p-button type="button" variant="secondary" (click)="cancelOverwriteFavorite()">no, cancel</p-button>
-        </p-button-group>
-      </p-modal>
-    </div>
-  `,
+  imports: [PorscheDesignSystemModule, RouterLink, Breadcrumb, AlbumCard],
+  templateUrl: './artist-details.html',
   styles: `
     .artist-image {
       width: 100%;

@@ -121,7 +121,7 @@ export class EditUserProfile implements OnInit {
         });
       },
       error: (err) => {
-        this.showWarning(this.extractWarningMessages(err));
+        this.handleBackendErrors(err);
         this.isLoading = false;
         this.changeDetectorRef.markForCheck();
       }
@@ -182,12 +182,31 @@ export class EditUserProfile implements OnInit {
     return birthDate <= minimumBirthDate;
   }
 
-  private extractWarningMessages(err: any): string[] {
-    if (Array.isArray(err.error?.errors) && err.error.errors.length > 0) {
-      return err.error.errors;
+  private handleBackendErrors(err: any): void {
+    const messages: string[] = Array.isArray(err.error?.errors) && err.error.errors.length > 0
+      ? err.error.errors
+      : [err.error?.message || 'Failed to update profile'];
+
+    const unhandled: string[] = [];
+
+    for (const msg of messages) {
+      const lower = msg.toLowerCase();
+      if (lower.includes('username')) {
+        this.usernameError.set(msg);
+      } else if (lower.includes('email')) {
+        this.emailError.set(msg);
+      } else if (lower.includes('password')) {
+        this.newPasswordError.set(msg);
+      } else if (lower.includes('birth')) {
+        this.birthDateError.set(msg);
+      } else {
+        unhandled.push(msg);
+      }
     }
 
-    return [err.error?.message || 'Failed to update profile'];
+    if (unhandled.length > 0) {
+      this.showWarning(unhandled);
+    }
   }
 
   private showWarning(messages: string[]) {

@@ -5,11 +5,12 @@ import { PorscheDesignSystemModule } from '@porsche-design-system/components-ang
 import { AlbumList, AlbumListItem } from '../../../models/album-list';
 import { AlbumInfo } from '../../../models/album';
 import { AlbumListService } from '../../../services/album-list.service';
+import { Breadcrumb, BreadcrumbItem } from '../../../shared/breadcrumb/breadcrumb';
 
 @Component({
   selector: 'app-album-list-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, PorscheDesignSystemModule],
+  imports: [CommonModule, RouterLink, PorscheDesignSystemModule, Breadcrumb],
   templateUrl: './album-list-details.html'
 })
 export class AlbumListDetail implements OnInit {
@@ -18,10 +19,12 @@ export class AlbumListDetail implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   albumList: AlbumList | null = null;
+  breadcrumbItems: BreadcrumbItem[] = [{ label: 'My Album Lists', link: '/album-lists' }];
   sortBy = 'addedAt_desc';
   isLoading = true;
   isRemoving = false;
-  successMessage = '';
+  successModalOpen = false;
+  successModalMessage = '';
   errorMessage = '';
   albumToRemove: AlbumListItem | null = null;
   hasLoaded = false;
@@ -81,6 +84,10 @@ export class AlbumListDetail implements OnInit {
                 ? safeAlbumList.albums.length
                 : 0,
         };
+        this.breadcrumbItems = [
+          { label: 'My Album Lists', link: '/album-lists' },
+          { label: this.albumList.name },
+        ];
         this.isLoading = false;
         this.hasLoaded = true;
         this.changeDetectorRef.markForCheck();
@@ -104,13 +111,18 @@ export class AlbumListDetail implements OnInit {
 
   openRemoveModal(item: AlbumListItem): void {
     this.albumToRemove = item;
-    this.successMessage = '';
     this.errorMessage = '';
     this.changeDetectorRef.markForCheck();
   }
 
   closeRemoveModal(): void {
     this.albumToRemove = null;
+    this.changeDetectorRef.markForCheck();
+  }
+
+  closeSuccessModal(): void {
+    this.successModalOpen = false;
+    this.successModalMessage = '';
     this.changeDetectorRef.markForCheck();
   }
 
@@ -126,8 +138,9 @@ export class AlbumListDetail implements OnInit {
       next: (updatedList) => {
         this.albumList = updatedList;
         this.isRemoving = false;
-        this.successMessage = `"${this.getAlbumTitle(item)}" removed successfully.`;
         this.albumToRemove = null;
+        this.successModalMessage = `"${this.getAlbumTitle(item)}" removed successfully.`;
+        this.successModalOpen = true;
         this.changeDetectorRef.markForCheck();
       },
       error: (err) => {
@@ -157,6 +170,12 @@ export class AlbumListDetail implements OnInit {
 
   getAlbumImageUrl(item: AlbumListItem): string {
     return this.getAlbum(item)?.imageUrl || '/api/media/placeholders/album.svg';
+  }
+
+  handleImageError(event: Event): void {
+    const img = event.target as HTMLImageElement | null;
+    if (!img) return;
+    img.src = '/api/media/placeholders/album.svg';
   }
 
   trackAlbum(index: number, item: AlbumListItem): string {

@@ -86,19 +86,16 @@
         [open]="isNavOpen"
         (dismiss)="closeNav()">
         <p-drilldown-link>
-          <a [routerLink]="['/search']" (click)="closeNav()">Explore artists and albums</a>
+          <a [routerLink]="['/search']" (click)="closeNav()"><p-icon name="search"></p-icon> Explore</a>
         </p-drilldown-link>
         <p-drilldown-link>
-          <a [routerLink]="['/contributions/album-version/new']" (click)="closeNav()">Contributte with a new album version</a>
+          <a [routerLink]="['/contributions/album-version/my-requests']" (click)="closeNav()"><p-icon name="send"></p-icon> My Album Requests</a>
         </p-drilldown-link>
         <p-drilldown-link>
-          <a [routerLink]="['/contributions/album-version/my-requests']" (click)="closeNav()">My contribution requests</a>
+          <a [routerLink]="['/user/collection']" (click)="closeNav()"><p-icon name="play"></p-icon> My Albums</a>
         </p-drilldown-link>
         <p-drilldown-link>
-          <a [routerLink]="['/user/collection']" (click)="closeNav()">See my albums</a>
-        </p-drilldown-link>
-        <p-drilldown-link>
-          <a [routerLink]="['/album-lists']" (click)="closeNav()">My Album Lists</a>
+          <a [routerLink]="['/album-lists']" (click)="closeNav()"><p-icon name="list"></p-icon> My Lists</a>
         </p-drilldown-link>
       </p-drilldown>
     </nav>
